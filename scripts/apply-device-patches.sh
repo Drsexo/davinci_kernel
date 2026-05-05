@@ -83,6 +83,11 @@ case "$DEVICE_IMPORT" in
             echo "-- Applying sweet-miui specific patches..."
             sed -i 's/^CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/' $MAIN_DEFCONFIG
             sed -i 's/^# CONFIG_CC_STACKPROTECTOR_NONE is not set/CONFIG_CC_STACKPROTECTOR_NONE=y/' $MAIN_DEFCONFIG
+            revert_commit "https://github.com/fiqri19102002/android_kernel_xiaomi_sweet/commit/a719f7f6623b340c7cb90a77bf472b8403f61bd9.patch"
+            revert_commit "https://github.com/fiqri19102002/android_kernel_xiaomi_sweet/commit/e14ae6e0f010b9f9d7ff1fc9cb7367ad345727bd.patch"
+            revert_commit "https://github.com/fiqri19102002/android_kernel_xiaomi_sweet/commit/0bcbdb62e82deb70ec0c6dcc193ec6f6216ab2ce.patch"
+            revert_commit "https://github.com/fiqri19102002/android_kernel_xiaomi_sweet/commit/4cd881c660375e6efa71db875146dd396644ac6c.patch"
+            revert_commit "https://github.com/fiqri19102002/android_kernel_xiaomi_sweet/commit/3a5f847abac13b1c92489c6da981b853c3ed31e9.patch"
         fi
         # Shared patches for 4.14
         echo "-- Applying shared patches (KPATCH)..."
