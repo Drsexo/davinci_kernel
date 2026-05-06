@@ -78,6 +78,17 @@ case "$DEVICE_IMPORT" in
             echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         fi
+        # Specific patches for sweet-miui
+        if [[ "$DEVICE_IMPORT" == "sweet-miui" ]]; then
+        echo "-- Applying partial set of DTBO patches..."
+            DTBO_PATCHES=(
+                "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/4b89948ec7d610f997dd1dab813897f11f403a06.patch"
+                "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/fade7df36b01f2b170c78c63eb8fe0d11c613c4a.patch"
+                "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/2628183db0d96be8dae38a21f2b09cb10978f423.patch"
+                "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/31f4577af3f8255ae503a5b30d8f68906edde85f.patch"
+            )
+            apply_patches "${DTBO_PATCHES[@]}"
+        fi
         # Shared patches for 4.14
         echo "-- Applying shared patches (KPATCH)..."
         apply_patches "$KPATCH_PATCH"
