@@ -116,6 +116,16 @@ export MAKE_ARGS=(
     CLANG_TRIPLE=aarch64-linux-gnu-
 )
 
+# sweet-miui specific settings
+if [ "$DEVICE_IMPORT" == "sweet-miui" ]; then
+    export MAKE_ARGS=(
+        ARCH=arm64 LLVM=1 LLVM_IAS=1 CC=clang LD=ld.lld AR=llvm-ar AS=llvm-as
+        NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip
+        CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+        CLANG_TRIPLE=aarch64-linux-gnu-
+    )
+fi
+
 # a9y18qlte specific settings
 if [ "$DEVICE_IMPORT" == "a9y18qlte" ]; then
     echo "-- Setting up OpenSSL 1.1..."
