@@ -73,11 +73,11 @@ case "$DEVICE_IMPORT" in
         ;;
     # MIUI
     sweet-miui)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/sweet_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/sweet_defconfig"
+        export MAIN_DEFCONFIG="arch/arm64/configs/sweet_defconfig"
+        export ACTUAL_MAIN_DEFCONFIG="sweet_defconfig"
         export COMMON_DEFCONFIG="vendor/debugfs.config"
         export DEVICE_DEFCONFIG=""
-        export KERNEL_NAME="-strix-neon"
+        export KERNEL_NAME="-old-spiteful-neon"
         ;;
     # OneUI
     a9y18qlte)
@@ -105,19 +105,6 @@ export MAKE_ARGS=(
     CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
     CLANG_TRIPLE=aarch64-linux-gnu-
 )
-
-# sweet-miui specific settings
-if [ "$DEVICE_IMPORT" == "sweet-miui" ]; then
-    TC_URLS=(
-        "clang|https://gitlab.com/fiqri19102002/proton_clang-mirror.git"
-        "gcc64|https://github.com/arter97/arm64-gcc.git"
-        "gcc32|https://github.com/arter97/arm32-gcc.git"
-    )
-    export MAKE_ARGS=(
-        CROSS_COMPILE=aarch64-none-elf- CROSS_COMPILE_COMPAT=arm-none-eabi-
-    )
-    export PATH="$GCC64_ROOT/bin:$GCC32_ROOT/bin:/usr/bin:$PATH"
-fi
 
 # a9y18qlte specific settings
 if [ "$DEVICE_IMPORT" == "a9y18qlte" ]; then

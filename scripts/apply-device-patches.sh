@@ -72,7 +72,7 @@ case "$DEVICE_IMPORT" in
                 "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/ae58bbd8f7af4c3c290e63ddcd4112559c5fc240.patch"
         fi
         # DTBO patches for 4.14
-        if [[ "$DEVICE_IMPORT" != "sweet-pixelos" ]] && [[ "$DEVICE_IMPORT" != "sweet-miui" ]]; then
+        if [[ "$DEVICE_IMPORT" != "sweet-pixelos" ]]; then
             echo "-- Applying DTBO & LTO patches..."
             apply_patches "${DTBO_PATCHES[@]}" "$LTO_PATCH"
             echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
@@ -80,19 +80,18 @@ case "$DEVICE_IMPORT" in
         fi
         # Specific patches for sweet-miui
         if [[ "$DEVICE_IMPORT" == "sweet-miui" ]]; then
-        echo "-- Applying partial set of DTBO patches..."
-            DTBO_PATCHES=(
-                "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/fade7df36b01f2b170c78c63eb8fe0d11c613c4a.patch"
-                "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/2628183db0d96be8dae38a21f2b09cb10978f423.patch"
-            )
-            apply_patches "${DTBO_PATCHES[@]}"
-            echo "-- Disabling LTO..."
-            sed -i 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' $MAIN_DEFCONFIG
-            sed -i 's/^CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/' $MAIN_DEFCONFIG
-            sed -i 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' $MAIN_DEFCONFIG
-            sed -i 's/^CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/' $MAIN_DEFCONFIG
-            sed -i 's/^CONFIG_THINLTO=y/# CONFIG_THINLTO is not set/' $MAIN_DEFCONFIG
-            sed -i 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' $MAIN_DEFCONFIG
+            echo "-- reverting some commits for sweet-miui..."
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/1c11ea4f8b8b0b0c7ae0ed106ff28893c7a7a12e.patch"
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/2b611d2835e5d258edacdaef2a1b6ad5ba60c3e9.patch"
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/ef37930c349076b13903dcfa9db72677060e1eed.patch"
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/51a7e49fd8273935779105310efa1c9845963811.patch"
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/1759fb3df25b760b567f1633a39d99164decbbac.patch"
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/b1ea3a2d183015389d00537cdd48b5d69e98312c.patch"
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/4bdfb496b0e6debee10d35bdf62b6f2cfa10845a.patch"
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/da831854a80d63914b32f3dec286065f8ee00998.patch"
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/e2b3c607add77513068e3d917efb7f4786004a61.patch"
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/f9d16e866c476d902120531bb9c710eb9e7d4e6c.patch"
+            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/3b5ce8d2647ca26976f878220ea33f9d78f8c109.patch"
         fi
         # Shared patches for 4.14
         echo "-- Applying shared patches (KPATCH)..."
