@@ -163,6 +163,7 @@ for tc in "${TC_URLS_REAL[@]}"; do
         fi
     else
         if [ ! -d "$dir" ]; then
+            echo "-- Downloading $dir..."
             if [[ "$dir" == "gcc64" ]]; then
                 search="arm64"
             else
