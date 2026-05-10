@@ -177,7 +177,9 @@ for tc in "${TC_URLS_REAL[@]}"; do
             if wget -q --spider "$asset_url"; then
                 mkdir -p "$dir"
                 wget -qO- "$asset_url" | tar -x -C "$dir"
-                echo "-- Error: Could not find matching asset for $dir at $url"
+            else
+                echo "-- Fatal: Link is dead or unreachable: $asset_url"
+                exit 1
             fi
         else
             echo "-- Using local $dir"
