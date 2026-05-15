@@ -2,7 +2,6 @@
 echo "- Setting up additional goodies..."
 
 # Default Exports
-export BACKPORT_SELINUX_PATCH="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/backport_selinux_patches.sh"
 export BBG_SETUP_URI="https://github.com/vc-teahouse/Baseband-guard/raw/main/setup.sh"
 export SUSFS_PATCH="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/Patch/susfs_patch_to_${KERNEL_VERSION}.patch"
 
@@ -31,7 +30,6 @@ case "$KERNELSU_SELECTOR" in
         echo "CONFIG_THREAD_INFO_IN_TASK=y" >> $MAIN_DEFCONFIG
         # Apply backport and hooks
         echo "-- Applying KernelSU hooks..."
-        curl -LSs "$BACKPORT_SELINUX_PATCH" | bash &> /dev/null
         curl -LSs "$KSU_HOOK" | bash &> /dev/null
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
             wget -qO- $SUSFS_PATCH | patch -s -p1 --fuzz=5
@@ -73,7 +71,6 @@ case "$KERNELSU_SELECTOR" in
         echo "CONFIG_THREAD_INFO_IN_TASK=y" >> $MAIN_DEFCONFIG
         # Apply backport and hooks
         echo "-- Applying KernelSU hooks..."
-        curl -LSs "$BACKPORT_SELINUX_PATCH" | bash &> /dev/null
         curl -LSs "$KSU_HOOK" | bash &> /dev/null
         if [[ "$KERNELSU_SELECTOR" == "ksunext-susfs" ]]; then
             wget -qO- $SUSFS_PATCH | patch -s -p1 --fuzz=5
