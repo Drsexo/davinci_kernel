@@ -12,10 +12,10 @@ case "$KERNELSU_SELECTOR" in
     zako|zako-susfs)
         # KernelSU Settings
         export KSU_SETUP_URI="https://github.com/ReSukiSU/ReSukiSU/raw/refs/heads/main/kernel/setup.sh"
-        export KSU_SETUP_BRANCH="dev"
+        export KSU_SETUP_BRANCH="main"
         # SUSFS Settings
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
-            export KSU_SETUP_BRANCH="dev"
+            export KSU_SETUP_BRANCH="main"
             KSU_HOOK="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/susfs_inline_hook_patches.sh"
         else
             KSU_HOOK="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/syscall_hook_patches.sh"
