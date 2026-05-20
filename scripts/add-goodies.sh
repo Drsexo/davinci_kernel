@@ -34,7 +34,13 @@ case "$KERNELSU_SELECTOR" in
         curl -LSs "$BACKPORT_SELINUX_PATCH" | bash &> /dev/null
         curl -LSs "$KSU_HOOK" | bash &> /dev/null
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
-            wget -qO- $SUSFS_PATCH | patch -s -p1 --fuzz=5
+            if [[ "$KERNEL_VERSION" == "4.19" ]]; then
+                sed -i '/#include <linux\/fs_context.h>/d' fs/namespace.c
+                wget -qO- $SUSFS_PATCH | patch -s -p1 --fuzz=5
+                sed -i '/#include "pnode.h"/i #include <linux/fs_context.h>' fs/namespace.c
+            else
+                wget -qO- $SUSFS_PATCH | patch -s -p1 --fuzz=5
+            fi
             echo "CONFIG_KSU_SUSFS=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> $MAIN_DEFCONFIG
@@ -84,7 +90,13 @@ case "$KERNELSU_SELECTOR" in
         curl -LSs "$BACKPORT_SELINUX_PATCH" | bash &> /dev/null
         curl -LSs "$KSU_HOOK" | bash &> /dev/null
         if [[ "$KERNELSU_SELECTOR" == "ksunext-susfs" ]]; then
-            wget -qO- $SUSFS_PATCH | patch -s -p1 --fuzz=5
+            if [[ "$KERNEL_VERSION" == "4.19" ]]; then
+                sed -i '/#include <linux\/fs_context.h>/d' fs/namespace.c
+                wget -qO- $SUSFS_PATCH | patch -s -p1 --fuzz=5
+                sed -i '/#include "pnode.h"/i #include <linux/fs_context.h>' fs/namespace.c
+            else
+                wget -qO- $SUSFS_PATCH | patch -s -p1 --fuzz=5
+            fi
             echo "CONFIG_KSU_SUSFS=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> $MAIN_DEFCONFIG
