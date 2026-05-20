@@ -36,7 +36,7 @@ case "$KERNELSU_SELECTOR" in
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
             if [[ "$KERNEL_VERSION" == "4.19" ]]; then
                 sed -i '/#include <linux\/fs_context.h>/d' fs/namespace.c
-                wget -qO- $SUSFS_PATCH | patch -s -p1 --fuzz=5
+                wget -qO- $SUSFS_PATCH | patch -p1 --fuzz=5
                 sed -i '/#include "pnode.h"/i #include <linux/fs_context.h>' fs/namespace.c
             else
                 wget -qO- $SUSFS_PATCH | patch -s -p1 --fuzz=5
