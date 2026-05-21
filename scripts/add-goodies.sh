@@ -119,7 +119,7 @@ case "$KERNELSU_SELECTOR" in
         echo "-- KernelSU is not selected."
         ;;
     *)
-        echo "- Invalid KERNELSU_SELECTOR: $KERNELSU_SELECTOR. Valid options: zako, zako-susfs, none."
+        echo "- Invalid KERNELSU_SELECTOR: $KERNELSU_SELECTOR. Valid options: zako, zako-susfs, ksunext, ksunext-susfs, none."
         exit 1
         ;;
 esac
