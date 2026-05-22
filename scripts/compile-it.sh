@@ -9,7 +9,7 @@ echo "====================================="
 echo " "
 
 # Compile the kernel
-make -j$(( $(nproc --all) / 2 )) O=out "${MAKE_ARGS[@]}"
+make -j$(nproc --all) O=out "${MAKE_ARGS[@]}"
 
 # WWarning finish banner
 echo " "
