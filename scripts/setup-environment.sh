@@ -168,9 +168,13 @@ for tc in "${TC_URLS_REAL[@]}"; do
             echo "-- URL: $asset_url"
             mkdir -p "$dir"
             if [[ "$compress" == "gz" ]]; then
-                curl -sL "$asset_url" | tar -xzf - -C "$dir" || { echo "-- Fatal: Failed to extract $dir!"; exit 1; }
+                curl -sL "$asset_url" -o "$dir.tar.gz" || { echo "-- Fatal: Failed to download $dir!"; exit 1; }
+                tar -xzf "$dir.tar.gz" -C "$dir" || { echo "-- Fatal: Failed to extract $dir!"; exit 1; }
+                rm -f "$dir.tar.gz"
             else
-                curl -sL "$asset_url" | tar -xf - -C "$dir" || { echo "-- Fatal: Failed to extract $dir!"; exit 1; }
+                curl -sL "$asset_url" -o "$dir.tar" || { echo "-- Fatal: Failed to download $dir!"; exit 1; }
+                tar -xf "$dir.tar" -C "$dir" || { echo "-- Fatal: Failed to extract $dir!"; exit 1; }
+                rm -f "$dir.tar"
             fi
         else
             echo "-- Using local $dir"
