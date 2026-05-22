@@ -149,17 +149,17 @@ for tc in "${TC_URLS_REAL[@]}"; do
         if [ ! -d "$dir" ]; then
             echo "-- Downloading $dir..."
             if [[ "$dir" == "gcc64" ]]; then
-                search="arm64"
+                search="eva-gcc-arm64"
                 compress="xz"
             elif [[ "$dir" == "gcc32" ]]; then
-                search="arm-"
+                search="eva-gcc-arm-"
                 compress="xz"
             else
                 search="clang-r[0-9]+[a-z]?"
                 compress="gz"
             fi
             asset_url=$(curl -sL -H "User-Agent: bash-script" "$url" \
-                | grep -oP "https://github\.com/[^\"]+(${search})[^\"]+\.(tar\.gz|\.xz)" \
+                | grep -oP "https://github\.com/[^\"]+${search}[^\"]+(\.tar\.gz|\.xz)" \
                 | head -n 1)
             if [ -z "$asset_url" ]; then
                 echo "-- Fatal: Could not find a valid download link for $dir!"
