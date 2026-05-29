@@ -4,6 +4,10 @@ echo "- Setting up additional goodies..."
 # Default Exports
 export BBG_SETUP_URI="https://github.com/vc-teahouse/Baseband-guard/raw/main/setup.sh"
 export SUSFS_PATCH="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/Patch/susfs_patch_to_${KERNEL_VERSION}.patch"
+export NOMOUNT_PATCH="https://github.com/maxsteeel/nomount/raw/refs/heads/master/kernel/patches/nomount_${KERNEL_VERSION}_kernel_integration.patch"
+export NOMOUNT_CODE="https://github.com/maxsteeel/nomount/raw/refs/heads/master/kernel/src/nomount.c"
+export NOMOUNT_HEADER="https://github.com/maxsteeel/nomount/raw/refs/heads/master/kernel/src/nomount.h"
+
 
 # KernelSU setup
 echo "-- Setting up KernelSU..."
@@ -126,7 +130,7 @@ case "$BBG_SELECTOR" in
     bbg)
         # Setup Baseband Guard
         echo "-- Setting up Baseband Guard..."
-        curl -LSs --fail --retry 3 "$BBG_SETUP_URI" | bash &> /dev/null || { echo "Fatal: BBG setup script failed to download/run!"; exit 1; }
+        curl -LSs --fail --retry 3 "$BBG_SETUP_URI" | bash &> /dev/null || { echo "-- Fatal: BBG setup script failed to download/run!"; exit 1; }
         # Enable the necessary Baseband Guard configs
         echo "CONFIG_BBG=y" >> $MAIN_DEFCONFIG
         # Check if kernel have DEFINE_LSM
@@ -159,3 +163,22 @@ case "$BBG_SELECTOR" in
         ;;
 esac
 
+# Nomount setup
+case "$NOMOUNT_SELECTOR" in
+    nomount)
+        echo "-- Setting up nomount..."
+        # Download nomount patch, code, and header
+        wget -qO- $NOMOUNT_PATCH | patch -s -p1 --fuzz=5 || { echo "-- Fatal: Failed to apply nomount patch!"; exit 1; }
+        wget -qO- $NOMOUNT_CODE > "${PWD}/fs/nomount.c" || { echo "-- Fatal: Failed to download nomount.c!"; exit 1; }
+        wget -qO- $NOMOUNT_HEADER > "${PWD}/fs/nomount.h" || { echo "-- Fatal: Failed to download nomount.h!"; exit 1; }
+        # Enable the necessary Nomount configs
+        echo "CONFIG_NOMOUNT=y" >> $MAIN_DEFCONFIG
+        ;;
+    none|"")
+        echo "-- Nomount is not selected."
+        ;;
+    *)
+        echo "- Invalid NOMOUNT_SELECTOR: $NOMOUNT_SELECTOR. Valid options: nomount, none."
+        exit 1
+        ;;
+esac
