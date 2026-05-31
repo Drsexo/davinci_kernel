@@ -14,6 +14,7 @@ This kernel follows weekly builds of LineageOS, you will get a new kernel build 
 Currently added features:
 - KernelSU support (ReSukiSU) & SUSFS support (separate build)
 - Baseband Guard support
+- NoMount Meta Module support
 - Compiled with -O3, LTO, LLVM=1
 
 # Compatibility
