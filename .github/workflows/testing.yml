@@ -18,6 +18,7 @@ jobs:
         ksu-type: [zako-susfs]
         bbg-type: [bbg]
         nomount-type: [nomount]
+        droidspaces-type: [droidspaces] 
 
     steps:
       - uses: actions/checkout@v6
@@ -151,31 +152,31 @@ jobs:
           echo "Starting to compile..."
           if [[ "${{ matrix.build-type }}" == "sweet" || "${{ matrix.build-type }}" == "davinci" || "${{ matrix.build-type }}" == "tucana" || "${{ matrix.build-type }}" == "violet" || "${{ matrix.build-type }}" == "sweet-clang" ]]; then
             cd android_kernel_xiaomi_sm6150/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
             cd ..
           elif [[ "${{ matrix.build-type }}" == "ginkgo" || "${{ matrix.build-type }}" == "laurel_sprout" ]]; then
             cd android_kernel_xiaomi_sm6125/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
             cd ..
           elif [[ "${{ matrix.build-type }}" == "alioth" || "${{ matrix.build-type }}" == "lmi" || "${{ matrix.build-type }}" == "munch" ]]; then
             cd android_kernel_xiaomi_sm8250/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
             cd ..
           elif [[ "${{ matrix.build-type }}" == "mi89x7" ]]; then
             cd android_kernel_xiaomi_msm8937/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
             cd ..
           elif [[ "${{ matrix.build-type }}" == "mi89x7-community" ]]; then
             cd android_kernel_xiaomi_msm8937/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
             cd ..
           elif [[ "${{ matrix.build-type }}" == "sweet-pixelos" || "${{ matrix.build-type }}" == "sweet-miui" ]]; then
             cd android_kernel_xiaomi_sm6150/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
             cd ..
           elif [[ "${{ matrix.build-type }}" == "a9y18qlte" ]]; then
             cd android_kernel_samsung_a9y18qlte/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
             cd ..
           else
             echo "Invalid build type: ${{ matrix.build-type }}"
@@ -293,6 +294,6 @@ jobs:
       - name: Pack & upload artifacts (All builds)
         uses: actions/upload-artifact@v6
         with:
-          name: perf-neon-${{ matrix.build-type }}-${{ matrix.ksu-type }}-${{ matrix.bbg-type }}-${{ matrix.nomount-type }}-testing-${{ steps.ts.outputs.DATE }}-${{ steps.ts.outputs.TIME }}
+          name: perf-neon-${{ matrix.build-type }}-${{ matrix.ksu-type }}-${{ matrix.bbg-type }}-${{ matrix.nomount-type }}-${{ matrix.droidspaces-type }}-testing-${{ steps.ts.outputs.DATE }}-${{ steps.ts.outputs.TIME }}
           path: |
             AnyKernel3/*
