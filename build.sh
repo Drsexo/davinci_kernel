@@ -15,9 +15,11 @@ echo " "
 
 # Validate input arguments
 echo "- Validating input arguments..."
-if [ $# -ne 4 ]; then
-    echo "Usage: $0 [device] [kernelsu_options] [bbg_options] [nomount_options]"
-    echo "Example: $0 sweet zako bbg nomount"
+if [ $# -ne 5 ]; then
+    echo ""
+    echo "-- Usage: $0 [device] [kernelsu_options] [bbg_options] [nomount_options] [droidspaces_options]"
+    echo "-- Example: $0 sweet zako bbg nomount droidspaces"
+    echo ""
     exit 1
 fi
 
@@ -27,6 +29,7 @@ export DEVICE_IMPORT="$1"
 export KERNELSU_SELECTOR="$2"
 export BBG_SELECTOR="$3"
 export NOMOUNT_SELECTOR="$4"
+export DROIDSPACES_SELECTOR="$5"
 
 # Setup Environment
 chmod +x scripts/setup-environment.sh
