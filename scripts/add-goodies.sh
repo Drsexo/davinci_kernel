@@ -200,6 +200,11 @@ case "$DROIDSPACES_SELECTOR" in
             echo "-- Droidspaces: net/netfilter/xt_qtaguid.c exist, applying patch..."
             wget -qO- $DROIDSPACES_XT_QTAGUID | patch -s -p1 --fuzz=5 || { echo "-- Fatal: Failed to apply Droidspaces xt_qtaguid patch!"; exit 1; }
         fi
+        # Check if kernel version is 4.14
+        if [[ "$KERNEL_VERSION" == "4.14" ]]; then
+            echo "-- Droidspaces: Kernel is 4.14, changing idx..."
+            sed -i 's/css->cgroup->id/css->cgroup->kn->id/g' include/net/netprio_cgroup.h
+        fi
         wget -qO- $DROIDSPACES_CGROUP | patch -s -p1 --fuzz=5 || { echo "-- Fatal: Failed to apply Droidspaces cgroup patch!"; exit 1; }
         # IPC mechanisms
         echo "CONFIG_SYSCTL=y" >> $MAIN_DEFCONFIG
