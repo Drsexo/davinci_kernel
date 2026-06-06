@@ -203,8 +203,8 @@ case "$DROIDSPACES_SELECTOR" in
         # Check if kernel version is 4.14
         if [[ "$KERNEL_VERSION" == "4.14" ]]; then
             echo "-- Droidspaces: Kernel is 4.14, changing id..."
-            sed -i 's/css->cgroup->id/css->cgroup->kn->id.ino/g' include/net/netprio_cgroup.h
-            sed -i 's/css->cgroup->id/css->cgroup->kn->id.ino/g' net/core/netprio_cgroup.c
+            sed -i 's/css->cgroup->id/css->cgroup->kn->id/g' include/net/netprio_cgroup.h
+            sed -i 's/css->cgroup->id/css->cgroup->kn->id/g' net/core/netprio_cgroup.c
         fi
         wget -qO- $DROIDSPACES_CGROUP | patch -s -p1 --fuzz=5 || { echo "-- Fatal: Failed to apply Droidspaces cgroup patch!"; exit 1; }
         # IPC mechanisms
