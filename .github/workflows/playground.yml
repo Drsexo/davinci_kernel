@@ -20,6 +20,7 @@ jobs:
         ksu-type: [zako, zako-susfs, none]
         bbg-type: [bbg]
         nomount-type: [nomount]
+        droidspaces-type: [droidspaces]
 
     steps:
       - uses: actions/checkout@v6
@@ -102,11 +103,11 @@ jobs:
           echo "Starting to compile..."
           if [[ "${{ matrix.build-type }}" == "mi89x7-community" ]]; then
             cd android_kernel_xiaomi_msm8937/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
             cd ..
           elif [[ "${{ matrix.build-type }}" == "sweet-pixelos" || "${{ matrix.build-type }}" == "sweet-miui" ]]; then
             cd android_kernel_xiaomi_sm6150/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
             cd ..
           else
             echo "Invalid build type: ${{ matrix.build-type }}"
@@ -216,7 +217,7 @@ jobs:
           body: |
             > [!IMPORTANT]   
             > - This kernel only be used for playtesting purposes. Do NOT report bugs to the original author.   
-            > - This kernel already includes ReSukiSU. Also SUSFS, NoMount Baseband Guard too.  
+            > - This kernel already includes ReSukiSU. Also SUSFS, NoMount, Baseband Guard and Droidspaces too.  
             > - The Kernels that built with LTO enabled are sweet-miui and mi89x7-community.
 
             > [!CAUTION]   
