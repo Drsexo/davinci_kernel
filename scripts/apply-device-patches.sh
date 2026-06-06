@@ -4,7 +4,7 @@ echo "- Applying device specific patches for $DEVICE_IMPORT..."
 # Patcher helper - 1.5
 apply_patches() {
     for patch_url in "$@"; do
-        echo "-- Downloading patch: $(basename "$patch_url")"
+        echo "-- Applying patch: $(basename "$patch_url")"
         curl -sL --fail --retry 3 "$patch_url" -o /tmp/temp_patch.patch
         if [ -s /tmp/temp_patch.patch ]; then
             patch -s -p1 --fuzz=5 < /tmp/temp_patch.patch || { echo "Fatal: Failed to apply patch!"; exit 1; }
@@ -43,9 +43,9 @@ KPATCH_PATCH="https://github.com/TheSillyOk/kernel_ls_patches/raw/refs/heads/mas
 
 # Patcher - 1.0
 case "$DEVICE_IMPORT" in
-    sweet|davinci|tucana|violet|ginkgo|laurel_sprout|sweet-pixelos|sweet-miui|sweet-droidspaces|ginkgo-droidspaces)
+    sweet|davinci|tucana|violet|ginkgo|laurel_sprout|sweet-playground|sweet-droidspaces|ginkgo-droidspaces)
         # Device specific for 4.14
-        if [[ "$DEVICE_IMPORT" == "sweet" ]] || [[ "$DEVICE_IMPORT" == "sweet-pixelos" ]] || [[ "$DEVICE_IMPORT" == "sweet-droidspaces" ]]; then
+        if [[ "$DEVICE_IMPORT" == "sweet" ]] || [[ "$DEVICE_IMPORT" == "sweet-playground" ]] || [[ "$DEVICE_IMPORT" == "sweet-droidspaces" ]]; then
             echo "-- Applying LN8K patches..."
             LN8K_PATCHES=(
                 "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150/commit/7b73f853977d2c016e30319dffb1f49957d30b40.patch"
@@ -54,7 +54,7 @@ case "$DEVICE_IMPORT" in
                 "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150/commit/330c60abc13530bd05287f9e5395d283ebfd6d0b.patch"
                 "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150/commit/0477c7006b41a1763b3314af9eb300491b91fc25.patch"
             )
-            if [[ "$DEVICE_IMPORT" != "sweet-pixelos" ]]; then
+            if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
                 LN8K_PATCHES+=(
                     "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/aa5ddad5be03aa7436e7ce6e84d46b280849acae.patch"
                     "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/857638b0da6f80830122b8d1b45c7842970e76c3.patch"
@@ -72,30 +72,9 @@ case "$DEVICE_IMPORT" in
                 "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/ae58bbd8f7af4c3c290e63ddcd4112559c5fc240.patch"
         fi
         # DTBO patches for 4.14
-        if [[ "$DEVICE_IMPORT" != "sweet-pixelos" ]]  && [[ "$DEVICE_IMPORT" != "sweet-miui" ]]; then
+        if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
             echo "-- Applying DTBO & LTO patches..."
             apply_patches "${DTBO_PATCHES[@]}" "$LTO_PATCH"
-            echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-            echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-        fi
-        # Specific patches for sweet-miui
-        if [[ "$DEVICE_IMPORT" == "sweet-miui" ]]; then
-            echo "-- reverting some commits for sweet-miui..."
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/1c11ea4f8b8b0b0c7ae0ed106ff28893c7a7a12e.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/2b611d2835e5d258edacdaef2a1b6ad5ba60c3e9.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/ef37930c349076b13903dcfa9db72677060e1eed.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/51a7e49fd8273935779105310efa1c9845963811.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/1759fb3df25b760b567f1633a39d99164decbbac.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/b1ea3a2d183015389d00537cdd48b5d69e98312c.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/4bdfb496b0e6debee10d35bdf62b6f2cfa10845a.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/da831854a80d63914b32f3dec286065f8ee00998.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/e2b3c607add77513068e3d917efb7f4786004a61.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/f9d16e866c476d902120531bb9c710eb9e7d4e6c.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/3b5ce8d2647ca26976f878220ea33f9d78f8c109.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/fd7545185246335e2cb61abf0f60116041c88819.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/b54e4b3a90525a5e5ce514672b798c67a4625cde.patch"
-            revert_commit "https://github.com/tbyool/android_kernel_xiaomi_sm6150/commit/588b8c3e5eeaec121d1c9cf2feb093fc2fde87ed.patch"
-            echo "-- Enabling LTO..."
             echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         fi
@@ -107,16 +86,16 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         ;;
-    alioth|lmi|munch|mi89x7|mi89x7-community|mi89x7-droidspaces)
+    alioth|lmi|munch|mi89x7|mi89x7-playground|mi89x7-droidspaces)
         # Device specific for 4.19
         if [[ "$DEVICE_IMPORT" == "alioth" ]] || [[ "$DEVICE_IMPORT" == "lmi" ]] || [[ "$DEVICE_IMPORT" == "munch" ]]; then
             # Shared patches for 4.14
             echo "-- Applying shared patches (DTBO)..."
             apply_patches "${DTBO_PATCHES[@]}"
         fi
-        if [[ "$DEVICE_IMPORT" == "mi89x7-community" ]] || [[ "$DEVICE_IMPORT" == "mi89x7-droidspaces" ]]; then
-            # Revert KSU commit for mi89x7-community
-            echo "-- Reverting KSU commit for mi89x7-community..."
+        if [[ "$DEVICE_IMPORT" == "mi89x7-playground" ]] || [[ "$DEVICE_IMPORT" == "mi89x7-droidspaces" ]]; then
+            # Revert KSU commit for mi89x7-playground
+            echo "-- Reverting KSU commit..."
             revert_commit "https://github.com/Mi-Thorium/kernel_msm-4.19/commit/624875e8edc36ae280b1f8efc1d3c48a28da64ea.patch"
         fi
         # Common configs for 4.19

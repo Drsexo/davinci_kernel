@@ -59,14 +59,14 @@ case "$DEVICE_IMPORT" in
         export KERNEL_VERSION="4.19"
         export KBUILD_BUILD_USER=kebeletxd-compile
         ;;
-    mi89x7|mi89x7-community|mi89x7-droidspaces)
+    mi89x7|mi89x7-playground|mi89x7-droidspaces)
         export MAIN_DEFCONFIG="arch/arm64/configs/vendor/msm8937-perf_defconfig"
         export ACTUAL_MAIN_DEFCONFIG="vendor/msm8937-perf_defconfig"
         export COMMON_DEFCONFIG="vendor/msm8937-legacy.config vendor/common.config"
         export DEVICE_DEFCONFIG="vendor/xiaomi/msm8937/common.config vendor/xiaomi/msm8937/mi8937.config"
         if [ "$DEVICE_IMPORT" = "mi89x7" ]; then
             export FEATURE_DEFCONFIG="vendor/feature/lineageos.config vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/exfat.config vendor/feature/lmkd.config vendor/feature/ntfs.config vendor/feature/wireguard.config"
-        elif [ "$DEVICE_IMPORT" = "mi89x7-community" ]; then
+        elif [ "$DEVICE_IMPORT" = "mi89x7-playground" ]; then
             export FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/exfat.config vendor/feature/kprobes.config vendor/feature/lmkd.config vendor/feature/ntfs.config vendor/feature/wireguard.config"
             export KERNEL_NAME="-Mi8937v2-neon"
         elif [ "$DEVICE_IMPORT" = "mi89x7-droidspaces" ]; then
@@ -83,18 +83,13 @@ case "$DEVICE_IMPORT" in
         export FEATURE_DEFCONFIG=""
         export KERNEL_VERSION="5.4"
         ;;
-    # PixelOS or MIUI
-    sweet-pixelos|sweet-miui)
+    # PixelOS
+    sweet-playground)
         export MAIN_DEFCONFIG="arch/arm64/configs/sweet_defconfig"
         export ACTUAL_MAIN_DEFCONFIG="sweet_defconfig"
         export COMMON_DEFCONFIG="vendor/debugfs.config"
         export DEVICE_DEFCONFIG=""
-        if [ "$DEVICE_IMPORT" = "sweet-pixelos" ]; then
-            export KERNEL_NAME="-VantomKernel-neon"
-        elif [ "$DEVICE_IMPORT" = "sweet-miui" ]; then
-            export KERNEL_NAME="-Spiteful-old-neon"
-            export TC_ALT_MODE=2
-        fi
+        export KERNEL_NAME="-VantomKernel-neon"
         ;;
     # OneUI
     a9y18qlte)
@@ -106,7 +101,7 @@ case "$DEVICE_IMPORT" in
         export KERNEL_VERSION="4.4"
         ;;
     *)
-        echo "- Invalid DEVICE_IMPORT. Valid options: sweet, davinci, ginkgo, laurel_sprout, mi89x7, mi89x7-community, mi89x7-droidspaces, a52s, a9y18qlte, sweet-pixelos, sweet-miui, sweet-droidspaces. Yours: $DEVICE_IMPORT."
+        echo "- Invalid DEVICE_IMPORT. Valid options: sweet, davinci, ginkgo, laurel_sprout, mi89x7, mi89x7-playground, mi89x7-droidspaces, a52s, a9y18qlte, sweet-playground, sweet-droidspaces. Yours: $DEVICE_IMPORT."
         exit 1
         ;;
 esac
