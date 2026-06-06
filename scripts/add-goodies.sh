@@ -62,15 +62,15 @@ case "$KERNELSU_SELECTOR" in
             sed -i '/static struct tty_struct \*pts_unix98_lookup/,/}/ s/ksu_handle_devpts((struct inode \*)file->f_path.dentry->d_inode);/ksu_handle_devpts(pts_inode);/' drivers/tty/pty.c
         fi
         # Check if write_op, sel_handle_status_ops, sel_mutex are static
-        WRITE_OP_CHECK=$(grep -q "static ssize_t (*write_op[])(struct file *, char *, size_t) = {" "${PWD}/security/selinux/selinuxfs.c" && echo "true")
-        SEL_HANDLE_STATUS_OPS_CHECK=$(grep -q "static const struct file_operations sel_handle_status_ops = {" "${PWD}/security/selinux/selinuxfs.c" && echo "true")
-        SEL_MUTEX_CHECK=$(grep -q "static DEFINE_MUTEX(sel_mutex);" "${PWD}/security/selinux/selinuxfs.c" && echo "true")
+        WRITE_OP_CHECK=$(grep -Fq "static ssize_t (*write_op[])(struct file *, char *, size_t) = {" "${PWD}/security/selinux/selinuxfs.c" && echo "true")
+        SEL_HANDLE_STATUS_OPS_CHECK=$(grep -Fq "static const struct file_operations sel_handle_status_ops = {" "${PWD}/security/selinux/selinuxfs.c" && echo "true")
+        SEL_MUTEX_CHECK=$(grep -Fq "static DEFINE_MUTEX(sel_mutex);" "${PWD}/security/selinux/selinuxfs.c" && echo "true")
         # Check if selinux_status_page, selinux_status_lock, policy_rwlock are static
-        SEL_STATUS_PAGE_CHECK=$(grep -q "static struct page *selinux_status_page;" "${PWD}/security/selinux/ss/services.c" && echo "true")
-        SEL_STATUS_LOCK_CHECK=$(grep -q "static DEFINE_MUTEX(selinux_status_lock);" "${PWD}/security/selinux/ss/services.c" && echo "true")
-        POLICY_RWLOCK_CHECK=$(grep -q "static DEFINE_RWLOCK(policy_rwlock);" "${PWD}/security/selinux/ss/services.c" && echo "true")
+        SEL_STATUS_PAGE_CHECK=$(grep -Fq "static struct page *selinux_status_page;" "${PWD}/security/selinux/ss/services.c" && echo "true")
+        SEL_STATUS_LOCK_CHECK=$(grep -Fq "static DEFINE_MUTEX(selix_status_lock);" "${PWD}/security/selinux/ss/services.c" && echo "true")
+        POLICY_RWLOCK_CHECK=$(grep -Fq "static DEFINE_RWLOCK(policy_rwlock);" "${PWD}/security/selinux/ss/services.c" && echo "true")
         # Check if selinux_ops are static
-        SELINUX_OPS_CHECK=$(grep -q "static struct security_operations selinux_ops = {" "${PWD}/security/selinux/hooks.c" && echo "true")
+        SELINUX_OPS_CHECK=$(grep -Fq "static struct security_operations selinux_ops = {" "${PWD}/security/selinux/hooks.c" && echo "true")
         # Static variable exports
         if [[ "$WRITE_OP_CHECK" == "true" ]]; then
             echo "-- Exporting write_op symbol..."
