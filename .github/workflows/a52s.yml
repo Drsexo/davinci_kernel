@@ -19,6 +19,7 @@ jobs:
         bbg-type: [bbg]
         nomount-type: [nomount]
         droidspaces-type: [none]
+        rekernel-type: [rekernel]
 
     steps:
       - uses: actions/checkout@v6
@@ -91,19 +92,19 @@ jobs:
           echo "Starting to compile..."
           if [[ "${{ matrix.build-type }}" == "sweet" || "${{ matrix.build-type }}" == "davinci" || "${{ matrix.build-type }}" == "tucana" || "${{ matrix.build-type }}" == "violet" ]]; then
             cd android_kernel_xiaomi_sm6150/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
             cd ..
           elif [[ "${{ matrix.build-type }}" == "ginkgo" || "${{ matrix.build-type }}" == "laurel_sprout" ]]; then
             cd android_kernel_xiaomi_sm6125/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
             cd ..
           elif [[ "${{ matrix.build-type }}" == "mi89x7" ]]; then
             cd android_kernel_xiaomi_msm8937/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
             cd ..
           elif [[ "${{ matrix.build-type }}" == "a52s" ]]; then
             cd android_kernel_samsung_sm7325/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
             cd ..
           else
             echo "Invalid build type: ${{ matrix.build-type }}"
@@ -174,13 +175,13 @@ jobs:
       - name: Pack & upload artifacts (All builds)
         uses: actions/upload-artifact@v6
         with:
-          name: perf-neon-${{ matrix.build-type }}-${{ matrix.ksu-type }}-${{ matrix.bbg-type }}-${{ matrix.nomount-type }}-${{ matrix.droidspaces-type }}-testing-${{ steps.ts.outputs.DATE }}-${{ steps.ts.outputs.TIME }}
+          name: perf-neon-${{ matrix.build-type }}-${{ matrix.ksu-type }}-${{ matrix.bbg-type }}-${{ matrix.nomount-type }}-${{ matrix.droidspaces-type }}-${{ matrix.rekernel-type }}-testing-${{ steps.ts.outputs.DATE }}-${{ steps.ts.outputs.TIME }}
           path: |
             AnyKernel3/*
       
       - name: Pack & upload artifacts (Kernel Image)
         uses: actions/upload-artifact@v6
         with:
-          name: Image-${{ matrix.build-type }}-${{ matrix.ksu-type }}-${{ matrix.bbg-type }}-${{ matrix.nomount-type }}-${{ matrix.droidspaces-type }}-testing-${{ steps.ts.outputs.DATE }}-${{ steps.ts.outputs.TIME }}
+          name: Image-${{ matrix.build-type }}-${{ matrix.ksu-type }}-${{ matrix.bbg-type }}-${{ matrix.nomount-type }}-${{ matrix.droidspaces-type }}-${{ matrix.rekernel-type }}-testing-${{ steps.ts.outputs.DATE }}-${{ steps.ts.outputs.TIME }}
           path: |
             AnyKernel3/Image
