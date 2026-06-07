@@ -36,7 +36,7 @@ Currently added features:
 - Compiled with -O3, LTO, LLVM=1
 
 # Compatibility
-Currently supported device:   
+Currently supported device   
 - Redmi K20/Mi 9T ([davinci](https://download.lineageos.org/devices/davinci/builds)) 
 - Redmi Note 10 Pro/Pro Max ([sweet](https://download.lineageos.org/devices/sweet/builds))   
 - Xiaomi Mi Note 10/Note 10 Pro/CC9 Pro ([tucana](https://download.lineageos.org/devices/tucana/builds))   
@@ -45,7 +45,7 @@ Currently supported device:
 - Xiaomi Mi A3 ([laurel_sprout](https://download.lineageos.org/devices/laurel_sprout/builds))   
 - Xiaomi Mi 10 ([umi](https://download.lineageos.org/devices/umi/builds))   
 
-Externally supported device:   
+Externally supported device   
 - Redmi Note 10 Pro/Pro Max ([sweet](https://pixelos.net/download/sweet)) from PixelOS   
 - Redmi 4A/5A/Note 5A Lite/Y1 Lite ([mi8917](https://download.lineageos.org/devices/Mi8917/builds)) from Mi-Thorium   
 - Redmi 3/3S/4/4X/Note 5A Prime/Y1 Prime ([mi8937](https://download.lineageos.org/devices/Mi8937/builds)) from Mi-Thorium   
