@@ -19,6 +19,7 @@ jobs:
         bbg-type: [none]
         nomount-type: [none]
         droidspaces-type: [none]
+        rekernel-type: [rekernel]
 
     steps:
       - uses: actions/checkout@v6
@@ -62,7 +63,7 @@ jobs:
           echo "Starting to compile..."
           if [[ "${{ matrix.build-type }}" == "a9y18qlte" ]]; then
             cd android_kernel_samsung_a9y18qlte/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }}
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
             cd ..
           else
             echo "Invalid build type: ${{ matrix.build-type }}"
@@ -92,6 +93,6 @@ jobs:
       - name: Pack & upload artifacts (All builds)
         uses: actions/upload-artifact@v6
         with:
-          name: RiaruKernel-${{ matrix.build-type }}-${{ matrix.ksu-type }}-${{ matrix.bbg-type }}-${{ matrix.nomount-type }}-${{ matrix.droidspaces-type }}-oneui-${{ steps.ts.outputs.DATE }}-${{ steps.ts.outputs.TIME }}
+          name: RiaruKernel-${{ matrix.build-type }}-${{ matrix.ksu-type }}-${{ matrix.bbg-type }}-${{ matrix.nomount-type }}-${{ matrix.droidspaces-type }}-${{ matrix.rekernel-type }}-oneui-${{ steps.ts.outputs.DATE }}-${{ steps.ts.outputs.TIME }}
           path: |
             AnyKernel3/*
