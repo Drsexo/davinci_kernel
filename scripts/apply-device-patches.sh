@@ -92,11 +92,6 @@ case "$DEVICE_IMPORT" in
         ;;
     umi|umi-droidspaces|mi89x7-playground|mi89x7-droidspaces)
         # Device specific for 4.19
-        if [[ "$DEVICE_IMPORT" == "umi" ]] || [[ "$DEVICE_IMPORT" == "umi-droidspaces" ]]; then
-            # Shared patches for 4.14
-            echo "-- Applying shared patches (DTBO)..."
-            apply_patches "${DTBO_PATCHES[@]}"
-        fi
         if [[ "$DEVICE_IMPORT" == "mi89x7-playground" ]] || [[ "$DEVICE_IMPORT" == "mi89x7-droidspaces" ]]; then
             # Revert KSU commit for mi89x7-playground
             echo "-- Reverting KSU commit..."
