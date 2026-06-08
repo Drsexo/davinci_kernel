@@ -17,7 +17,7 @@ jobs:
         build-type: [sweet]
         ksu-type: [zako-susfs]
         bbg-type: [bbg]
-        nomount-type: [none]
+        nomount-type: [nomount]
         droidspaces-type: [droidspaces]
 
     steps:
