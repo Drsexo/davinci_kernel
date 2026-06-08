@@ -20,10 +20,10 @@ MAKE_CMD=(make O=out "${MAKE_ARGS[@]}")
 echo "-- Appending fragments to .config..."
 for fragment in $COMMON_DEFCONFIG $DEVICE_DEFCONFIG $FEATURE_DEFCONFIG; do
     if [ -f "arch/arm64/configs/$fragment" ]; then
-        echo "  Merging $fragment..."
+        echo "   -> Merging $fragment..."
         cat "arch/arm64/configs/$fragment" >> out/.config
     else
-        echo "  Warning: Fragment arch/arm64/configs/$fragment not found!"
+        echo "   -> Warning: Fragment arch/arm64/configs/$fragment not found!"
     fi
 done
 
