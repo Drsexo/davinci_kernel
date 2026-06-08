@@ -135,10 +135,8 @@ jobs:
 
       - name: Pack kernel with AnyKernel3
         run: |
-          if [[ "${{ matrix.ksu-type }}" == "zako" ]]; then
-            export KSUTYPE="normal"
-          elif [[ "${{ matrix.ksu-type }}" == "zako-susfs" ]]; then
-            export KSUTYPE="susfs"
+          if [[ "${{ matrix.ksu-type }}" == "zako" || "${{ matrix.ksu-type }}" == "zako-susfs" ]]; then
+            export KSUTYPE="ksu"
           elif [[ "${{ matrix.ksu-type }}" == "none" ]]; then
             export KSUTYPE="noksu"
           fi
