@@ -28,5 +28,5 @@ echo "-- Appending kernel name..."
 echo "CONFIG_LOCALVERSION=\"$KERNEL_NAME\"" >> out/.config
 echo "CONFIG_LOCALVERSION_AUTO=n" >> out/.config
 # Config generation
-yes "" | "${MAKE_CMD[@]}" olddefconfig &> /dev/null
-yes "" | "${MAKE_CMD[@]}" syncconfig &> /dev/null
+"${MAKE_CMD[@]}" olddefconfig &> /dev/null
+"${MAKE_CMD[@]}" syncconfig &> /dev/null
