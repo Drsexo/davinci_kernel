@@ -35,7 +35,7 @@ KPATCH_PATCH="https://github.com/TheSillyOk/kernel_ls_patches/raw/refs/heads/mas
 
 # Patcher - 1.0
 case "$DEVICE_IMPORT" in
-    sweet|sweet-playground|davinci|ginkgo|ginkgo|laurel_sprout)
+    sweet|sweet-playground|davinci|ginkgo|laurel_sprout)
         # Device specific for 4.14
         if [[ "$DEVICE_IMPORT" == "sweet" ]] || [[ "$DEVICE_IMPORT" == "sweet-playground" ]]; then
             echo "-- Applying LN8K patches..."
@@ -57,6 +57,7 @@ case "$DEVICE_IMPORT" in
             fi
             apply_patches "${LN8K_PATCHES[@]}"
             echo "CONFIG_CHARGER_LN8000=y" >> $MAIN_DEFCONFIG
+        fi
         # LTO patches for 4.14
         if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
             echo "-- Applying LTO patches..."
