@@ -33,10 +33,12 @@ echo "CONFIG_LOCALVERSION=\"$KERNEL_NAME\"" >> out/.config
 echo "CONFIG_LOCALVERSION_AUTO=n" >> out/.config
 
 # Config generation
+echo "-- Executing olddefconfig and syncconfig..."
 { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" olddefconfig &> /dev/null
 { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" syncconfig &> /dev/null
 
 # Warning start banner
+echo "-- Starting to compile..."
 echo " "
 echo "====================================="
 echo " COMPILING PROCESS HAVE BEEN STARTED "
@@ -46,7 +48,7 @@ echo " "
 # Compile the kernel
 make -j$(nproc --all) O=out "${MAKE_ARGS[@]}"
 
-# WWarning finish banner
+# Warning finish banner
 echo " "
 echo "======================================"
 echo " COMPILING PROCESS HAVE BEEN FINISHED "
