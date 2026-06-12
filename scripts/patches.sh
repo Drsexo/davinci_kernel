@@ -79,7 +79,7 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         ;;
-    umi|cmi|mi89x7-playground)
+    umi|cmi|mi89x7-playground|gta4l)
         # Device specific for 4.19
         if [[ "$DEVICE_IMPORT" == "mi89x7-playground" ]]; then
             # Revert KSU commit

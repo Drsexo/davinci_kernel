@@ -39,6 +39,13 @@ case "$DEVICE_IMPORT" in
         export DEVICE_DEFCONFIG=""
         export KBUILD_BUILD_USER=isaiah-compile
         ;;
+    gta4l)
+        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/bengal-perf_defconfig"
+        export ACTUAL_MAIN_DEFCONFIG="vendor/bengal-perf_defconfig"
+        export DEVICE_DEFCONFIG="vendor/gta4l-common.config"
+        export KERNEL_VERSION="4.19"
+        export KBUILD_BUILD_USER=isaiah-compile
+        ;;
     # Mi-Thorium
     mi89x7-playground)
         export MAIN_DEFCONFIG="arch/arm64/configs/vendor/msm8937-perf_defconfig"
