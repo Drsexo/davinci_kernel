@@ -29,8 +29,8 @@ case "$DROIDSPACES_SELECTOR" in
             # Check if kernel version is 4.14
             if [[ "$KERNEL_VERSION" == "4.14" ]]; then
                 echo "-- Droidspaces: Kernel is 4.14, changing id..."
-                sed -i 's/css->cgroup->id/css->cgroup->kn->id/g' include/net/netprio_cgroup.h
-                sed -i 's/css->cgroup->id/css->cgroup->kn->id/g' net/core/netprio_cgroup.c
+                sed -i 's/css->cgroup->id/cgroup_id(css->cgroup)/g' include/net/netprio_cgroup.h
+                sed -i 's/css->cgroup->id/cgroup_id(css->cgroup)/g' net/core/netprio_cgroup.c
             fi
             # Apply cgroup patch
             echo "-- Droidspaces: Applying cgroup patch..."
