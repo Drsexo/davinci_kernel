@@ -45,7 +45,9 @@ Currently supported device
 - Xiaomi Mi 10 ([umi](https://download.lineageos.org/devices/umi/builds))   
 - Xiaomi Mi 10 Pro ([cmi](https://download.lineageos.org/devices/cmi/builds))   
 
-Externally supported device   
+Externally compiled kernels   
+- Samsung A52 4G ([a52q](https://download.lineageos.org/devices/a52q/builds)) from LineageOS   
+- Samsung A72 ([a72q](https://download.lineageos.org/devices/a72q/builds)) from LineageOS   
 - Redmi Note 10 Pro/Pro Max ([sweet](https://pixelos.net/download/sweet)) from PixelOS   
 - Redmi 4A/5A/Note 5A Lite/Y1 Lite ([mi8917](https://download.lineageos.org/devices/Mi8917/builds)) from Mi-Thorium   
 - Redmi 3/3S/4/4X/Note 5A Prime/Y1 Prime ([mi8937](https://download.lineageos.org/devices/Mi8937/builds)) from Mi-Thorium   
