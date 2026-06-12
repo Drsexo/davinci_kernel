@@ -86,6 +86,10 @@ case "$DEVICE_IMPORT" in
             echo "-- Reverting KSU commit..."
             revert_commit "https://github.com/Mi-Thorium/kernel_msm-4.19/commit/624875e8edc36ae280b1f8efc1d3c48a28da64ea.patch"
         fi
+        if [[ "$DEVICE_IMPORT" == "gta4l" ]]; then
+            echo "-- Fixing DTC flags..."
+            sed -i '1i DTC_FLAGS := -@' arch/arm64/boot/dts/vendor/qcom/Makefile
+        fi
         # Common configs for 4.19
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
