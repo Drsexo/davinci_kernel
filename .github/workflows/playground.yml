@@ -272,7 +272,11 @@ jobs:
           else
             export KERNELNAME="perf-neon"
           fi
-          export ZIPNAME="$KERNELNAME-${{ matrix.build-type }}-$KSUTYPE-${{ steps.ts.outputs.DATE }}.zip"
+          if [[ "${{ matrix.build-type }}" == "sweet-playground" || "${{ matrix.build-type }}" == "mi89x7-playground" ]]; then
+            export ZIPNAME="$KERNELNAME-${{ matrix.build-type }}-$KSUTYPE-${{ steps.ts.outputs.DATE }}.zip"
+          else
+            export ZIPNAME="$KERNELNAME-${{ matrix.build-type }}-playground-$KSUTYPE-${{ steps.ts.outputs.DATE }}.zip"
+          fi
           cd AnyKernel3
           zip -rq9 "../$ZIPNAME" ./*
           cd ..
