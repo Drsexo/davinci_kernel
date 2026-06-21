@@ -14,8 +14,8 @@ jobs:
       date: ${{ steps.ts.outputs.DATE }}
     strategy:
       matrix:
-        build-type: [d2s, d2x]
-        ksu-type: [zako]
+        build-type: [sweet]
+        ksu-type: [zako-susfs]
         bbg-type: [bbg]
         nomount-type: [nomount]
         droidspaces-type: [droidspaces]
