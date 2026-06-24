@@ -36,6 +36,7 @@ Currently added features:
 - Baseband Guard support
 - NoMount Meta Module support
 - Droidspaces container support
+- ReKernel tombstones support
 - Compiled with -O3, LTO, LLVM=1
 
 # Compatibility
@@ -84,16 +85,16 @@ Restore to default kernel
 # Credits
 Patches & buildscript
 - [TBYOOL](https://github.com/tbyool) for the buildscripts & kernel patches.   
-- [xiaomi-sm6150](https://github.com/xiaomi-sm6150) for the dtbo patches.   
-- [crdroidandroid](https://github.com/crdroidandroid) for the ln8000 patches.   
-- [JackA1ltMan](https://github.com/JackA1ltman) for syscall hook script, susfs inline hook script & SUSFS patches.   
+- [xiaomi-sm6150](https://github.com/xiaomi-sm6150) for the ln8000 patches.   
+- [JackA1ltMan](https://github.com/JackA1ltman) for ReSukiSU hook scripts, ReKernel scripts & SUSFS patches.   
 - [TheSillyOk](https://github.com/TheSillyOk) for LTO & kpatch fixup for 4.14 devices.   
 
 Projects   
-- [ReSukiSU](https://github.com/ReSukiSU) for ReSukiSU.
+- [ReSukiSU](https://github.com/ReSukiSU) for ReSukiSU.   
 - [vc-teahouse](https://github.com/vc-teahouse) for Baseband Guard.   
 - [maxsteeel](https://github.com/maxsteeel) for NoMount.   
 - [ravindu644](https://github.com/ravindu644) for Droidspaces.   
+- [Sakion-Team](https://github.com/Sakion-Team/Re-Kernel) for ReKernel.   
 - [LineageOS](https://github.com/LineageOS) for kernel sources.   
 - [PixelOS-Devices](https://github.com/PixelOS-Devices) for kernel sources.   
 - [Mi-Thorium](https://github.com/Mi-Thorium) for kernel sources.   
