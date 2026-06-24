@@ -16,3 +16,7 @@ source scripts/goodies/nomount.sh
 # Droidspaces
 chmod +x scripts/goodies/droidspaces.sh
 source scripts/goodies/droidspaces.sh
+
+# ReKernel
+chmod +x scripts/goodies/rekernel.sh
+source scripts/goodies/rekernel.sh
