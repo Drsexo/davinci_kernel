@@ -83,14 +83,14 @@ jobs:
             bbg-type: bbg
             nomount-type: nomount
             droidspaces-type: none
-            rekernel-type: rekernel
+            rekernel-type: none
 
           - build-type: d2s
             ksu-type: none
             bbg-type: bbg
             nomount-type: nomount
             droidspaces-type: none
-            rekernel-type: rekernel
+            rekernel-type: none
 
           # --- d2x Builds ---
           - build-type: d2x
@@ -98,14 +98,14 @@ jobs:
             bbg-type: bbg
             nomount-type: nomount
             droidspaces-type: none
-            rekernel-type: rekernel
+            rekernel-type: none
 
           - build-type: d2x
             ksu-type: none
             bbg-type: bbg
             nomount-type: nomount
             droidspaces-type: none
-            rekernel-type: rekernel
+            rekernel-type: none
 
     steps:
       - uses: actions/checkout@v6
