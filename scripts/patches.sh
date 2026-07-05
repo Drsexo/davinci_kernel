@@ -37,7 +37,7 @@ KPATCH_PATCH="https://github.com/TheSillyOk/kernel_ls_patches/raw/refs/heads/mas
 case "$DEVICE_IMPORT" in
     sweet|sweet-playground|davinci|tucana|violet|ginkgo|laurel_sprout|a52q|a72q|d2s|d2x)
         # Device specific for 4.14
-        if [[ "$DEVICE_IMPORT" == "sweet" ]] || [[ "$DEVICE_IMPORT" == "sweet-playground" ]]; then
+        if [[ "$DEVICE_IMPORT" == "sweet-playground" ]]; then
             echo "-- Applying LN8K patches..."
             LN8K_PATCHES=(
                 "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/05d8eac3722dcf920b716908d910ee704a77950e.patch"
