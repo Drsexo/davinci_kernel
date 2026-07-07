@@ -15,11 +15,11 @@ jobs:
     strategy:
       matrix:
         build-type: [sweet-miui]
-        ksu-type: [none]
-        bbg-type: [none]
-        nomount-type: [none]
+        ksu-type: [zako-susfs, none]
+        bbg-type: [bbg]
+        nomount-type: [nomount]
         droidspaces-type: [none]
-        rekernel-type: [none]
+        rekernel-type: [rekernel]
 
     steps:
       - uses: actions/checkout@v6
@@ -316,7 +316,7 @@ jobs:
             sed -i '/device.name2=mi8917/a device.name3=santoni\ndevice.name4=prada\ndevice.name5=rolex\ndevice.name6=ugglite\ndevice.name7=riva\ndevice.name8=ugg' AnyKernel3/anykernel.sh
             sed -i 's/sweet (sm6150)/mi8937 and mi8917 (msm8937)/g' AnyKernel3/banner
           elif [[ "${{ matrix.build-type }}" == "sweet-miui" ]]; then
-            cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/Image.gz AnyKernel3/
+            cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
             cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/dtb.img AnyKernel3/
             cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/dtbo.img AnyKernel3/
             sed -i 's/supported.versions=11-16/supported.versions=11-14/' AnyKernel3/anykernel.sh
