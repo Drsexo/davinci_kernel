@@ -35,7 +35,7 @@ KPATCH_PATCH="https://github.com/TheSillyOk/kernel_ls_patches/raw/refs/heads/mas
 
 # Patcher - 1.0
 case "$DEVICE_IMPORT" in
-    sweet|sweet-playground|davinci|tucana|violet|ginkgo|laurel_sprout|a52q|a72q|d2s|d2x)
+    sweet|sweet-playground|davinci|tucana|violet|ginkgo|laurel_sprout|a52q|a72q|d2s|d2x|miatoll)
         # Device specific for 4.14
         if [[ "$DEVICE_IMPORT" == "sweet-playground" ]]; then
             echo "-- Applying LN8K patches..."

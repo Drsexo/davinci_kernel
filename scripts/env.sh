@@ -32,6 +32,12 @@ case "$DEVICE_IMPORT" in
         export KERNEL_VERSION="4.19"
         export KBUILD_BUILD_USER=kamilek-compile
         ;;
+    miatoll)
+        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/xiaomi/miatoll_defconfig"
+        export ACTUAL_MAIN_DEFCONFIG="vendor/xiaomi/miatoll_defconfig"
+        export DEVICE_DEFCONFIG=""
+        export KBUILD_BUILD_USER=eloxren-compile
+        ;;
     # LineageOS - Samsung
     a52q|a72q)
         export MAIN_DEFCONFIG="arch/arm64/configs/vendor/lineage-${DEVICE_IMPORT}_defconfig"
