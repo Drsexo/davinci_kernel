@@ -14,12 +14,12 @@ jobs:
       date: ${{ steps.ts.outputs.DATE }}
     strategy:
       matrix:
-        build-type: [miatoll]
-        ksu-type: [zako-susfs]
+        build-type: [d2s, d2x, a52q, a72q]
+        ksu-type: [zako]
         bbg-type: [bbg]
         nomount-type: [nomount]
         droidspaces-type: [none]
-        rekernel-type: [rekernel]
+        rekernel-type: [none]
 
     steps:
       - uses: actions/checkout@v6
