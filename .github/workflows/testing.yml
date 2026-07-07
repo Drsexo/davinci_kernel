@@ -127,7 +127,7 @@ jobs:
               rm -rf android_kernel_xiaomi_sm6150
             fi
             echo "Cloning kernel sources..."
-            git clone https://github.com/fiqri19102002/android_kernel_xiaomi_sweet.git -b "a11/main" --depth=1 android_kernel_xiaomi_sm6150
+            git clone https://github.com/fiqri19102002/android_kernel_xiaomi_sweet.git -b 'a11/main' --depth=1 android_kernel_xiaomi_sm6150
             echo "Copying buildscript..."
             cp build.sh android_kernel_xiaomi_sm6150/
             cp -r scripts android_kernel_xiaomi_sm6150/
