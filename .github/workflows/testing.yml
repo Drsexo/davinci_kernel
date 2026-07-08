@@ -15,9 +15,9 @@ jobs:
     strategy:
       matrix:
         build-type: [sweet-miui]
-        ksu-type: [zako-susfs, none]
+        ksu-type: [zako, none]
         bbg-type: [bbg]
-        nomount-type: [none]
+        nomount-type: [nomount]
         droidspaces-type: [none]
         rekernel-type: [rekernel]
 
