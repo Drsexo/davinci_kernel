@@ -85,7 +85,7 @@ case "$DEVICE_IMPORT" in
             #echo "-- Disabling a dtb..."
             #sed -i '/P85946-qrd-overlay\.dtbo/s/^/# /' arch/arm64/boot/dts/vendor/qcom/Makefile
             echo "-- Setting up drivers as built-in..."
-            sed -i 's/^CONFIG_QCA_CLD_WLAN=m$/CONFIG_QCA_CLD_WLAN=y/' $DEVICE_DEFCONFIG
+            sed -i 's/^CONFIG_QCA_CLD_WLAN=m$/CONFIG_QCA_CLD_WLAN=y/' arch/arm64/configs/$DEVICE_DEFCONFIG
         fi
         # Common configs for 4.19
         echo "-- Tuning default configs..."
