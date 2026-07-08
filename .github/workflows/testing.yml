@@ -15,11 +15,11 @@ jobs:
     strategy:
       matrix:
         build-type: [sweet-miui]
-        ksu-type: [zako, none]
+        ksu-type: [zako-susfs, none]
         bbg-type: [bbg]
         nomount-type: [nomount]
         droidspaces-type: [none]
-        rekernel-type: [none]
+        rekernel-type: [rekernel]
 
     steps:
       - uses: actions/checkout@v6
@@ -127,7 +127,7 @@ jobs:
               rm -rf android_kernel_xiaomi_sm6150
             fi
             echo "Cloning kernel sources..."
-            git clone https://github.com/riarumoda/riaru_kernel_xiaomi_sm6150.git -b "lineage-20" --depth=1 android_kernel_xiaomi_sm6150
+            git clone https://github.com/riarumoda/android_kernel_xiaomi_sm6150.git -b "lineage-23.2" --depth=1 android_kernel_xiaomi_sm6150
             echo "Copying buildscript..."
             cp build.sh android_kernel_xiaomi_sm6150/
             cp -r scripts android_kernel_xiaomi_sm6150/
