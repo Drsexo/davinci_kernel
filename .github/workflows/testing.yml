@@ -127,7 +127,7 @@ jobs:
               rm -rf android_kernel_xiaomi_sm6150
             fi
             echo "Cloning kernel sources..."
-            git clone https://github.com/riarumoda/android_kernel_xiaomi_sweet.git -b "master" --depth=1 android_kernel_xiaomi_sm6150
+            git clone https://github.com/riarumoda/riaru_kernel_xiaomi_sm6150.git -b "lineage-20" --depth=1 android_kernel_xiaomi_sm6150
             echo "Copying buildscript..."
             cp build.sh android_kernel_xiaomi_sm6150/
             cp -r scripts android_kernel_xiaomi_sm6150/
@@ -316,7 +316,7 @@ jobs:
             sed -i '/device.name2=mi8917/a device.name3=santoni\ndevice.name4=prada\ndevice.name5=rolex\ndevice.name6=ugglite\ndevice.name7=riva\ndevice.name8=ugg' AnyKernel3/anykernel.sh
             sed -i 's/sweet (sm6150)/mi8937 and mi8917 (msm8937)/g' AnyKernel3/banner
           elif [[ "${{ matrix.build-type }}" == "sweet-miui" ]]; then
-            cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
+            cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/Image.gz AnyKernel3/
             cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/dtb.img AnyKernel3/
             cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/dtbo.img AnyKernel3/
             sed -i 's/supported.versions=11-16/supported.versions=11-14/' AnyKernel3/anykernel.sh
