@@ -14,11 +14,11 @@ jobs:
       date: ${{ steps.ts.outputs.DATE }}
     strategy:
       matrix:
-        build-type: [gta4l]
-        ksu-type: [zako-susfs, none]
+        build-type: [sweet-playground]
+        ksu-type: [zako-susfs]
         bbg-type: [bbg]
         nomount-type: [nomount]
-        droidspaces-type: [droidspaces]
+        droidspaces-type: [none]
         rekernel-type: [rekernel]
 
     steps:
