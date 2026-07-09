@@ -32,6 +32,21 @@ jobs:
             droidspaces-type: none
             rekernel-type: rekernel
 
+          # --- sweet-miui Builds ---
+          - build-type: sweet-miui
+            ksu-type: zako-susfs
+            bbg-type: bbg
+            nomount-type: nomount
+            droidspaces-type: none
+            rekernel-type: rekernel
+
+          - build-type: sweet-playground
+            ksu-type: none
+            bbg-type: bbg
+            nomount-type: nomount
+            droidspaces-type: none
+            rekernel-type: rekernel
+
           # --- mi89x7-playground Builds ---
           - build-type: mi89x7-playground
             ksu-type: zako-susfs
@@ -238,6 +253,16 @@ jobs:
             cp build.sh android_kernel_xiaomi_sm6250/
             cp -r scripts android_kernel_xiaomi_sm6250/
             chmod +x ./android_kernel_xiaomi_sm6250/build.sh
+          elif [[ "${{ matrix.build-type }}" == "sweet-miui" ]]; then
+            if [ -d "$PWD/android_kernel_xiaomi_sm6150" ]; then
+              rm -rf android_kernel_xiaomi_sm6150
+            fi
+            echo "Cloning kernel sources..."
+            git clone https://github.com/riarumoda/android_kernel_xiaomi_sm6150.git -b "lineage-23.2" --depth=1 android_kernel_xiaomi_sm6150
+            echo "Copying buildscript..."
+            cp build.sh android_kernel_xiaomi_sm6150/
+            cp -r scripts android_kernel_xiaomi_sm6150/
+            chmod +x ./android_kernel_xiaomi_sm6150/build.sh
           else
             echo "Invalid build type: ${{ matrix.build-type }}"
             exit 1
@@ -268,6 +293,10 @@ jobs:
             cd ..
           elif [[ "${{ matrix.build-type }}" == "miatoll" ]]; then
             cd android_kernel_xiaomi_sm6250/
+            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
+            cd ..
+          elif [[ "${{ matrix.build-type }}" == "sweet-miui" ]]; then
+            cd android_kernel_xiaomi_sm6150/
             ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
             cd ..
           else
@@ -337,6 +366,16 @@ jobs:
             sed -i 's/device.name2=sweetin/device.name2=gram/' AnyKernel3/anykernel.sh
             sed -i '/device.name2=gram/a device.name3=curtana\ndevice.name4=joyeuse\ndevice.name5=excalibur' AnyKernel3/anykernel.sh
             sed -i 's/sweet (sm6150)/miatoll (sm6250)/g' AnyKernel3/banner
+          elif [[ "${{ matrix.build-type }}" == "sweet-miui" ]]; then
+            cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/Image.gz AnyKernel3/
+            cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/dtb.img AnyKernel3/
+            cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/dtbo.img AnyKernel3/
+            sed -i 's/supported.versions=11-16/supported.versions=11-14/' AnyKernel3/anykernel.sh
+            if [[ "${{ matrix.build-type }}" == "sweet-miui" ]]; then
+              sed -i 's/device.name1=sweet/device.name1=sweet/' AnyKernel3/anykernel.sh
+              sed -i 's/device.name2=sweetin/device.name2=sweetin/' AnyKernel3/anykernel.sh
+              sed -i 's/sweet (sm6150)/sweet (sm6150)/g' AnyKernel3/banner
+            fi
           else
             echo "Invalid build type: ${{ matrix.build-type }}"
             exit 1
@@ -356,11 +395,15 @@ jobs:
             export KERNELNAME="Mi8937v2"
           elif [[ "${{ matrix.build-type }}" == "a9y18qlte" ]]; then
             export KERNELNAME="RiaruKernel"
+          elif [[ "${{ matrix.build-type }}" == "sweet-miui" ]]; then
+            export KERNELNAME="miui-sweet"
           else
             export KERNELNAME="perf-neon"
           fi
           if [[ "${{ matrix.build-type }}" == "sweet-playground" || "${{ matrix.build-type }}" == "mi89x7-playground" ]]; then
             export ZIPNAME="$KERNELNAME-${{ matrix.build-type }}-$KSUTYPE-${{ steps.ts.outputs.DATE }}.zip"
+          elif [[ "${{ matrix.build-type }}" == "sweet-miui" ]]; then
+            export ZIPNAME="$KERNELNAME-$KSUTYPE-${{ steps.ts.outputs.DATE }}.zip"
           else
             export ZIPNAME="$KERNELNAME-${{ matrix.build-type }}-playground-$KSUTYPE-${{ steps.ts.outputs.DATE }}.zip"
           fi
