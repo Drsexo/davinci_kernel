@@ -40,6 +40,7 @@ case "$DEVICE_IMPORT" in
         if [[ "$DEVICE_IMPORT" == "sweet-playground" ]]; then
             echo "-- Applying LN8K patches..."
             LN8K_PATCHES=(
+                "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/4165bc93f98408fa2123155f790783f3e150f439.patch"
                 "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/b2098690243086601ca394b4bcd5fb4e94ce68ec.patch"
                 "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/33214bb2481d3279764f14fbb4b84d329be95410.patch"
                 "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/c6b5c9eff5fc9e07580ed8d75bd52caf396021aa.patch"
