@@ -50,7 +50,7 @@ case "$DEVICE_IMPORT" in
         export ACTUAL_MAIN_DEFCONFIG="vendor/bengal-perf_defconfig"
         export DEVICE_DEFCONFIG="vendor/gta4l-common.config"
         export KERNEL_VERSION="4.19"
-        export KBUILD_BUILD_USER=isaiah-compile
+        export KBUILD_BUILD_USER=hassansody-compile
         ;;
     d2s|d2x)
         export MAIN_DEFCONFIG="arch/arm64/configs/exynos9820-${DEVICE_IMPORT}_defconfig"
