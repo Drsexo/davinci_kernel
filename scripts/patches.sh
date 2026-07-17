@@ -90,6 +90,10 @@ case "$DEVICE_IMPORT" in
             echo "CONFIG_BUILD_ARM64_DT_OVERLAY=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_IMG_GZ_DTB=y" >> $MAIN_DEFCONFIG
+            echo "CONFIG_F2FS_FS_COMPRESSION=y" >> $MAIN_DEFCONFIG
+            echo "CONFIG_F2FS_FS_LZ4=y" >> $MAIN_DEFCONFIG
+            echo "CONFIG_F2FS_FS_LZO=y" >> $MAIN_DEFCONFIG
+            echo "CONFIG_F2FS_FS_ZSTD=y" >> $MAIN_DEFCONFIG
         fi
         ;;
     umi|cmi|mi89x7-playground|gta4l)
