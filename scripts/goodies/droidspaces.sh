@@ -51,6 +51,7 @@ case "$DROIDSPACES_SELECTOR" in
             echo "CONFIG_PID_NS=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_UTS_NS=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_IPC_NS=y" >> $MAIN_DEFCONFIG
+            echo "CONFIG_USER_NS=y" >> $MAIN_DEFCONFIG
             # Seccomp support
             echo "CONFIG_SECCOMP=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_SECCOMP_FILTER=y" >> $MAIN_DEFCONFIG
