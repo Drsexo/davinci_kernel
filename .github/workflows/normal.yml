@@ -1,4 +1,4 @@
-name: Weekly
+name: Weekly Kernel Build
 
 on:
   workflow_dispatch:
@@ -11,20 +11,20 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      timestamp: ${{ steps.ts.outputs.TIME }}
-      date: ${{ steps.ts.outputs.DATE }}
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_MAXSIZE: 3G
     strategy:
       matrix:
-        build-type: [sweet, davinci, tucana, violet, ginkgo, laurel_sprout, umi, cmi, gta4l]
-        ksu-type: [zako-susfs, none]
+        build-type: [davinci]
+        ksu-type: [resukisu-susfs]
         bbg-type: [bbg]
         nomount-type: [nomount]
         droidspaces-type: [droidspaces]
         rekernel-type: [rekernel]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Timestamp
         id: ts
@@ -40,202 +40,230 @@ jobs:
           sudo apt-get install -y \
             bc build-essential bison flex zip p7zip-full \
             libc6 curl libstdc++6 git wget libssl-dev zstd \
-            lld python3 patchutils ccache
+            lld python3 patchutils ccache jq
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-davinci-${{ github.run_id }}
+          restore-keys: |
+            ccache-davinci-
+
+      - name: Resolve latest LineageOS branch
+        run: |
+          BRANCH=$(git ls-remote --heads https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git \
+            | sed 's#.*refs/heads/##' \
+            | grep -E '^lineage-[0-9]+(\.[0-9]+)?$' \
+            | sort -V | tail -1)
+          if [ -z "$BRANCH" ]; then
+            echo "Fatal: could not resolve a lineage-* branch"
+            exit 1
+          fi
+          echo "Latest LineageOS branch: $BRANCH"
+          echo "LOS_BRANCH=$BRANCH" >> $GITHUB_ENV
 
       - name: Preparing kernel sources
         run: |
-          if [[ "${{ matrix.build-type }}" == "sweet" || "${{ matrix.build-type }}" == "davinci" || "${{ matrix.build-type }}" == "tucana" || "${{ matrix.build-type }}" == "violet" ]]; then
-            if [ -d "$PWD/android_kernel_xiaomi_sm6150" ]; then
-              rm -rf android_kernel_xiaomi_sm6150
-            fi
-            echo "Cloning kernel sources..."
-            git clone https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git -b "lineage-23.2" --depth=1 android_kernel_xiaomi_sm6150
-            echo "Copying buildscript..."
-            cp build.sh android_kernel_xiaomi_sm6150/
-            cp -r scripts android_kernel_xiaomi_sm6150/
-            chmod +x ./android_kernel_xiaomi_sm6150/build.sh
-          elif [[ "${{ matrix.build-type }}" == "ginkgo" || "${{ matrix.build-type }}" == "laurel_sprout" ]]; then
-            if [ -d "$PWD/android_kernel_xiaomi_sm6125" ]; then
-              rm -rf android_kernel_xiaomi_sm6125
-            fi
-            echo "Cloning kernel sources..."
-            git clone https://github.com/LineageOS/android_kernel_xiaomi_sm6125.git -b "lineage-23.2" --depth=1 android_kernel_xiaomi_sm6125
-            echo "Copying buildscript..."
-            cp build.sh android_kernel_xiaomi_sm6125/
-            cp -r scripts android_kernel_xiaomi_sm6125/
-            chmod +x ./android_kernel_xiaomi_sm6125/build.sh
-          elif [[ "${{ matrix.build-type }}" == "umi" || "${{ matrix.build-type }}" == "cmi" ]]; then
-            if [ -d "$PWD/android_kernel_xiaomi_sm8250" ]; then
-              rm -rf android_kernel_xiaomi_sm8250
-            fi
-            echo "Cloning kernel sources..."
-            git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8250.git -b "lineage-23.2" --depth=1 android_kernel_xiaomi_sm8250
-            echo "Copying buildscript..."
-            cp build.sh android_kernel_xiaomi_sm8250/
-            cp -r scripts android_kernel_xiaomi_sm8250/
-            chmod +x ./android_kernel_xiaomi_sm8250/build.sh
-          elif [[ "${{ matrix.build-type }}" == "gta4l" ]]; then
-            if [ -d "$PWD/android_kernel_samsung_sm6115" ]; then
-              rm -rf android_kernel_samsung_sm6115
-            fi
-            echo "Cloning kernel sources..."
-            git clone https://github.com/LineageOS/android_kernel_samsung_sm6115.git -b "lineage-23.2" --depth=1 android_kernel_samsung_sm6115
-            echo "Copying buildscript..."
-            cp build.sh android_kernel_samsung_sm6115/
-            cp -r scripts android_kernel_samsung_sm6115/
-            chmod +x ./android_kernel_samsung_sm6115/build.sh
-          else
-            echo "Invalid build type: ${{ matrix.build-type }}"
+          if [ -d "$PWD/android_kernel_xiaomi_sm6150" ]; then
+            rm -rf android_kernel_xiaomi_sm6150
+          fi
+          echo "Cloning kernel sources..."
+          git clone https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git -b "$LOS_BRANCH" --depth=1 android_kernel_xiaomi_sm6150
+          echo "Copying buildscript..."
+          cp build.sh android_kernel_xiaomi_sm6150/
+          cp -r scripts android_kernel_xiaomi_sm6150/
+          chmod +x ./android_kernel_xiaomi_sm6150/build.sh
+
+      - name: Fetch latest Neutron clang tag
+        id: neutron_tag
+        run: |
+          TAG=$(curl -fsSL https://raw.githubusercontent.com/Neutron-Toolchains/clang-build-catalogue/main/latest.txt \
+                | grep -A1 '^\[tag\]' | tail -n1 | tr -d '[:space:]')
+          if [ -z "$TAG" ]; then
+            echo "Fatal: failed to fetch Neutron latest tag"
             exit 1
           fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Cache Neutron clang
+        uses: actions/cache@v6
+        with:
+          path: android_kernel_xiaomi_sm6150/clang
+          key: neutron-clang-clean-${{ steps.neutron_tag.outputs.tag }}
 
       - name: Compile the kernel
         run: |
           echo "Starting to compile..."
-          if [[ "${{ matrix.build-type }}" == "sweet" || "${{ matrix.build-type }}" == "davinci" || "${{ matrix.build-type }}" == "tucana" || "${{ matrix.build-type }}" == "violet" ]]; then
-            cd android_kernel_xiaomi_sm6150/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
-            cd ..
-          elif [[ "${{ matrix.build-type }}" == "ginkgo" || "${{ matrix.build-type }}" == "laurel_sprout" ]]; then
-            cd android_kernel_xiaomi_sm6125/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
-            cd ..
-          elif [[ "${{ matrix.build-type }}" == "umi" || "${{ matrix.build-type }}" == "cmi" ]]; then
-            cd android_kernel_xiaomi_sm8250/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
-            cd ..
-          elif [[ "${{ matrix.build-type }}" == "gta4l" ]]; then
-            cd android_kernel_samsung_sm6115/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
-            cd ..
+          cd android_kernel_xiaomi_sm6150/
+          ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
+          cd ..
+          ccache -s
+
+      - name: Save ccache
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-davinci-${{ github.run_id }}
+
+      - name: Collect release metadata
+        id: meta
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd android_kernel_xiaomi_sm6150
+
+          KV=$(awk '/^VERSION = /{print $3}' Makefile)
+          KP=$(awk '/^PATCHLEVEL = /{print $3}' Makefile)
+          KS=$(awk '/^SUBLEVEL = /{print $3}' Makefile)
+          KERNEL_VERSION="${KV}.${KP}.${KS}"
+
+          LOS_VERSION="${LOS_BRANCH#lineage-}"
+
+          CLANG_VER=$("$PWD/clang/bin/clang" --version 2>&1 | head -1 | sed -nE 's/.*clang version ([^ ]+).*/\1/p')
+          CLANG_DISPLAY="Neutron Clang ${CLANG_VER}"
+
+          KSU_TAG=$(curl -fsSL -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/ReSukiSU/ReSukiSU/tags?per_page=1" \
+            | jq -r '.[0].name // "unknown"')
+
+          KSU_SHA=$(curl -fsSL -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/ReSukiSU/ReSukiSU/commits/main" \
+            | jq -r '.sha // empty' | cut -c1-8)
+          if [ -n "$KSU_SHA" ] && [ "$KSU_TAG" != "unknown" ]; then
+            KSU_NAME="${KSU_TAG}-${KSU_SHA}"
           else
-            echo "Invalid build type: ${{ matrix.build-type }}"
-            exit 1
+            KSU_NAME="${KSU_TAG}"
           fi
+
+          KSU_CODE="unknown"
+          rm -rf /tmp/ksu_src
+          if git clone --filter=blob:none --depth=1 https://github.com/ReSukiSU/ReSukiSU.git \
+              /tmp/ksu_src 2>/dev/null; then
+
+            git -C /tmp/ksu_src fetch --unshallow --filter=blob:none 2>/dev/null \
+              || git -C /tmp/ksu_src fetch --filter=blob:none 2>/dev/null || true
+            COUNT=$(git -C /tmp/ksu_src rev-list --count HEAD 2>/dev/null)
+            if [ -n "$COUNT" ]; then
+              KSU_CODE=$((30000 + COUNT + 700))
+            fi
+          fi
+
+          SUSFS_VERSION=$(curl -fsSL \
+            "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/.github/workflows/patch-susfs/action.yml" \
+            | grep -oP 'SUSFS_VERSION="\K[^"]+')
+          SUSFS_VERSION="${SUSFS_VERSION:-unknown}"
+
+          TITLE_DATE=$(date +'%Y/%m/%d')
+
+          echo "kernel_version=$KERNEL_VERSION" >> $GITHUB_OUTPUT
+          echo "los_version=$LOS_VERSION" >> $GITHUB_OUTPUT
+          echo "clang_display=$CLANG_DISPLAY" >> $GITHUB_OUTPUT
+          echo "ksu_name=$KSU_NAME" >> $GITHUB_OUTPUT
+          echo "ksu_code=$KSU_CODE" >> $GITHUB_OUTPUT
+          echo "susfs_version=$SUSFS_VERSION" >> $GITHUB_OUTPUT
+          echo "title_date=$TITLE_DATE" >> $GITHUB_OUTPUT
+
+          echo "=== Collected metadata ==="
+          echo "Kernel: $KERNEL_VERSION"
+          echo "LineageOS: $LOS_VERSION ($LOS_BRANCH)"
+          echo "Clang: $CLANG_DISPLAY"
+          echo "ReSukiSU: $KSU_NAME (code $KSU_CODE)"
+          echo "SusFS: $SUSFS_VERSION"
+          echo "Title date: $TITLE_DATE"
 
       - name: Preparing AnyKernel3 sources
         run: |
           if [ -d "$PWD/AnyKernel3" ]; then
             rm -rf AnyKernel3
           fi
-          git clone https://github.com/riarumoda/AnyKernel3 AnyKernel3 --depth=1
-          if [[ "${{ matrix.build-type }}" == "sweet" || "${{ matrix.build-type }}" == "davinci" || "${{ matrix.build-type }}" == "tucana" || "${{ matrix.build-type }}" == "violet" ]]; then
-            cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/Image.gz AnyKernel3/
-            sed -i 's/supported.versions=11-16/supported.versions=15-16/' AnyKernel3/anykernel.sh
-            if [[ "${{ matrix.build-type }}" == "sweet" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=sweet/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=sweetin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/sweet (sm6150)/g' AnyKernel3/banner
-            elif [[ "${{ matrix.build-type }}" == "davinci" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=davinci/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=davinciin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/davinci (sm6150)/g' AnyKernel3/banner
-            elif [[ "${{ matrix.build-type }}" == "tucana" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=tucana/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=tucanain/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/tucana (sm6150)/g' AnyKernel3/banner
-            elif [[ "${{ matrix.build-type }}" == "violet" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=violet/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=violetin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/violet (sm6150)/g' AnyKernel3/banner
-            fi
-          elif [[ "${{ matrix.build-type }}" == "ginkgo" || "${{ matrix.build-type }}" == "laurel_sprout" ]]; then
-            cp android_kernel_xiaomi_sm6125/out/arch/arm64/boot/Image.gz AnyKernel3/
-            sed -i 's/supported.versions=11-16/supported.versions=15-16/' AnyKernel3/anykernel.sh
-            if [[ "${{ matrix.build-type }}" == "ginkgo" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=ginkgo/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=willow/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/ginkgo (sm6125)/g' AnyKernel3/banner
-            elif [[ "${{ matrix.build-type }}" == "laurel_sprout" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=laurel_sprout/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=laurel_sproutin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/laurel_sprout (sm6125)/g' AnyKernel3/banner
-            fi
-          elif [[ "${{ matrix.build-type }}" == "umi" || "${{ matrix.build-type }}" == "cmi" ]]; then
-            cp android_kernel_xiaomi_sm8250/out/arch/arm64/boot/Image AnyKernel3/
-            sed -i 's/supported.versions=11-16/supported.versions=15-16/' AnyKernel3/anykernel.sh
-            if [[ "${{ matrix.build-type }}" == "umi" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=umi/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=umiin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/umi (sm8250)/g' AnyKernel3/banner
-            elif [[ "${{ matrix.build-type }}" == "cmi" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=cmi/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=cmiiin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/cmi (sm8250)/g' AnyKernel3/banner
-            fi
-          elif [[ "${{ matrix.build-type }}" == "gta4l" ]]; then
-            cp android_kernel_samsung_sm6115/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
-            sed -i 's/supported.versions=11-16/supported.versions=15-16/' AnyKernel3/anykernel.sh
-            if [[ "${{ matrix.build-type }}" == "gta4l" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=gta4l/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=gta4lwifi/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/gta4l (sm6115)/g' AnyKernel3/banner
-            fi
-          else
-            echo "Invalid build type: ${{ matrix.build-type }}"
-            exit 1
-          fi
+          git clone https://github.com/Drsexo/AnyKernel3 AnyKernel3 --depth=1
+          cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/Image.gz AnyKernel3/
           sed -i '$a \\nBuild timestamp: ${{ steps.ts.outputs.TIME }}' AnyKernel3/banner
 
       - name: Pack kernel with AnyKernel3
         run: |
-          if [[ "${{ matrix.ksu-type }}" == "zako" || "${{ matrix.ksu-type }}" == "zako-susfs" ]]; then
-            export KSUTYPE="ksu"
-          elif [[ "${{ matrix.ksu-type }}" == "none" ]]; then
-            export KSUTYPE="noksu"
-          fi
-          ZIPNAME="perf-neon-${{ matrix.build-type }}-weekly-$KSUTYPE-${{ steps.ts.outputs.DATE }}.zip"
+          ZIPNAME="Nebula-kernel-${{ matrix.build-type }}-ReSukiSU-${{ steps.ts.outputs.DATE }}.zip"
           cd AnyKernel3
           zip -rq9 "../$ZIPNAME" ./*
           cd ..
-
-      - name: Upload artifacts (All builds)
-        uses: actions/upload-artifact@v6
-        with:
-          name: ${{ matrix.build-type }}-${{ matrix.ksu-type }}
-          path: |
-            *.zip
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download all build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: ./artifacts
-
-      - name: List downloaded zips
-        run: ls -lah artifacts
-
-      - name: Timestamp
-        id: ts
-        run: |
-          FANCYDATE=$(date +'%Y/%m/%d')
-          echo "FANCYDATE=$FANCYDATE" >> $GITHUB_OUTPUT
+          echo "ZIPNAME=$ZIPNAME" >> $GITHUB_ENV
 
       - name: Create Release and Upload builds
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: kernel-weekly-${{ needs.build.outputs.timestamp }}
-          name: Weekly - ${{ steps.ts.outputs.FANCYDATE }}
+          tag_name: nebula-${{ steps.ts.outputs.TIME }}
+          name: Nebula ${{ steps.meta.outputs.kernel_version }} - ${{ steps.meta.outputs.title_date }}
           draft: false
           prerelease: false
           body: |
-            > [!NOTE]   
-            > - The kernel supports Android 15 to 16.   
-            > - ReSukiSU latest manager can be found in [here](https://resukisu.github.io/guide/install.html#Get-manager).    
-               
-            > [!IMPORTANT]
-            > - The feature set can be seen in [here](https://github.com/riarumoda/perf_neon-builder#features).     
+            **Kernel**: `${{ steps.meta.outputs.kernel_version }}`
+            **ReSukiSU**: `${{ steps.meta.outputs.ksu_name }}` (code `${{ steps.meta.outputs.ksu_code }}`)
+            **SusFS**: `${{ steps.meta.outputs.susfs_version }}`
+            **LineageOS**: `${{ steps.meta.outputs.los_version }}`
+            **Built with**: `${{ steps.meta.outputs.clang_display }}`
 
-            > [!CAUTION]   
-            > - Always backup your boot image first before proceeding!   
-          files: |
-            artifacts/**/*.zip
+            [ReSukiSU manager](https://resukisu.github.io/guide/install.html#Get-manager)
+          files: ${{ env.ZIPNAME }}
           overwrite_files: true
+
+      - name: Notify Telegram
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+        run: |
+          if [ -z "$TG_TOKEN" ] || [ -z "$TG_CHAT" ]; then
+            echo "Telegram not configured, skipping"
+            exit 0
+          fi
+
+          if [ ! -f "$ZIPNAME" ]; then
+            echo "No zip found for Telegram notification"
+            exit 0
+          fi
+          ls -la "$ZIPNAME"
+
+          DATE="${{ steps.meta.outputs.title_date }}"
+          KV="${{ steps.meta.outputs.kernel_version }}"
+          KN="${{ steps.meta.outputs.ksu_name }}"
+          KC="${{ steps.meta.outputs.ksu_code }}"
+          SV="${{ steps.meta.outputs.susfs_version }}"
+          LV="${{ steps.meta.outputs.los_version }}"
+          CD="${{ steps.meta.outputs.clang_display }}"
+
+          MESSAGE="<b>New release - ${DATE}</b>
+
+          <b>Kernel</b>  <code>${KV}</code>
+          <b>ReSukiSU</b>  <code>${KN}</code> (code <code>${KC}</code>)
+          <b>SusFS</b>  <code>${SV}</code>
+          <b>LineageOS</b>  <code>${LV}</code>
+          <b>Built with</b>  <code>${CD}</code>
+
+          <a href=\"https://t.me/ReSukiSU/4\">ReSukiSU Manager</a>"
+
+          TEXT_RESPONSE=$(curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+            --form-string "chat_id=${TG_CHAT}" \
+            --form-string "text=${MESSAGE}" \
+            --form-string "parse_mode=HTML" \
+            --form-string 'link_preview_options={"is_disabled":true}' \
+            --max-time 30 -w "\nHTTP_STATUS:%{http_code}" 2>&1) || true
+
+          echo "Telegram sendMessage response:"
+          echo "$TEXT_RESPONSE"
+
+          DOC_RESPONSE=$(curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendDocument" \
+            --form-string "chat_id=${TG_CHAT}" \
+            -F "document=@${ZIPNAME}" \
+            --max-time 120 -w "\nHTTP_STATUS:%{http_code}" 2>&1) || true
+
+          echo "Telegram sendDocument response:"
+          echo "$DOC_RESPONSE"
+
+          if echo "$TEXT_RESPONSE" | grep -q '"ok":true' && echo "$DOC_RESPONSE" | grep -q '"ok":true'; then
+            echo "Telegram notification sent successfully"
+          else
+            echo "Warning: Telegram notification failed (release was still published successfully)"
+          fi

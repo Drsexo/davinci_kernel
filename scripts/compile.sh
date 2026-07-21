@@ -1,11 +1,9 @@
 #!/bin/bash
 
 # Apply O3 flags
-if [ "$DEVICE_IMPORT" != "a9y18qlte" ]; then
-    echo "-- Applying O3 flags before compiling..."
-    sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
-    sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
-fi
+echo "-- Applying O3 flags before compiling..."
+sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
+sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
 
 # Make sure out folder exist
 mkdir -p out &> /dev/null

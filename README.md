@@ -11,100 +11,71 @@
 
 <div align="center">
 
-[![Downloads](https://img.shields.io/github/downloads/riarumoda/perf_neon-builder/total?label=Downloads&logo=icloud&logoColor=white)](https://github.com/riarumoda/perf_neon-builder/releases)
-[![Telegram](https://img.shields.io/badge/Follow-Telegram-blue?logo=telegram)](https://t.me/trrflexgroup)
-[![CI Status](https://img.shields.io/github/actions/workflow/status/riarumoda/perf_neon-builder/normal.yml?label=Status&logo=github-actions&logoColor=white)](https://github.com/riarumoda/perf_neon-builder/actions/workflows/normal.yml)
+[![Downloads](https://img.shields.io/github/downloads/Drsexo/davinci_kernel/total?label=Downloads&logo=icloud&logoColor=white)](https://github.com/Drsexo/davinci_kernel/releases)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/Drsexo/davinci_kernel/normal.yml?label=Status&logo=github-actions&logoColor=white)](https://github.com/Drsexo/davinci_kernel/actions/workflows/normal.yml)
+[![Telegram](https://img.shields.io/badge/Telegram-Channel-blue?logo=telegram&logoColor=white)](https://t.me/Nebula_Kernel_Davinci)
 
 </div>
 
-# Disclaimer
-***Your warranty is now void. I am not responsible for bricked devices, dead SD cards, or you getting fired because an alarm failed to work. Please do some research if you have any concerns about features included before flashing it! YOU are choosing to make these modifications, and if you point the finger at me for messing up your device, I will laugh at you.***   
-<p align="right">Your typical XDA Forum Disclaimer.<p>   
+# Nebula
 
-# Background
-The naming, Perf Neon, is inspired by a Linux Distribution called KDE Neon, where KDE take latest Ubuntu LTS as a base system and then put Latest KDE on top of it. Same thing as Perf Neon, where i take whatever the world the LineageOS team put under their kernel source and then put minimal patches on top of it.   
+Nebula is a weekly-built custom kernel for the Xiaomi Mi 9T (davinci), based on the LineageOS 4.14 kernel source. It ships with ReSukiSU (with SUSFS), Baseband Guard, NoMount, Droidspaces, and ReKernel integrated, compiled with the Neutron Clang toolchain using LTO and -O3.
 
-# What is it for?
-While it's mostly used for another kernel developers to compare their work with a literal close-to-stock kernel, it's also fulfill the dream of a purists, where they want everything stable but also wanted extra spices on top of it.   
+# Requirements
+- Xiaomi Mi 9T / Redmi K20 (davinci), running a LineageOS based rom (this kernel is built directly from LineageOS's own kernel tree, hasn't been tested against other ROMs)
+- Custom recovery or ADB access for sideloading
+- [ReSukiSU Manager](https://resukisu.github.io/guide/install.html#Get-manager) installed, to actually use root/SUSFS after flashing
 
 # Release schedules
-This kernel follows weekly builds of LineageOS, you will get a new kernel build every sunday. You might need to check out the GitHub repo for new releases.   
+This kernel follows weekly builds of LineageOS. A new build is published every Sunday, announced on the [Telegram channel](https://t.me/Nebula_Kernel_Davinci) and the [GitHub releases page](https://github.com/Drsexo/davinci_kernel/releases).
 
 # Features
-Currently available features:   
-- KernelSU support (ReSukiSU) & SUSFS support   
-- Baseband Guard support   
-- NoMount Meta Module support   
-- Droidspaces container support   
-- ReKernel tombstones support   
-- Compiled with -O3, LTO, LLVM=1   
-
-Currently added features into the kernel:   
-- Every features is guaranteed available on Weekly release.   
-- Samsung A52, A72, Note 10+, Note 10+ 5G: KernelSU w/o SUSFS, Baseband Guard, NoMount, LTO.   
-- Redmi Mi89x7, Miatoll, Sweet (MIUI): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, LTO.   
-- Redmi Sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel.   
-- Samsung A9 (2018) (OneUI): KernelSU w/o SUSFS.   
-
-# Compatibility
-Currently supported device   
-- Redmi K20/Mi 9T ([davinci](https://download.lineageos.org/devices/davinci/builds))   
-- Redmi Note 10 Pro/Pro Max ([sweet](https://download.lineageos.org/devices/sweet/builds))   
-- Xiaomi Mi Note 10/Note 10 Pro/CC9 Pro ([tucana](https://download.lineageos.org/devices/tucana/builds))   
-- Redmi Note 7 Pro ([violet](https://download.lineageos.org/devices/violet/builds))   
-- Redmi Note 8/8T ([ginkgo/willow](https://download.lineageos.org/devices/ginkgo/builds))   
-- Xiaomi Mi A3 ([laurel_sprout](https://download.lineageos.org/devices/laurel_sprout/builds))   
-- Xiaomi Mi 10 ([umi](https://download.lineageos.org/devices/umi/builds))   
-- Xiaomi Mi 10 Pro ([cmi](https://download.lineageos.org/devices/cmi/builds))   
-- Samsung Tab A7 10.4 2020 ([gta4l](https://download.lineageos.org/devices/gta4l/builds))   
-
-Externally compiled kernels   
-- POCO M2 Pro/Redmi Note 9S/Redmi Note 9 Pro/Redmi Note 9 Pro Max/Redmi Note 10 Lite ([miatoll](https://download.lineageos.org/devices/miatoll/builds)) from LineageOS   
-- Samsung A52 4G ([a52q](https://download.lineageos.org/devices/a52q/builds)) from LineageOS   
-- Samsung A72 ([a72q](https://download.lineageos.org/devices/a72q/builds)) from LineageOS   
-- Samsung Note 10+ ([d2s](https://download.lineageos.org/devices/d2s/builds)) from LineageOS   
-- Samsung Note 10+ 5G ([d2x](https://download.lineageos.org/devices/d2x/builds)) from LineageOS   
-- Samsung A9 (2018) ([a9y18qlte](https://github.com/riarumoda/kernel_samsung_a9y18qlte)) from Riaru Kernels & OneUI   
-- Redmi Note 10 Pro/Pro Max ([sweet](https://pixelos.net/download/sweet)) from PixelOS   
-- Redmi Note 10 Pro/Pro Max ([sweet](https://github.com/riarumoda/android_kernel_xiaomi_sm6150)) from Riaru Kernels & MIUI   
-- Redmi 4A/5A/Note 5A Lite/Y1 Lite ([mi8917](https://download.lineageos.org/devices/Mi8917/builds)) from Mi-Thorium   
-- Redmi 3/3S/4/4X/Note 5A Prime/Y1 Prime ([mi8937](https://download.lineageos.org/devices/Mi8937/builds)) from Mi-Thorium   
+- **ReSukiSU & SUSFS support**: KernelSU fork with SUSFS integration for non-GKI 4.14 devices
+- **Baseband Guard**: LSM module that filters modem IPC traffic to mitigate baseband RCE attacks
+- **NoMount**: Meta module that lets root apps hide specific mounts from non-root process detection
+- **Droidspaces**: Adds container isolation patches and enables namespaces, netfilter, and bridge support for work profile apps like Shelter/Island
+- **ReKernel**: Captures kernel panic and app crash tombstones, surfaces them to userspace for diagnostics
+- **LTO + ThinLTO**: Link-time optimization for smaller and faster kernel binary
+- **-O3**: Aggressive compiler optimization level
+- **LLVM=1**: Full LLVM/Clang toolchain build (clang, lld, llvm-ar, llvm-nm)
+- **Neutron Clang**: Built with the latest Neutron Toolchains clang (LLVM main, rebuilt weekly)
+- **EROFS**: Read-only filesystem support for system partitions
+- **KALLSYMS_ALL**: Exposes all kernel symbols (required by ReSukiSU symbol lookup)
 
 # Installation
-On Recovery   
-- Download both the flashable zip and the original boot image for your device as a backup.   
-- Flash or Sideload the flashable zip with `adb sideload <package.zip>`  
-- Allow to continue if you see Error 21 signature invalid.   
-- Reboot to system and pray everything works.   
-- Profit.   
+On Recovery:
+- Download both the flashable zip and the original boot image for your device as a backup.
+- Flash or Sideload the flashable zip with `adb sideload <package.zip>`
+- Allow to continue if you see Error 21 signature invalid.
+- Reboot to system and pray everything works.
+- Profit.
 
-On ReSukiSU Manager   
-- On ReSukiSU Manager, click the "Working" card on the ReSukiSU Manager Home Screen.   
-- You'll see flash AnyKernel3, click it, and select the flashable zip.   
-- Click next and the flashable will be installed. If you see KPM option, just choose follow kernel.   
-- Reboot and pray everything works.   
-- Profit.   
+On ReSukiSU Manager:
+- On ReSukiSU Manager, click the "Working" card on the ReSukiSU Manager Home Screen.
+- You'll see flash AnyKernel3, click it, and select the flashable zip.
+- Click next and the flashable will be installed. If you see KPM option, just choose follow kernel.
+- Reboot and pray everything works.
+- Profit.
 
-Restore to default kernel   
-- You'll need to remove everything inside `/data/adb`. You can do this with `su -c rm -rf /data/adb/*`.   
-- Then immediately reboot to bootloader/fastbootd.   
-- Flash the stock boot image with `fastboot flash boot <theoriginalbootimage.img>`   
-- Reboot with `fastboot reboot` and pray everything works.   
-- Profit.   
+Restore to default kernel:
+- You'll need to remove everything inside `/data/adb`. You can do this with `su -c rm -rf /data/adb/*`.
+- Then immediately reboot to bootloader/fastbootd.
+- Flash the stock boot image with `fastboot flash boot <theoriginalbootimage.img>`
+- Reboot with `fastboot reboot` and pray everything works.
+- Profit.
 
 # Credits
-Patches & buildscript
-- [TBYOOL](https://github.com/tbyool) for the buildscripts & kernel patches.   
-- [xiaomi-sm6150](https://github.com/xiaomi-sm6150) for the ln8000 patches.   
-- [JackA1ltMan](https://github.com/JackA1ltman) for ReSukiSU hook scripts, ReKernel scripts & SUSFS patches.   
-- [TheSillyOk](https://github.com/TheSillyOk) for LTO & kpatch fixup for 4.14 devices.   
+Patches & buildscript:
+- [riarumoda](https://github.com/riarumoda) for the original perf_neon buildscripts & kernel patches that this fork is based on.
+- [TBYOOL](https://github.com/tbyool) for the buildscripts & kernel patches.
+- [JackA1ltMan](https://github.com/JackA1ltman) for ReSukiSU hook scripts, ReKernel scripts & SUSFS patches.
+- [TheSillyOk](https://github.com/TheSillyOk) for LTO & kpatch fixup for 4.14 devices.
 
-Projects   
-- [ReSukiSU](https://github.com/ReSukiSU) for ReSukiSU.   
-- [vc-teahouse](https://github.com/vc-teahouse) for Baseband Guard.   
-- [maxsteeel](https://github.com/maxsteeel) for NoMount.   
-- [ravindu644](https://github.com/ravindu644) for Droidspaces.   
-- [Sakion-Team](https://github.com/Sakion-Team/Re-Kernel) for ReKernel.   
-- [LineageOS](https://github.com/LineageOS) for kernel sources.   
-- [PixelOS-Devices](https://github.com/PixelOS-Devices) for kernel sources.   
-- [Mi-Thorium](https://github.com/Mi-Thorium) for kernel sources.   
+Projects:
+- [ReSukiSU](https://github.com/ReSukiSU) for ReSukiSU.
+- [vc-teahouse](https://github.com/vc-teahouse) for Baseband Guard.
+- [maxsteeel](https://github.com/maxsteeel) for NoMount.
+- [ravindu644](https://github.com/ravindu644) for Droidspaces.
+- [Sakion-Team](https://github.com/Sakion-Team/Re-Kernel) for ReKernel.
+- [Neutron-Toolchains](https://github.com/Neutron-Toolchains) for the Clang toolchain.
+- [LineageOS](https://github.com/LineageOS) for kernel sources.

@@ -3,160 +3,76 @@ echo "- Setting up build environment..."
 
 # Device Default Exports
 echo "-- Exporting device settings..."
-export KBUILD_BUILD_USER=riarumoda-compile
-export KBUILD_BUILD_HOST=riaru.com
-export KERNEL_NAME="-perf-neon"
+export KBUILD_BUILD_USER=drsexo-compile
+export KBUILD_BUILD_HOST=drsexo
+export KERNEL_NAME="-Nebula_ReSukiSU"
 export KERNEL_VERSION="4.14"
 export MAIN_DEFCONFIG="arch/arm64/configs/vendor/sdmsteppe-perf_defconfig"
 export ACTUAL_MAIN_DEFCONFIG="vendor/sdmsteppe-perf_defconfig"
 export COMMON_DEFCONFIG="vendor/debugfs.config"
 export FEATURE_DEFCONFIG=""
+export DEVICE_DEFCONFIG="vendor/davinci.config"
 
-# Device Settings - v3.7
-case "$DEVICE_IMPORT" in
-    # LineageOS - Xiaomi
-    sweet|davinci|tucana|violet)
-        export DEVICE_DEFCONFIG="vendor/${DEVICE_IMPORT}.config"
-        ;;
-    ginkgo|laurel_sprout)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/trinket-perf_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/trinket-perf_defconfig"
-        export COMMON_DEFCONFIG="vendor/debugfs.config vendor/xiaomi-trinket.config"
-        export DEVICE_DEFCONFIG="vendor/${DEVICE_IMPORT}.config"
-        export KBUILD_BUILD_USER=hiyorun-compile
-        ;;
-    umi|cmi)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/kona-perf_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/kona-perf_defconfig"
-        export DEVICE_DEFCONFIG="vendor/xiaomi/sm8250-common.config vendor/xiaomi/${DEVICE_IMPORT}.config"
-        export KERNEL_VERSION="4.19"
-        export KBUILD_BUILD_USER=kamilek-compile
-        ;;
-    miatoll)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/xiaomi/miatoll_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/xiaomi/miatoll_defconfig"
-        export DEVICE_DEFCONFIG=""
-        export KBUILD_BUILD_USER=eloxren-compile
-        ;;
-    # LineageOS - Samsung
-    a52q|a72q)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/lineage-${DEVICE_IMPORT}_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/lineage-${DEVICE_IMPORT}_defconfig"
-        export DEVICE_DEFCONFIG=""
-        export KBUILD_BUILD_USER=isaiah-compile
-        ;;
-    gta4l)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/bengal-perf_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/bengal-perf_defconfig"
-        export DEVICE_DEFCONFIG="vendor/gta4l-common.config"
-        export KERNEL_VERSION="4.19"
-        export KBUILD_BUILD_USER=hassansody-compile
-        ;;
-    d2s|d2x)
-        export MAIN_DEFCONFIG="arch/arm64/configs/exynos9820-${DEVICE_IMPORT}_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="exynos9820-${DEVICE_IMPORT}_defconfig"
-        export DEVICE_DEFCONFIG=""
-        export COMMON_DEFCONFIG=""
-    ;;
-    # Mi-Thorium
-    mi89x7-playground)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/msm8937-perf_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/msm8937-perf_defconfig"
-        export COMMON_DEFCONFIG="vendor/msm8937-legacy.config vendor/common.config"
-        export DEVICE_DEFCONFIG="vendor/xiaomi/msm8937/common.config vendor/xiaomi/msm8937/mi8937.config"
-        if [ "$DEVICE_IMPORT" = "mi89x7-playground" ]; then
-            export FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/exfat.config vendor/feature/kprobes.config vendor/feature/lmkd.config vendor/feature/ntfs.config vendor/feature/wireguard.config"
-            export KERNEL_NAME="-mithorium-neon"
-        fi
-        export KERNEL_VERSION="4.19"
-        ;;
-    # PixelOS
-    sweet-playground)
-        export MAIN_DEFCONFIG="arch/arm64/configs/sweet_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="sweet_defconfig"
-        export COMMON_DEFCONFIG="vendor/debugfs.config"
-        export DEVICE_DEFCONFIG=""
-        export KERNEL_NAME="-vantom-neon"
-        ;;
-    # MIUI
-    sweet-miui)
-        export DEVICE_DEFCONFIG="vendor/sweet.config"
-        export KERNEL_NAME="-miui-neon"
-        ;;
-    # OneUI
-    a9y18qlte)
-        export MAIN_DEFCONFIG="arch/arm64/configs/a9y18qlte_eur_open_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="a9y18qlte_eur_open_defconfig"
-        export COMMON_DEFCONFIG=""
-        export DEVICE_DEFCONFIG=""
-        export FEATURE_DEFCONFIG=""
-        export KERNEL_VERSION="4.4"
-        ;;
-    *)
-        echo "- Invalid DEVICE_IMPORT. Valid options: sweet, davinci, ginkgo, laurel_sprout, mi89x7-playground, sweet-miui, a9y18qlte. Yours: $DEVICE_IMPORT."
-        exit 1
-        ;;
-esac
-
-# GCC and Clang settings
+# Clang settings (Neutron Toolchains, latest tag, cached by tag).
+# CLANG_TRIPLE omitted: Neutron bundles its own binutils, doesn't need AOSP's.
+# CC is ccache-wrapped; the workflow restores/saves its cache dir across runs.
 echo "-- Exporting toolchain settings..."
 export CLANG_ROOT="$PWD/clang"
-export GCC64_ROOT="$PWD/gcc64"
-export GCC32_ROOT="$PWD/gcc32"
-export PATH="$CLANG_ROOT/bin:$GCC64_ROOT/bin:$GCC32_ROOT/bin:/usr/bin:$PATH"
+export PATH="$CLANG_ROOT/bin:/usr/bin:$PATH"
 export MAKE_ARGS=(
-        ARCH=arm64 LLVM=1 LLVM_IAS=1 CC=clang LD=ld.lld AR=llvm-ar AS=llvm-as
+        ARCH=arm64 LLVM=1 LLVM_IAS=1 CC="ccache clang" LD=ld.lld AR=llvm-ar AS=llvm-as
         NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip
-        CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
-        CLANG_TRIPLE=aarch64-linux-gnu-
-)
-TC_URLS=(
-    "clang|https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
-    "gcc64|https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git"
-    "gcc32|https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git"
+        CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
+        KCFLAGS="-Wno-implicit-enum-enum-cast"
 )
 
-# Clang and GCC Setup
-for tc in "${TC_URLS[@]}"; do
-    dir="${tc%%|*}"; url="${tc##*|}"
-    if [[ "$url" == *.git ]]; then
-        if [ ! -d "$dir/.git" ]; then
-            echo "-- Cloning $dir..."
-            rm -rf "$dir"
-            git clone "$url" --depth=1 "$dir" &> /dev/null || { echo "-- Fatal: Failed to clone $dir!"; exit 1; }
-        else
-            echo "-- Using local $dir"
+# No antman/glibc patch: ubuntu-latest's glibc is already newer than
+# Neutron's minimum, and patching would slow every compile invocation.
+NEUTRON_REPO="Neutron-Toolchains/clang-build-catalogue"
+
+if [[ -x "$CLANG_ROOT/bin/clang" && -f "$CLANG_ROOT/build.info" ]]; then
+    echo "-- Using cached Neutron clang at $CLANG_ROOT (tag $(cat "$CLANG_ROOT/build.info"))"
+else
+    echo "-- Fetching latest Neutron clang tag..."
+    NEUTRON_TAG=$(curl -fsSL "https://raw.githubusercontent.com/${NEUTRON_REPO}/main/latest.txt" \
+                  | grep -A1 '^\[tag\]' | tail -n1 | tr -d '[:space:]')
+    if [[ -z "$NEUTRON_TAG" ]]; then
+        echo "-- Fatal: Failed to fetch latest Neutron tag!"
+        exit 1
+    fi
+    echo "-- Latest tag: $NEUTRON_TAG"
+
+    NEUTRON_TARBALL="neutron-clang-${NEUTRON_TAG}.tar.zst"
+    NEUTRON_URL="https://github.com/${NEUTRON_REPO}/releases/download/${NEUTRON_TAG}/${NEUTRON_TARBALL}"
+
+    rm -rf "$CLANG_ROOT"
+    mkdir -p "$CLANG_ROOT"
+
+    echo "-- Downloading $NEUTRON_TARBALL ..."
+    curl -fL --retry 3 -o "$NEUTRON_TARBALL" "$NEUTRON_URL" \
+        || { echo "-- Fatal: Failed to download Neutron tarball!"; exit 1; }
+
+    echo "-- Extracting..."
+    tar -I zstd -xf "$NEUTRON_TARBALL" -C "$CLANG_ROOT" \
+        || { echo "-- Fatal: Failed to extract Neutron tarball!"; exit 1; }
+
+    # Older Neutron releases nest under neutron-clang-<tag>/, handle both.
+    if [[ ! -x "$CLANG_ROOT/bin/clang" ]]; then
+        nested=$(find "$CLANG_ROOT" -maxdepth 1 -type d -name "neutron-clang-*" | head -n1)
+        if [[ -n "$nested" && -x "$nested/bin/clang" ]]; then
+            mv "$nested"/* "$CLANG_ROOT"/ 2>/dev/null || true
+            mv "$nested"/.[!.]* "$CLANG_ROOT"/ 2>/dev/null || true
+            rmdir "$nested" 2>/dev/null || true
         fi
     fi
-done
 
-# a9y18qlte specific settings
-if [ "$DEVICE_IMPORT" == "a9y18qlte" ]; then
-    echo "-- Setting up OpenSSL 1.1..."
-    export OPENSSL_DIR="$HOME/.openssl1.1"
-  
-    if [ ! -d "$OPENSSL_DIR" ]; then
-        wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz &> /dev/null || { echo "-- Fatal: Failed to download OpenSSL!"; exit 1; }
-        tar -xf openssl-1.1.1w.tar.gz
-        cd openssl-1.1.1w
-        ./config --prefix="$OPENSSL_DIR" --openssldir="$OPENSSL_DIR" &> /dev/null
-        make -s -j$(nproc) &> /dev/null
-        make -s install &> /dev/null
-        cd ..
-        rm -rf openssl-1.1.1w*
-    fi
+    [[ -x "$CLANG_ROOT/bin/clang" ]] \
+        || { echo "-- Fatal: clang binary not found after extraction!"; exit 1; }
 
-    export HOSTCFLAGS="-I$OPENSSL_DIR/include"
-    export HOSTLDFLAGS="-L$OPENSSL_DIR/lib -Wl,-rpath,$OPENSSL_DIR/lib"
-    export LD_LIBRARY_PATH="$OPENSSL_DIR/lib:$LD_LIBRARY_PATH"
-    export MY_OPENSSL_DIR="$OPENSSL_DIR"
-
-    echo "-- Setting up MAKE_ARGS..."
-    export MAKE_ARGS=(
-        ARCH=arm64 CC=aarch64-linux-android-gcc LD=aarch64-linux-android-ld.bfd
-        AR=aarch64-linux-android-ar AS=aarch64-linux-android-as NM=aarch64-linux-android-nm
-        OBJCOPY=aarch64-linux-android-objcopy OBJDUMP=aarch64-linux-android-objdump
-        STRIP=aarch64-linux-android-strip CROSS_COMPILE=aarch64-linux-android- 
-        HOSTCFLAGS="$HOSTCFLAGS" HOSTLDFLAGS="$HOSTLDFLAGS" OPENSSL="$MY_OPENSSL_DIR/bin/openssl"
-    )
+    rm -f "$NEUTRON_TARBALL"
+    echo "$NEUTRON_TAG" > "$CLANG_ROOT/build.info"
+    echo "-- Neutron clang tag $NEUTRON_TAG installed at $CLANG_ROOT"
 fi
+
+"$CLANG_ROOT/bin/clang" --version \
+    || { echo "-- Fatal: clang not executable after setup!"; exit 1; }
