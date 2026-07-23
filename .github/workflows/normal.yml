@@ -2,6 +2,19 @@ name: Weekly Kernel Build
 
 on:
   workflow_dispatch:
+    inputs:
+      build_lineageos:
+        description: 'Build LineageOS'
+        type: boolean
+        default: true
+      build_pixelos:
+        description: 'Build PixelOS'
+        type: boolean
+        default: true
+      build_derpfest:
+        description: 'Build Derpfest'
+        type: boolean
+        default: true
   schedule:
     - cron: '5 3 * * 0'
 
@@ -9,19 +22,46 @@ permissions:
   contents: write
 
 jobs:
+  determine_roms:
+    runs-on: ubuntu-latest
+    outputs:
+      roms: ${{ steps.set.outputs.roms }}
+    steps:
+      - id: set
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            BUILD_LINEAGEOS="${{ inputs.build_lineageos }}"
+            BUILD_PIXELOS="${{ inputs.build_pixelos }}"
+            BUILD_DERPFEST="${{ inputs.build_derpfest }}"
+          else
+            BUILD_LINEAGEOS="true"
+            BUILD_PIXELOS="true"
+            BUILD_DERPFEST="true"
+          fi
+
+          ROMS="[]"
+          [ "$BUILD_LINEAGEOS" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"lineageos","repo":"LineageOS/android_kernel_xiaomi_sm6150","display":"LineageOS"}]')
+          [ "$BUILD_PIXELOS" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"pixelos","repo":"PixelOS-Devices/android_kernel_xiaomi_sm6150","display":"PixelOS"}]')
+          [ "$BUILD_DERPFEST" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"derpfest","repo":"DerpFest-Devices/kernel_xiaomi_sm6150","display":"Derpfest"}]')
+
+          if [ "$ROMS" = "[]" ]; then
+            echo "Fatal: no ROM selected"
+            exit 1
+          fi
+          echo "Building: $ROMS"
+          echo "roms=$ROMS" >> $GITHUB_OUTPUT
+
   build:
+    needs: determine_roms
     runs-on: ubuntu-latest
     env:
       CCACHE_DIR: ${{ github.workspace }}/.ccache
       CCACHE_MAXSIZE: 3G
     strategy:
+      fail-fast: false
+      max-parallel: 1
       matrix:
-        build-type: [davinci]
-        ksu-type: [resukisu-susfs]
-        bbg-type: [bbg]
-        nomount-type: [nomount]
-        droidspaces-type: [droidspaces]
-        rekernel-type: [rekernel]
+        include: ${{ fromJson(needs.determine_roms.outputs.roms) }}
 
     steps:
       - uses: actions/checkout@v7
@@ -46,22 +86,20 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-davinci-${{ github.run_id }}
+          key: ccache-davinci-${{ matrix.rom }}-${{ github.run_id }}
           restore-keys: |
-            ccache-davinci-
+            ccache-davinci-${{ matrix.rom }}-
 
-      - name: Resolve latest LineageOS branch
+      - name: Resolve ROM branch
         run: |
-          BRANCH=$(git ls-remote --heads https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git \
-            | sed 's#.*refs/heads/##' \
-            | grep -E '^lineage-[0-9]+(\.[0-9]+)?$' \
-            | sort -V | tail -1)
+          BRANCH=$(git ls-remote --symref https://github.com/${{ matrix.repo }}.git HEAD \
+            | awk '/^ref:/{sub("refs/heads/","",$2); print $2}')
           if [ -z "$BRANCH" ]; then
-            echo "Fatal: could not resolve a lineage-* branch"
+            echo "Fatal: could not resolve default branch for ${{ matrix.repo }}"
             exit 1
           fi
-          echo "Latest LineageOS branch: $BRANCH"
-          echo "LOS_BRANCH=$BRANCH" >> $GITHUB_ENV
+          echo "Resolved branch: $BRANCH"
+          echo "ROM_BRANCH=$BRANCH" >> $GITHUB_ENV
 
       - name: Preparing kernel sources
         run: |
@@ -69,7 +107,7 @@ jobs:
             rm -rf android_kernel_xiaomi_sm6150
           fi
           echo "Cloning kernel sources..."
-          git clone https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git -b "$LOS_BRANCH" --depth=1 android_kernel_xiaomi_sm6150
+          git clone https://github.com/${{ matrix.repo }}.git -b "$ROM_BRANCH" --depth=1 android_kernel_xiaomi_sm6150
           echo "Copying buildscript..."
           cp build.sh android_kernel_xiaomi_sm6150/
           cp -r scripts android_kernel_xiaomi_sm6150/
@@ -93,10 +131,12 @@ jobs:
           key: neutron-clang-clean-${{ steps.neutron_tag.outputs.tag }}
 
       - name: Compile the kernel
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Starting to compile..."
           cd android_kernel_xiaomi_sm6150/
-          ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
+          ./build.sh ${{ matrix.rom }} davinci resukisu-susfs bbg nomount droidspaces rekernel
           cd ..
           ccache -s
 
@@ -105,73 +145,55 @@ jobs:
         uses: actions/cache/save@v6
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-davinci-${{ github.run_id }}
+          key: ccache-davinci-${{ matrix.rom }}-${{ github.run_id }}
 
       - name: Collect release metadata
         id: meta
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd android_kernel_xiaomi_sm6150
+          source /tmp/ksu_resolved.env
 
           KV=$(awk '/^VERSION = /{print $3}' Makefile)
           KP=$(awk '/^PATCHLEVEL = /{print $3}' Makefile)
           KS=$(awk '/^SUBLEVEL = /{print $3}' Makefile)
           KERNEL_VERSION="${KV}.${KP}.${KS}"
 
-          LOS_VERSION="${LOS_BRANCH#lineage-}"
+          if [[ "$ROM_BRANCH" == lineage-* ]]; then
+            ROM_VERSION="${ROM_BRANCH#lineage-}"
+          else
+            ROM_VERSION="$ROM_BRANCH"
+          fi
 
           CLANG_VER=$("$PWD/clang/bin/clang" --version 2>&1 | head -1 | sed -nE 's/.*clang version ([^ ]+).*/\1/p')
           CLANG_DISPLAY="Neutron Clang ${CLANG_VER}"
 
-          KSU_TAG=$(curl -fsSL -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/ReSukiSU/ReSukiSU/tags?per_page=1" \
-            | jq -r '.[0].name // "unknown"')
-
-          KSU_SHA=$(curl -fsSL -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/ReSukiSU/ReSukiSU/commits/main" \
-            | jq -r '.sha // empty' | cut -c1-8)
+          KSU_TAG="${KSU_RESOLVED_TAG:-unknown}"
+          KSU_SHA="${KSU_RESOLVED_SHA:-}"
           if [ -n "$KSU_SHA" ] && [ "$KSU_TAG" != "unknown" ]; then
             KSU_NAME="${KSU_TAG}-${KSU_SHA}"
           else
             KSU_NAME="${KSU_TAG}"
           fi
-
-          KSU_CODE="unknown"
-          rm -rf /tmp/ksu_src
-          if git clone --filter=blob:none --depth=1 https://github.com/ReSukiSU/ReSukiSU.git \
-              /tmp/ksu_src 2>/dev/null; then
-
-            git -C /tmp/ksu_src fetch --unshallow --filter=blob:none 2>/dev/null \
-              || git -C /tmp/ksu_src fetch --filter=blob:none 2>/dev/null || true
-            COUNT=$(git -C /tmp/ksu_src rev-list --count HEAD 2>/dev/null)
-            if [ -n "$COUNT" ]; then
-              KSU_CODE=$((30000 + COUNT + 700))
-            fi
-          fi
+          KSU_CODE="${KSU_RESOLVED_CODE:-unknown}"
 
           SUSFS_VERSION=$(curl -fsSL \
             "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/.github/workflows/patch-susfs/action.yml" \
             | grep -oP 'SUSFS_VERSION="\K[^"]+')
           SUSFS_VERSION="${SUSFS_VERSION:-unknown}"
 
-          TITLE_DATE=$(date +'%Y/%m/%d')
-
           echo "kernel_version=$KERNEL_VERSION" >> $GITHUB_OUTPUT
-          echo "los_version=$LOS_VERSION" >> $GITHUB_OUTPUT
+          echo "rom_version=$ROM_VERSION" >> $GITHUB_OUTPUT
           echo "clang_display=$CLANG_DISPLAY" >> $GITHUB_OUTPUT
           echo "ksu_name=$KSU_NAME" >> $GITHUB_OUTPUT
           echo "ksu_code=$KSU_CODE" >> $GITHUB_OUTPUT
           echo "susfs_version=$SUSFS_VERSION" >> $GITHUB_OUTPUT
-          echo "title_date=$TITLE_DATE" >> $GITHUB_OUTPUT
 
           echo "=== Collected metadata ==="
           echo "Kernel: $KERNEL_VERSION"
-          echo "LineageOS: $LOS_VERSION ($LOS_BRANCH)"
+          echo "${{ matrix.display }}: $ROM_VERSION ($ROM_BRANCH)"
           echo "Clang: $CLANG_DISPLAY"
           echo "ReSukiSU: $KSU_NAME (code $KSU_CODE)"
           echo "SusFS: $SUSFS_VERSION"
-          echo "Title date: $TITLE_DATE"
 
       - name: Preparing AnyKernel3 sources
         run: |
@@ -184,30 +206,122 @@ jobs:
 
       - name: Pack kernel with AnyKernel3
         run: |
-          ZIPNAME="Nebula-kernel-${{ matrix.build-type }}-ReSukiSU-${{ steps.ts.outputs.DATE }}.zip"
+          ZIPNAME="Nebula-${{ matrix.display }}-davinci-ReSukiSU-${{ steps.ts.outputs.DATE }}.zip"
           cd AnyKernel3
           zip -rq9 "../$ZIPNAME" ./*
           cd ..
           echo "ZIPNAME=$ZIPNAME" >> $GITHUB_ENV
+
+      - name: Stage build for combined release
+        run: |
+          STAGE="/tmp/release_stage_${{ matrix.rom }}"
+          mkdir -p "$STAGE"
+          cp "$ZIPNAME" "$STAGE/"
+          echo "${{ matrix.display }}" > "$STAGE/display.txt"
+          echo "${{ steps.meta.outputs.rom_version }}" > "$STAGE/rom_version.txt"
+          echo "${{ steps.meta.outputs.kernel_version }}" > "$STAGE/kernel_version.txt"
+          echo "${{ steps.meta.outputs.ksu_name }}" > "$STAGE/ksu_name.txt"
+          echo "${{ steps.meta.outputs.ksu_code }}" > "$STAGE/ksu_code.txt"
+          echo "${{ steps.meta.outputs.susfs_version }}" > "$STAGE/susfs_version.txt"
+          echo "${{ steps.meta.outputs.clang_display }}" > "$STAGE/clang_display.txt"
+
+      - name: Cache build output for release job
+        uses: actions/cache/save@v6
+        with:
+          path: /tmp/release_stage_${{ matrix.rom }}
+          key: nebula-build-${{ matrix.rom }}-${{ github.run_id }}
+
+  release:
+    needs: build
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore LineageOS build
+        uses: actions/cache/restore@v6
+        with:
+          path: /tmp/release_stage_lineageos
+          key: nebula-build-lineageos-${{ github.run_id }}
+          fail-on-cache-miss: false
+
+      - name: Restore PixelOS build
+        uses: actions/cache/restore@v6
+        with:
+          path: /tmp/release_stage_pixelos
+          key: nebula-build-pixelos-${{ github.run_id }}
+          fail-on-cache-miss: false
+
+      - name: Restore Derpfest build
+        uses: actions/cache/restore@v6
+        with:
+          path: /tmp/release_stage_derpfest
+          key: nebula-build-derpfest-${{ github.run_id }}
+          fail-on-cache-miss: false
+
+      - name: Assemble combined release
+        id: assemble
+        run: |
+          FOUND=0
+          for rom in lineageos pixelos derpfest; do
+            [ -d "/tmp/release_stage_${rom}" ] && FOUND=1
+          done
+          if [ "$FOUND" -eq 0 ]; then
+            echo "Fatal: no ROM build succeeded, nothing to release"
+            exit 1
+          fi
+
+          for rom in lineageos pixelos derpfest; do
+            if [ -f "/tmp/release_stage_${rom}/kernel_version.txt" ]; then
+              KERNEL_VERSION=$(cat "/tmp/release_stage_${rom}/kernel_version.txt")
+              KSU_NAME=$(cat "/tmp/release_stage_${rom}/ksu_name.txt")
+              KSU_CODE=$(cat "/tmp/release_stage_${rom}/ksu_code.txt")
+              SUSFS_VERSION=$(cat "/tmp/release_stage_${rom}/susfs_version.txt")
+              CLANG_DISPLAY=$(cat "/tmp/release_stage_${rom}/clang_display.txt")
+              break
+            fi
+          done
+
+          > /tmp/rom_lines.txt
+          for rom in lineageos pixelos derpfest; do
+            if [ -f "/tmp/release_stage_${rom}/rom_version.txt" ]; then
+              display=$(cat "/tmp/release_stage_${rom}/display.txt")
+              rom_version=$(cat "/tmp/release_stage_${rom}/rom_version.txt")
+              printf '**%s**: `%s`\n' "$display" "$rom_version" >> /tmp/rom_lines.txt
+            fi
+          done
+
+          cp /tmp/release_stage_*/*.zip . 2>/dev/null
+
+          echo "kernel_version=$KERNEL_VERSION" >> $GITHUB_OUTPUT
+          echo "ksu_name=$KSU_NAME" >> $GITHUB_OUTPUT
+          echo "ksu_code=$KSU_CODE" >> $GITHUB_OUTPUT
+          echo "susfs_version=$SUSFS_VERSION" >> $GITHUB_OUTPUT
+          echo "clang_display=$CLANG_DISPLAY" >> $GITHUB_OUTPUT
+          echo "title_date=$(date +'%Y/%m/%d')" >> $GITHUB_OUTPUT
+          {
+            echo "rom_lines<<ROMLINESEOF"
+            cat /tmp/rom_lines.txt
+            echo "ROMLINESEOF"
+          } >> $GITHUB_OUTPUT
 
       - name: Create Release and Upload builds
         uses: softprops/action-gh-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: nebula-${{ steps.ts.outputs.TIME }}
-          name: Nebula ${{ steps.meta.outputs.kernel_version }} - ${{ steps.meta.outputs.title_date }}
+          tag_name: nebula-${{ github.run_id }}
+          name: Nebula ${{ steps.assemble.outputs.kernel_version }} - ${{ steps.assemble.outputs.title_date }}
           draft: false
           prerelease: false
           body: |
-            **Kernel**: `${{ steps.meta.outputs.kernel_version }}`
-            **ReSukiSU**: `${{ steps.meta.outputs.ksu_name }}` (code `${{ steps.meta.outputs.ksu_code }}`)
-            **SusFS**: `${{ steps.meta.outputs.susfs_version }}`
-            **LineageOS**: `${{ steps.meta.outputs.los_version }}`
-            **Built with**: `${{ steps.meta.outputs.clang_display }}`
+            **Kernel**: `${{ steps.assemble.outputs.kernel_version }}`
+            **ReSukiSU**: `${{ steps.assemble.outputs.ksu_name }}` (code `${{ steps.assemble.outputs.ksu_code }}`)
+            **SusFS**: `${{ steps.assemble.outputs.susfs_version }}`
+            **Built with**: `${{ steps.assemble.outputs.clang_display }}`
+
+            ${{ steps.assemble.outputs.rom_lines }}
 
             [ReSukiSU manager](https://resukisu.github.io/guide/install.html#Get-manager)
-          files: ${{ env.ZIPNAME }}
+          files: Nebula-*.zip
           overwrite_files: true
 
       - name: Notify Telegram
@@ -220,27 +334,31 @@ jobs:
             exit 0
           fi
 
-          if [ ! -f "$ZIPNAME" ]; then
-            echo "No zip found for Telegram notification"
-            exit 0
-          fi
-          ls -la "$ZIPNAME"
+          DATE="${{ steps.assemble.outputs.title_date }}"
+          KV="${{ steps.assemble.outputs.kernel_version }}"
+          KN="${{ steps.assemble.outputs.ksu_name }}"
+          KC="${{ steps.assemble.outputs.ksu_code }}"
+          SV="${{ steps.assemble.outputs.susfs_version }}"
+          CD="${{ steps.assemble.outputs.clang_display }}"
 
-          DATE="${{ steps.meta.outputs.title_date }}"
-          KV="${{ steps.meta.outputs.kernel_version }}"
-          KN="${{ steps.meta.outputs.ksu_name }}"
-          KC="${{ steps.meta.outputs.ksu_code }}"
-          SV="${{ steps.meta.outputs.susfs_version }}"
-          LV="${{ steps.meta.outputs.los_version }}"
-          CD="${{ steps.meta.outputs.clang_display }}"
+          ROM_LINES_HTML=""
+          for rom in lineageos pixelos derpfest; do
+            if [ -f "/tmp/release_stage_${rom}/rom_version.txt" ]; then
+              display=$(cat "/tmp/release_stage_${rom}/display.txt")
+              rom_version=$(cat "/tmp/release_stage_${rom}/rom_version.txt")
+              ROM_LINES_HTML="${ROM_LINES_HTML}<b>${display}</b>  <code>${rom_version}</code>
+          "
+            fi
+          done
 
           MESSAGE="<b>New release - ${DATE}</b>
 
           <b>Kernel</b>  <code>${KV}</code>
           <b>ReSukiSU</b>  <code>${KN}</code> (code <code>${KC}</code>)
           <b>SusFS</b>  <code>${SV}</code>
-          <b>LineageOS</b>  <code>${LV}</code>
           <b>Built with</b>  <code>${CD}</code>
+
+          ${ROM_LINES_HTML}
 
           <a href=\"https://t.me/ReSukiSU/4\">ReSukiSU Manager</a>"
 
@@ -250,20 +368,15 @@ jobs:
             --form-string "parse_mode=HTML" \
             --form-string 'link_preview_options={"is_disabled":true}' \
             --max-time 30 -w "\nHTTP_STATUS:%{http_code}" 2>&1) || true
+          echo "Telegram sendMessage response: $TEXT_RESPONSE"
 
-          echo "Telegram sendMessage response:"
-          echo "$TEXT_RESPONSE"
-
-          DOC_RESPONSE=$(curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendDocument" \
-            --form-string "chat_id=${TG_CHAT}" \
-            -F "document=@${ZIPNAME}" \
-            --max-time 120 -w "\nHTTP_STATUS:%{http_code}" 2>&1) || true
-
-          echo "Telegram sendDocument response:"
-          echo "$DOC_RESPONSE"
-
-          if echo "$TEXT_RESPONSE" | grep -q '"ok":true' && echo "$DOC_RESPONSE" | grep -q '"ok":true'; then
-            echo "Telegram notification sent successfully"
-          else
-            echo "Warning: Telegram notification failed (release was still published successfully)"
-          fi
+          for rom in lineageos pixelos derpfest; do
+            zipfile=$(ls /tmp/release_stage_${rom}/*.zip 2>/dev/null | head -1)
+            if [ -n "$zipfile" ]; then
+              DOC_RESPONSE=$(curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendDocument" \
+                --form-string "chat_id=${TG_CHAT}" \
+                -F "document=@${zipfile}" \
+                --max-time 120 -w "\nHTTP_STATUS:%{http_code}" 2>&1) || true
+              echo "Telegram sendDocument ($rom) response: $DOC_RESPONSE"
+            fi
+          done

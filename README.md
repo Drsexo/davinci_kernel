@@ -1,8 +1,8 @@
-![banner](.github/assets/banner.png)
+![banner](.github/assets/banner.jpg)
 <div align="center" style="font-size: 1.25rem;">
     <strong>
         <em>
-        This project is not affiliated with LineageOS.
+        This project is not affiliated with any ROM.
         </em>
     </strong>
 </div>
@@ -19,15 +19,16 @@
 
 # Nebula
 
-Nebula is a weekly-built custom kernel for the Xiaomi Mi 9T (davinci), based on the LineageOS 4.14 kernel source. It ships with ReSukiSU (with SUSFS), Baseband Guard, NoMount, Droidspaces, and ReKernel integrated, compiled with the Neutron Clang toolchain using LTO and -O3.
+Nebula is a weekly-built custom kernel for the Xiaomi Mi 9T (davinci), built for LineageOS, PixelOS, and Derpfest on the 4.14 kernel source.  
+It ships with ReSukiSU (with SUSFS), Baseband Guard, NoMount, Droidspaces, and ReKernel integrated, compiled with the Neutron Clang toolchain using LTO and -O3.
 
 # Requirements
-- Xiaomi Mi 9T / Redmi K20 (davinci), running a LineageOS based rom (this kernel is built directly from LineageOS's own kernel tree, hasn't been tested against other ROMs)
+- Xiaomi Mi 9T / Redmi K20 (davinci), running latest LineageOS, PixelOS, or Derpfest
 - Custom recovery or ADB access for sideloading
 - [ReSukiSU Manager](https://resukisu.github.io/guide/install.html#Get-manager) installed, to actually use root/SUSFS after flashing
 
 # Release schedules
-This kernel follows weekly builds of LineageOS. A new build is published every Sunday, announced on the [Telegram channel](https://t.me/Nebula_Kernel_Davinci) and the [GitHub releases page](https://github.com/Drsexo/davinci_kernel/releases).
+New builds are published every Sunday, announced on the [Telegram channel](https://t.me/Nebula_Kernel_Davinci) and the [GitHub releases page](https://github.com/Drsexo/davinci_kernel/releases).
 
 # Features
 - **ReSukiSU & SUSFS support**: KernelSU fork with SUSFS integration for non-GKI 4.14 devices
@@ -39,8 +40,6 @@ This kernel follows weekly builds of LineageOS. A new build is published every S
 - **-O3**: Aggressive compiler optimization level
 - **LLVM=1**: Full LLVM/Clang toolchain build (clang, lld, llvm-ar, llvm-nm)
 - **Neutron Clang**: Built with the latest Neutron Toolchains clang (LLVM main, rebuilt weekly)
-- **EROFS**: Read-only filesystem support for system partitions
-- **KALLSYMS_ALL**: Exposes all kernel symbols (required by ReSukiSU symbol lookup)
 
 # Installation
 On Recovery:
@@ -78,4 +77,8 @@ Projects:
 - [ravindu644](https://github.com/ravindu644) for Droidspaces.
 - [Sakion-Team](https://github.com/Sakion-Team/Re-Kernel) for ReKernel.
 - [Neutron-Toolchains](https://github.com/Neutron-Toolchains) for the Clang toolchain.
-- [LineageOS](https://github.com/LineageOS) for kernel sources.
+
+Kernel source:
+- [LineageOS](https://github.com/LineageOS/android_kernel_xiaomi_sm6150)  
+- [PixelOS](https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150)  
+- [DerpFest](https://github.com/DerpFest-Devices/kernel_xiaomi_sm6150)

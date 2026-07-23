@@ -7,6 +7,10 @@ apply_patches() {
         echo "-- Applying patch: $(basename "$patch_url")"
         curl -sL --fail --retry 3 "$patch_url" -o /tmp/temp_patch.patch
         if [ -s /tmp/temp_patch.patch ]; then
+            if patch --dry-run -R -p1 --fuzz=5 < /tmp/temp_patch.patch > /dev/null 2>&1; then
+                echo "-- Already applied upstream, skipping: $(basename "$patch_url")"
+                continue
+            fi
             patch -s -p1 --fuzz=5 < /tmp/temp_patch.patch || { echo "Fatal: Failed to apply patch!"; exit 1; }
         else
             echo "Fatal: Failed to download patch from $patch_url"
@@ -31,9 +35,6 @@ echo "-- Tuning default configs..."
 echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
 
-# Off: CONFIG_LTO_CLANG makes Makefile.build pipe objdump into grep -q,
-# which SIGPIPEs llvm-objdump ("LLVM ERROR: Broken pipe" log spam, harmless
-# but noisy). Not needed here, nothing loads prebuilt modules against this.
 echo "CONFIG_MODVERSIONS=n" >> $MAIN_DEFCONFIG
 echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
