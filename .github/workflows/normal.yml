@@ -355,11 +355,10 @@ jobs:
 
           <b>Kernel</b>  <code>${KV}</code>
           <b>ReSukiSU</b>  <code>${KN}</code> (code <code>${KC}</code>)
-          <b>SusFS</b>  <code>${SV}</code>
+          <b>SUSFS</b>  <code>${SV}</code>
           <b>Built with</b>  <code>${CD}</code>
 
           ${ROM_LINES_HTML}
-
           <a href=\"https://t.me/ReSukiSU/4\">ReSukiSU Manager</a>"
 
           TEXT_RESPONSE=$(curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
@@ -370,13 +369,33 @@ jobs:
             --max-time 30 -w "\nHTTP_STATUS:%{http_code}" 2>&1) || true
           echo "Telegram sendMessage response: $TEXT_RESPONSE"
 
+          DOC_FIELDS=()
+          MEDIA_JSON="["
+          FILE_COUNT=0
+          SINGLE_ZIPFILE=""
           for rom in lineageos pixelos derpfest; do
             zipfile=$(ls /tmp/release_stage_${rom}/*.zip 2>/dev/null | head -1)
             if [ -n "$zipfile" ]; then
-              DOC_RESPONSE=$(curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendDocument" \
-                --form-string "chat_id=${TG_CHAT}" \
-                -F "document=@${zipfile}" \
-                --max-time 120 -w "\nHTTP_STATUS:%{http_code}" 2>&1) || true
-              echo "Telegram sendDocument ($rom) response: $DOC_RESPONSE"
+              [ "$FILE_COUNT" -gt 0 ] && MEDIA_JSON="${MEDIA_JSON},"
+              MEDIA_JSON="${MEDIA_JSON}{\"type\":\"document\",\"media\":\"attach://${rom}\"}"
+              DOC_FIELDS+=(-F "${rom}=@${zipfile}")
+              SINGLE_ZIPFILE="$zipfile"
+              FILE_COUNT=$((FILE_COUNT + 1))
             fi
           done
+          MEDIA_JSON="${MEDIA_JSON}]"
+
+          if [ "$FILE_COUNT" -ge 2 ]; then
+            DOC_RESPONSE=$(curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMediaGroup" \
+              --form-string "chat_id=${TG_CHAT}" \
+              --form-string "media=${MEDIA_JSON}" \
+              "${DOC_FIELDS[@]}" \
+              --max-time 120 -w "\nHTTP_STATUS:%{http_code}" 2>&1) || true
+            echo "Telegram sendMediaGroup response: $DOC_RESPONSE"
+          elif [ "$FILE_COUNT" -eq 1 ]; then
+            DOC_RESPONSE=$(curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendDocument" \
+              --form-string "chat_id=${TG_CHAT}" \
+              -F "document=@${SINGLE_ZIPFILE}" \
+              --max-time 120 -w "\nHTTP_STATUS:%{http_code}" 2>&1) || true
+            echo "Telegram sendDocument response: $DOC_RESPONSE"
+          fi

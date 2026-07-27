@@ -42,26 +42,19 @@ New builds are published every Sunday, announced on the [Telegram channel](https
 - **Neutron Clang**: Built with the latest Neutron Toolchains clang (LLVM main, rebuilt weekly)
 
 # Installation
-On Recovery:
-- Download both the flashable zip and the original boot image for your device as a backup.
-- Flash or Sideload the flashable zip with `adb sideload <package.zip>`
-- Allow to continue if you see Error 21 signature invalid.
-- Reboot to system and pray everything works.
-- Profit.
+Always back up your stock boot image first!  
 
-On ReSukiSU Manager:
-- On ReSukiSU Manager, click the "Working" card on the ReSukiSU Manager Home Screen.
-- You'll see flash AnyKernel3, click it, and select the flashable zip.
-- Click next and the flashable will be installed. If you see KPM option, just choose follow kernel.
-- Reboot and pray everything works.
-- Profit.
+On Recovery:
+- Download the flashable zip.
+- Flash or Sideload the flashable zip with `adb -d sideload /path/to/zip`
+- Allow to continue if you see Error 21 signature invalid.
+- Reboot.
 
 Restore to default kernel:
 - You'll need to remove everything inside `/data/adb`. You can do this with `su -c rm -rf /data/adb/*`.
-- Then immediately reboot to bootloader/fastbootd.
-- Flash the stock boot image with `fastboot flash boot <theoriginalbootimage.img>`
-- Reboot with `fastboot reboot` and pray everything works.
-- Profit.
+- Then immediately reboot to fastboot.
+- Flash the stock boot image with `fastboot flash boot path/to/img`
+- Reboot with `fastboot reboot`.
 
 # Credits
 Patches & buildscript:
