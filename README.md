@@ -56,6 +56,9 @@ Restore to default kernel:
 - Flash the stock boot image with `fastboot flash boot path/to/img`
 - Reboot with `fastboot reboot`.
 
+> [!IMPORTANT]
+> PixelOS enforces signature verification on sideloaded zips. The kernel zip will fail to flash in the stock recovery. Use [OrangeFox recovery](https://sourceforge.net/projects/randomprojectfiles/files/ofox/latest) to flash this kernel.
+
 # Credits
 Patches & buildscript:
 - [riarumoda](https://github.com/riarumoda) for the original perf_neon buildscripts & kernel patches that this fork is based on.

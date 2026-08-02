@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "- Applying device specific patches for $DEVICE_IMPORT..."
 
-# Patcher helper - 1.5
+# Patcher helper - 1.6
 apply_patches() {
     for patch_url in "$@"; do
         echo "-- Applying patch: $(basename "$patch_url")"
@@ -43,3 +43,7 @@ echo "CONFIG_F2FS_FS_COMPRESSION=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_F2FS_FS_LZ4=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_F2FS_FS_LZO=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_F2FS_FS_ZSTD=y" >> $MAIN_DEFCONFIG
+
+# Zram: default to lz4
+sed -i 's/default_compressor = "lzo"/default_compressor = "lz4"/' drivers/block/zram/zram_drv.c 2>/dev/null || true
+echo "CONFIG_ZRAM_DEF_COMP_LZ4=y" >> $MAIN_DEFCONFIG
