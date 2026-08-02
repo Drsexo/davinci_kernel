@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default exports
-export SUSFS_PATCH="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/Patch/susfs_patch_to_${KERNEL_VERSION}.patch"
+export SUSFS_PATCH="scripts/goodies/assets/Patches/Patch/susfs_patch_to_${KERNEL_VERSION}.patch"
 
 case "$KERNELSU_SELECTOR" in
     zako|zako-susfs)
@@ -12,9 +12,9 @@ case "$KERNELSU_SELECTOR" in
 
         # Check if susfs are used or not, and set the appropriate hook script URL
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
-            KSU_HOOK="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/susfs_inline_hook_patches.sh"
+            KSU_HOOK="scripts/goodies/assets/Patches/susfs_inline_hook_patches.sh"
         else
-            KSU_HOOK="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/syscall_hook_patches.sh"
+            KSU_HOOK="scripts/goodies/assets/Patches/syscall_hook_patches.sh"
         fi
 
         # Setup KernelSU
@@ -32,12 +32,12 @@ case "$KERNELSU_SELECTOR" in
 
         # Apply KSU Hooks
         echo "-- Applying KernelSU hooks..."
-        curl -LSs --fail --retry 3 "$KSU_HOOK" | bash &> /dev/null || { echo "Fatal: KSU hook script failed to download/run!"; exit 1; }
+        bash "$KSU_HOOK" &> /dev/null || { echo "Fatal: KSU hook script failed to download/run!"; exit 1; }
 
         # SUSFS Logic
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
             echo "-- Setting up SUSFS support for KernelSU..."
-            wget -qO- "$SUSFS_PATCH" | patch -s -p1 --fuzz=5
+            patch -s -p1 --fuzz=5 < "$SUSFS_PATCH"
             echo "CONFIG_KSU_SUSFS=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> $MAIN_DEFCONFIG
