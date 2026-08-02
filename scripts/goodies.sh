@@ -6,7 +6,7 @@ git clone https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd.git scripts/goo
 # Reset goodies repository to a specific commit
 # Latest commit have iissues so we need to revert it back the janky way.
 cd scripts/goodies/assets
-git reset --hard 42e8e8cafc4ed620b3812c1bcf1fc76896b28613
+git reset --hard 75f1699a7f0a270ecae7ba696315e3d55d643101
 cd ../../../
 
 # KernelSU
