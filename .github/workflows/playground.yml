@@ -193,7 +193,7 @@ jobs:
           tag_name: kernel-playground-${{ needs.build.outputs.timestamp }}
           name: Playground - ${{ steps.ts.outputs.FANCYDATE }}
           draft: false
-          prerelease: true
+          prerelease: false
           body: |
             > [!IMPORTANT]   
             > - This sections contains community-built kernels thats not a part of LineageOS official releases, also some Official LineageOS kernels that did not meet the standard weekly release.   
