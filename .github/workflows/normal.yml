@@ -117,6 +117,7 @@ jobs:
           awk -v dev="$DEV_NAMES_FORMATTED" '/supported.versions=/ {print dev} {print}' AnyKernel3/anykernel.sh > AnyKernel3/anykernel.sh.tmp && mv AnyKernel3/anykernel.sh.tmp AnyKernel3/anykernel.sh
 
           sed -i "s/sweet (sm6150)/$BANNER/g" AnyKernel3/banner
+          sed -i 's/KERNEL_BUILD_TYPE="Weekly"/KERNEL_BUILD_TYPE="Weekly"/' AnyKernel3/anykernel.sh
 
       - name: Pack kernel with AnyKernel3
         run: |
