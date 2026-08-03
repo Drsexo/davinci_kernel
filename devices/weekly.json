@@ -1,0 +1,93 @@
+{
+  "sweet": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "dtb.img",
+    "dtbo": "dtbo.img",
+    "supported_versions": "15-16",
+    "device_names": ["sweet", "sweetin"],
+    "banner": "sweet (sm6150)",
+    "zip_prefix": "perf-neon-sweet-weekly",
+    "sources": [
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git", "branch": "lineage-23.2", "path": "." }
+    ]
+  },
+  "davinci": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "dtb.img",
+    "dtbo": "dtbo.img",
+    "supported_versions": "15-16",
+    "device_names": ["davinci", "davinciin"],
+    "banner": "davinci (sm6150)",
+    "zip_prefix": "perf-neon-davinci-weekly",
+    "sources": [
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git", "branch": "lineage-23.2", "path": "." }
+    ]
+  },
+  "tucana": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "dtb.img",
+    "dtbo": "dtbo.img",
+    "supported_versions": "15-16",
+    "device_names": ["tucana", "tucanain"],
+    "banner": "tucana (sm6150)",
+    "zip_prefix": "perf-neon-tucana-weekly",
+    "sources": [
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git", "branch": "lineage-23.2", "path": "." }
+    ]
+  },
+  "violet": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "dtb.img",
+    "dtbo": "dtbo.img",
+    "supported_versions": "15-16",
+    "device_names": ["violet", "violetin"],
+    "banner": "violet (sm6150)",
+    "zip_prefix": "perf-neon-violet-weekly",
+    "sources": [
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git", "branch": "lineage-23.2", "path": "." }
+    ]
+  },
+  "ginkgo": {
+    "dir": "android_kernel_xiaomi_sm6125",
+    "image": "Image.gz",
+    "dtb": "dtb.img",
+    "dtbo": "dtbo.img",
+    "supported_versions": "15-16",
+    "device_names": ["ginkgo", "willow"],
+    "banner": "ginkgo (sm6125)",
+    "zip_prefix": "perf-neon-ginkgo-weekly",
+    "sources": [
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6125.git", "branch": "lineage-23.2", "path": "." }
+    ]
+  },
+  "laurel_sprout": {
+    "dir": "android_kernel_xiaomi_sm6125",
+    "image": "Image.gz",
+    "dtb": "dtb.img",
+    "dtbo": "dtbo.img",
+    "supported_versions": "15-16",
+    "device_names": ["laurel_sprout", "laurel_sproutin"],
+    "banner": "laurel_sprout (sm6125)",
+    "zip_prefix": "perf-neon-laurel_sprout-weekly",
+    "sources": [
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6125.git", "branch": "lineage-23.2", "path": "." }
+    ]
+  },
+  "gta4l": {
+    "dir": "android_kernel_samsung_sm6115",
+    "image": "Image.gz-dtb",
+    "dtb": "",
+    "dtbo": "",
+    "supported_versions": "15-16",
+    "device_names": ["gta4l", "gta4lwifi"],
+    "banner": "gta4l (sm6115)",
+    "zip_prefix": "perf-neon-gta4l-weekly",
+    "sources": [
+      { "repo": "https://github.com/LineageOS/android_kernel_samsung_sm6115.git", "branch": "lineage-23.2", "path": "." }
+    ]
+  }
+}

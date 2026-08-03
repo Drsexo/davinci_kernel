@@ -16,8 +16,8 @@ jobs:
       date: ${{ steps.ts.outputs.DATE }}
     strategy:
       matrix:
-        build-type: [sweet, davinci, tucana, violet, ginkgo, laurel_sprout, umi, cmi, gta4l]
-        ksu-type: [zako-susfs, none]
+        build-type: [sweet, davinci, tucana, violet, ginkgo, laurel_sprout, gta4l]
+        ksu-type: [zako-susfs]
         bbg-type: [bbg]
         nomount-type: [nomount]
         droidspaces-type: [droidspaces]
@@ -44,147 +44,88 @@ jobs:
 
       - name: Preparing kernel sources
         run: |
-          if [[ "${{ matrix.build-type }}" == "sweet" || "${{ matrix.build-type }}" == "davinci" || "${{ matrix.build-type }}" == "tucana" || "${{ matrix.build-type }}" == "violet" ]]; then
-            if [ -d "$PWD/android_kernel_xiaomi_sm6150" ]; then
-              rm -rf android_kernel_xiaomi_sm6150
-            fi
-            echo "Cloning kernel sources..."
-            git clone https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git -b "lineage-23.2" --depth=1 android_kernel_xiaomi_sm6150
-            echo "Copying buildscript..."
-            cp build.sh android_kernel_xiaomi_sm6150/
-            cp -r scripts android_kernel_xiaomi_sm6150/
-            chmod +x ./android_kernel_xiaomi_sm6150/build.sh
-          elif [[ "${{ matrix.build-type }}" == "ginkgo" || "${{ matrix.build-type }}" == "laurel_sprout" ]]; then
-            if [ -d "$PWD/android_kernel_xiaomi_sm6125" ]; then
-              rm -rf android_kernel_xiaomi_sm6125
-            fi
-            echo "Cloning kernel sources..."
-            git clone https://github.com/LineageOS/android_kernel_xiaomi_sm6125.git -b "lineage-23.2" --depth=1 android_kernel_xiaomi_sm6125
-            echo "Copying buildscript..."
-            cp build.sh android_kernel_xiaomi_sm6125/
-            cp -r scripts android_kernel_xiaomi_sm6125/
-            chmod +x ./android_kernel_xiaomi_sm6125/build.sh
-          elif [[ "${{ matrix.build-type }}" == "umi" || "${{ matrix.build-type }}" == "cmi" ]]; then
-            if [ -d "$PWD/android_kernel_xiaomi_sm8250" ]; then
-              rm -rf android_kernel_xiaomi_sm8250
-            fi
-            echo "Cloning kernel sources..."
-            git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8250.git -b "lineage-23.2" --depth=1 android_kernel_xiaomi_sm8250
-            echo "Copying buildscript..."
-            cp build.sh android_kernel_xiaomi_sm8250/
-            cp -r scripts android_kernel_xiaomi_sm8250/
-            chmod +x ./android_kernel_xiaomi_sm8250/build.sh
-          elif [[ "${{ matrix.build-type }}" == "gta4l" ]]; then
-            if [ -d "$PWD/android_kernel_samsung_sm6115" ]; then
-              rm -rf android_kernel_samsung_sm6115
-            fi
-            echo "Cloning kernel sources..."
-            git clone https://github.com/LineageOS/android_kernel_samsung_sm6115.git -b "lineage-23.2" --depth=1 android_kernel_samsung_sm6115
-            echo "Copying buildscript..."
-            cp build.sh android_kernel_samsung_sm6115/
-            cp -r scripts android_kernel_samsung_sm6115/
-            chmod +x ./android_kernel_samsung_sm6115/build.sh
-          else
-            echo "Invalid build type: ${{ matrix.build-type }}"
+          BUILD_TYPE="${{ matrix.build-type }}"
+          DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir // empty' devices/weekly.json)
+
+          if [ -z "$DIR" ]; then
+            echo "::error::Invalid build type: $BUILD_TYPE"
             exit 1
           fi
+
+          rm -rf "$DIR"
+
+          jq -c --arg target "$BUILD_TYPE" '.[$target].sources[]' devices/weekly.json | while read -r item; do
+            REPO=$(echo "$item" | jq -r '.repo')
+            BRANCH=$(echo "$item" | jq -r '.branch')
+            SUB_PATH=$(echo "$item" | jq -r '.path // "."')
+
+            DEST="$DIR"
+            [ "$SUB_PATH" != "." ] && DEST="$DIR/$SUB_PATH"
+
+            echo "Cloning $REPO ($BRANCH) -> $DEST"
+            git clone "$REPO" --depth=1 -b "$BRANCH" "$DEST"
+          done
+
+          echo "Copying buildscript..."
+          cp build.sh "$DIR"/
+          cp -r scripts "$DIR"/
+          chmod +x ./"$DIR"/build.sh
 
       - name: Compile the kernel
         run: |
-          echo "Starting to compile..."
-          if [[ "${{ matrix.build-type }}" == "sweet" || "${{ matrix.build-type }}" == "davinci" || "${{ matrix.build-type }}" == "tucana" || "${{ matrix.build-type }}" == "violet" ]]; then
-            cd android_kernel_xiaomi_sm6150/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
-            cd ..
-          elif [[ "${{ matrix.build-type }}" == "ginkgo" || "${{ matrix.build-type }}" == "laurel_sprout" ]]; then
-            cd android_kernel_xiaomi_sm6125/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
-            cd ..
-          elif [[ "${{ matrix.build-type }}" == "umi" || "${{ matrix.build-type }}" == "cmi" ]]; then
-            cd android_kernel_xiaomi_sm8250/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
-            cd ..
-          elif [[ "${{ matrix.build-type }}" == "gta4l" ]]; then
-            cd android_kernel_samsung_sm6115/
-            ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
-            cd ..
-          else
-            echo "Invalid build type: ${{ matrix.build-type }}"
-            exit 1
-          fi
+          BUILD_TYPE="${{ matrix.build-type }}"
+          DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' devices/weekly.json)
+
+          echo "Starting to compile in $DIR..."
+          cd "$DIR"
+          ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
 
       - name: Preparing AnyKernel3 sources
         run: |
-          if [ -d "$PWD/AnyKernel3" ]; then
-            rm -rf AnyKernel3
-          fi
+          BUILD_TYPE="${{ matrix.build-type }}"
+          DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' devices/weekly.json)
+          IMAGE=$(jq -r --arg target "$BUILD_TYPE" '.[$target].image' devices/weekly.json)
+          DTB=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dtb // empty' devices/weekly.json)
+          DTBO=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dtbo // empty' devices/weekly.json)
+          VERSIONS=$(jq -r --arg target "$BUILD_TYPE" '.[$target].supported_versions' devices/weekly.json)
+          BANNER=$(jq -r --arg target "$BUILD_TYPE" '.[$target].banner' devices/weekly.json)
+
+          # Format device.name entries dynamically from JSON array
+          DEV_NAMES_FORMATTED=$(jq -r --arg target "$BUILD_TYPE" '.[$target].device_names | to_entries[] | "device.name" + ((.key + 1)|tostring) + "=" + .value' devices/weekly.json)
+
+          rm -rf AnyKernel3
           git clone https://github.com/riarumoda/AnyKernel3 AnyKernel3 --depth=1
-          if [[ "${{ matrix.build-type }}" == "sweet" || "${{ matrix.build-type }}" == "davinci" || "${{ matrix.build-type }}" == "tucana" || "${{ matrix.build-type }}" == "violet" ]]; then
-            cp android_kernel_xiaomi_sm6150/out/arch/arm64/boot/Image.gz AnyKernel3/
-            sed -i 's/supported.versions=11-16/supported.versions=15-17/' AnyKernel3/anykernel.sh
-            if [[ "${{ matrix.build-type }}" == "sweet" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=sweet/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=sweetin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/sweet (sm6150)/g' AnyKernel3/banner
-            elif [[ "${{ matrix.build-type }}" == "davinci" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=davinci/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=davinciin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/davinci (sm6150)/g' AnyKernel3/banner
-            elif [[ "${{ matrix.build-type }}" == "tucana" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=tucana/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=tucanain/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/tucana (sm6150)/g' AnyKernel3/banner
-            elif [[ "${{ matrix.build-type }}" == "violet" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=violet/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=violetin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/violet (sm6150)/g' AnyKernel3/banner
-            fi
-          elif [[ "${{ matrix.build-type }}" == "ginkgo" || "${{ matrix.build-type }}" == "laurel_sprout" ]]; then
-            cp android_kernel_xiaomi_sm6125/out/arch/arm64/boot/Image.gz AnyKernel3/
-            sed -i 's/supported.versions=11-16/supported.versions=15-17/' AnyKernel3/anykernel.sh
-            if [[ "${{ matrix.build-type }}" == "ginkgo" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=ginkgo/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=willow/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/ginkgo (sm6125)/g' AnyKernel3/banner
-            elif [[ "${{ matrix.build-type }}" == "laurel_sprout" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=laurel_sprout/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=laurel_sproutin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/laurel_sprout (sm6125)/g' AnyKernel3/banner
-            fi
-          elif [[ "${{ matrix.build-type }}" == "umi" || "${{ matrix.build-type }}" == "cmi" ]]; then
-            cp android_kernel_xiaomi_sm8250/out/arch/arm64/boot/Image AnyKernel3/
-            sed -i 's/supported.versions=11-16/supported.versions=15-17/' AnyKernel3/anykernel.sh
-            if [[ "${{ matrix.build-type }}" == "umi" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=umi/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=umiin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/umi (sm8250)/g' AnyKernel3/banner
-            elif [[ "${{ matrix.build-type }}" == "cmi" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=cmi/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=cmiiin/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/cmi (sm8250)/g' AnyKernel3/banner
-            fi
-          elif [[ "${{ matrix.build-type }}" == "gta4l" ]]; then
-            cp android_kernel_samsung_sm6115/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
-            sed -i 's/supported.versions=11-16/supported.versions=15-17/' AnyKernel3/anykernel.sh
-            if [[ "${{ matrix.build-type }}" == "gta4l" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=gta4l/' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=gta4lwifi/' AnyKernel3/anykernel.sh
-              sed -i 's/sweet (sm6150)/gta4l (sm6115)/g' AnyKernel3/banner
-            fi
-          else
-            echo "Invalid build type: ${{ matrix.build-type }}"
-            exit 1
+
+          # Copy primary kernel image
+          cp "$DIR/out/arch/arm64/boot/$IMAGE" AnyKernel3/
+
+          # Copy DTB image if specified and present
+          if [ -n "$DTB" ] && [ -f "$DIR/out/arch/arm64/boot/$DTB" ]; then
+            echo "Copying DTB image: $DTB"
+            cp "$DIR/out/arch/arm64/boot/$DTB" AnyKernel3/
           fi
-          sed -i '$a \\nBuild timestamp: ${{ steps.ts.outputs.TIME }}' AnyKernel3/banner
+
+          # Copy DTBO image if specified and present
+          if [ -n "$DTBO" ] && [ -f "$DIR/out/arch/arm64/boot/$DTBO" ]; then
+            echo "Copying DTBO image: $DTBO"
+            cp "$DIR/out/arch/arm64/boot/$DTBO" AnyKernel3/
+          fi
+
+          # Patch supported versions
+          sed -i "s/supported.versions=11-16/supported.versions=$VERSIONS/" AnyKernel3/anykernel.sh
+
+          # Inject device names dynamically
+          sed -i '/device.name[0-9]=/d' AnyKernel3/anykernel.sh
+          awk -v dev="$DEV_NAMES_FORMATTED" '/supported.versions=/ {print dev} {print}' AnyKernel3/anykernel.sh > AnyKernel3/anykernel.sh.tmp && mv AnyKernel3/anykernel.sh.tmp AnyKernel3/anykernel.sh
+
+          # Patch banner
+          sed -i "s/sweet (sm6150)/$BANNER/g" AnyKernel3/banner
 
       - name: Pack kernel with AnyKernel3
         run: |
-          if [[ "${{ matrix.ksu-type }}" == "zako" || "${{ matrix.ksu-type }}" == "zako-susfs" ]]; then
-            export KSUTYPE="ksu"
-          elif [[ "${{ matrix.ksu-type }}" == "none" ]]; then
-            export KSUTYPE="noksu"
-          fi
-          ZIPNAME="perf-neon-${{ matrix.build-type }}-weekly-$KSUTYPE-${{ steps.ts.outputs.DATE }}.zip"
+          ZIP_PREFIX=$(jq -r --arg target "$BUILD_TYPE" '.[$target].zip_prefix' devices/weekly.json)
+          ZIPNAME="${ZIP_PREFIX}-${{ steps.ts.outputs.DATE }}.zip"
+
           cd AnyKernel3
           zip -rq9 "../$ZIPNAME" ./*
           cd ..
@@ -235,7 +176,7 @@ jobs:
             > - The feature set can be seen in [here](https://github.com/riarumoda/perf_neon-builder#features).     
 
             > [!CAUTION]   
-            > - Always backup your boot image first before proceeding!   
+            > - Always backup your boot and dtbo image first before proceeding!   
           files: |
             artifacts/**/*.zip
           overwrite_files: true
