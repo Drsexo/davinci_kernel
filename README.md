@@ -41,10 +41,7 @@ Currently available features:
 
 Currently added features into the kernel:   
 - Every features is guaranteed available on Weekly release.   
-- Samsung A52, A72, Note 10+, Note 10+ 5G: KernelSU w/o SUSFS, Baseband Guard, NoMount, LTO.   
-- Redmi Mi89x7, Miatoll, Sweet (MIUI): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, LTO.   
-- Redmi Sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel.   
-- Samsung A9 (2018) (OneUI): KernelSU w/o SUSFS.   
+- Redmi Mi89x7 (mithorium): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, LTO.    
 
 # Compatibility
 Currently supported device   
@@ -53,20 +50,12 @@ Currently supported device
 - Xiaomi Mi Note 10/Note 10 Pro/CC9 Pro ([tucana](https://download.lineageos.org/devices/tucana/builds))   
 - Redmi Note 7 Pro ([violet](https://download.lineageos.org/devices/violet/builds))   
 - Redmi Note 8/8T ([ginkgo/willow](https://download.lineageos.org/devices/ginkgo/builds))   
-- Xiaomi Mi A3 ([laurel_sprout](https://download.lineageos.org/devices/laurel_sprout/builds))   
-- Xiaomi Mi 10 ([umi](https://download.lineageos.org/devices/umi/builds))   
-- Xiaomi Mi 10 Pro ([cmi](https://download.lineageos.org/devices/cmi/builds))   
+- Xiaomi Mi A3 ([laurel_sprout](https://download.lineageos.org/devices/laurel_sprout/builds))    
 - Samsung Tab A7 10.4 2020 ([gta4l](https://download.lineageos.org/devices/gta4l/builds))   
 
 Externally compiled kernels   
-- POCO M2 Pro/Redmi Note 9S/Redmi Note 9 Pro/Redmi Note 9 Pro Max/Redmi Note 10 Lite ([miatoll](https://download.lineageos.org/devices/miatoll/builds)) from LineageOS   
-- Samsung A52 4G ([a52q](https://download.lineageos.org/devices/a52q/builds)) from LineageOS   
-- Samsung A72 ([a72q](https://download.lineageos.org/devices/a72q/builds)) from LineageOS   
-- Samsung Note 10+ ([d2s](https://download.lineageos.org/devices/d2s/builds)) from LineageOS   
-- Samsung Note 10+ 5G ([d2x](https://download.lineageos.org/devices/d2x/builds)) from LineageOS   
-- Samsung A9 (2018) ([a9y18qlte](https://github.com/riarumoda/kernel_samsung_a9y18qlte)) from Riaru Kernels & OneUI   
-- Redmi Note 10 Pro/Pro Max ([sweet](https://pixelos.net/download/sweet)) from PixelOS   
-- Redmi Note 10 Pro/Pro Max ([sweet](https://github.com/riarumoda/android_kernel_xiaomi_sm6150)) from Riaru Kernels & MIUI   
+- Xiaomi Mi 10 ([umi](https://download.lineageos.org/devices/umi/builds)) from LineageOS   
+- Xiaomi Mi 10 Pro ([cmi](https://download.lineageos.org/devices/cmi/builds)) from LineageOS   
 - Redmi 4A/5A/Note 5A Lite/Y1 Lite ([mi8917](https://download.lineageos.org/devices/Mi8917/builds)) from Mi-Thorium   
 - Redmi 3/3S/4/4X/Note 5A Prime/Y1 Prime ([mi8937](https://download.lineageos.org/devices/Mi8937/builds)) from Mi-Thorium   
 
@@ -95,7 +84,7 @@ Restore to default kernel
 # Credits
 Patches & buildscript
 - [TBYOOL](https://github.com/tbyool) for the buildscripts & kernel patches.   
-- [xiaomi-sm6150](https://github.com/xiaomi-sm6150) for the ln8000 patches.   
+- [xiaomi-sm6150](https://github.com/xiaomi-sm6150) for the DTB patches.   
 - [JackA1ltMan](https://github.com/JackA1ltman) for ReSukiSU hook scripts, ReKernel scripts & SUSFS patches.   
 - [TheSillyOk](https://github.com/TheSillyOk) for LTO & kpatch fixup for 4.14 devices.   
 
