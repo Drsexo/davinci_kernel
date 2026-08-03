@@ -8,6 +8,9 @@
     "device_names": ["sweet", "sweetin"],
     "banner": "sweet (sm6150)",
     "zip_prefix": "perf-neon-sweet-weekly",
+    "env": {
+      "device_defconfig": "vendor/sweet.config"
+    },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git", "branch": "lineage-23.2", "path": "." }
     ]
@@ -21,6 +24,9 @@
     "device_names": ["davinci", "davinciin"],
     "banner": "davinci (sm6150)",
     "zip_prefix": "perf-neon-davinci-weekly",
+    "env": {
+      "device_defconfig": "vendor/davinci.config"
+    },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git", "branch": "lineage-23.2", "path": "." }
     ]
@@ -34,6 +40,9 @@
     "device_names": ["tucana", "tucanain"],
     "banner": "tucana (sm6150)",
     "zip_prefix": "perf-neon-tucana-weekly",
+    "env": {
+      "device_defconfig": "vendor/tucana.config"
+    },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git", "branch": "lineage-23.2", "path": "." }
     ]
@@ -47,6 +56,9 @@
     "device_names": ["violet", "violetin"],
     "banner": "violet (sm6150)",
     "zip_prefix": "perf-neon-violet-weekly",
+    "env": {
+      "device_defconfig": "vendor/violet.config"
+    },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git", "branch": "lineage-23.2", "path": "." }
     ]
@@ -60,6 +72,13 @@
     "device_names": ["ginkgo", "willow"],
     "banner": "ginkgo (sm6125)",
     "zip_prefix": "perf-neon-ginkgo-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/vendor/trinket-perf_defconfig",
+      "actual_main_defconfig": "vendor/trinket-perf_defconfig",
+      "common_defconfig": "vendor/debugfs.config vendor/xiaomi-trinket.config",
+      "device_defconfig": "vendor/ginkgo.config",
+      "kbuild_build_user": "hiyorun-compile"
+    },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6125.git", "branch": "lineage-23.2", "path": "." }
     ]
@@ -73,6 +92,13 @@
     "device_names": ["laurel_sprout", "laurel_sproutin"],
     "banner": "laurel_sprout (sm6125)",
     "zip_prefix": "perf-neon-laurel_sprout-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/vendor/trinket-perf_defconfig",
+      "actual_main_defconfig": "vendor/trinket-perf_defconfig",
+      "common_defconfig": "vendor/debugfs.config vendor/xiaomi-trinket.config",
+      "device_defconfig": "vendor/laurel_sprout.config",
+      "kbuild_build_user": "hiyorun-compile"
+    },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6125.git", "branch": "lineage-23.2", "path": "." }
     ]
@@ -86,6 +112,13 @@
     "device_names": ["gta4l", "gta4lwifi"],
     "banner": "gta4l (sm6115)",
     "zip_prefix": "perf-neon-gta4l-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/vendor/bengal-perf_defconfig",
+      "actual_main_defconfig": "vendor/bengal-perf_defconfig",
+      "device_defconfig": "vendor/gta4l-common.config",
+      "kernel_version": "4.19",
+      "kbuild_build_user": "hassansody-compile"
+    },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_samsung_sm6115.git", "branch": "lineage-23.2", "path": "." }
     ]

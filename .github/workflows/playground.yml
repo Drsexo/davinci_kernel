@@ -71,7 +71,8 @@ jobs:
       - name: Preparing kernel sources
         run: |
           BUILD_TYPE="${{ matrix.build-type }}"
-          DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir // empty' devices/playground.json)
+          CONFIG_FILE="devices/playground.json"
+          DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir // empty' "$CONFIG_FILE")
 
           if [ -z "$DIR" ]; then
             echo "::error::Invalid build type: $BUILD_TYPE"
@@ -80,7 +81,7 @@ jobs:
 
           rm -rf "$DIR"
 
-          jq -c --arg target "$BUILD_TYPE" '.[$target].sources[]' devices/playground.json | while read -r item; do
+          jq -c --arg target "$BUILD_TYPE" '.[$target].sources[]' "$CONFIG_FILE" | while read -r item; do
             REPO=$(echo "$item" | jq -r '.repo')
             BRANCH=$(echo "$item" | jq -r '.branch')
             SUB_PATH=$(echo "$item" | jq -r '.path // "."')
@@ -92,15 +93,17 @@ jobs:
             git clone "$REPO" --depth=1 -b "$BRANCH" "$DEST"
           done
 
-          echo "Copying buildscript..."
+          echo "Copying buildscript and config..."
           cp build.sh "$DIR"/
+          cp "$CONFIG_FILE" "$DIR/devices.json"
           cp -r scripts "$DIR"/
           chmod +x ./"$DIR"/build.sh
 
       - name: Compile the kernel
         run: |
           BUILD_TYPE="${{ matrix.build-type }}"
-          DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' devices/playground.json)
+          CONFIG_FILE="devices/playground.json"
+          DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' "$CONFIG_FILE")
 
           echo "Starting to compile in $DIR..."
           cd "$DIR"
@@ -109,47 +112,44 @@ jobs:
       - name: Preparing AnyKernel3 sources
         run: |
           BUILD_TYPE="${{ matrix.build-type }}"
-          DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' devices/playground.json)
-          IMAGE=$(jq -r --arg target "$BUILD_TYPE" '.[$target].image' devices/playground.json)
-          DTB=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dtb // empty' devices/playground.json)
-          DTBO=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dtbo // empty' devices/playground.json)
-          VERSIONS=$(jq -r --arg target "$BUILD_TYPE" '.[$target].supported_versions' devices/playground.json)
-          BANNER=$(jq -r --arg target "$BUILD_TYPE" '.[$target].banner' devices/playground.json)
+          CONFIG_FILE="devices/playground.json"
+          DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' "$CONFIG_FILE")
+          IMAGE=$(jq -r --arg target "$BUILD_TYPE" '.[$target].image' "$CONFIG_FILE")
+          DTB=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dtb // empty' "$CONFIG_FILE")
+          DTBO=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dtbo // empty' "$CONFIG_FILE")
+          VERSIONS=$(jq -r --arg target "$BUILD_TYPE" '.[$target].supported_versions' "$CONFIG_FILE")
+          BANNER=$(jq -r --arg target "$BUILD_TYPE" '.[$target].banner' "$CONFIG_FILE")
 
-          # Format device.name entries dynamically from JSON array
-          DEV_NAMES_FORMATTED=$(jq -r --arg target "$BUILD_TYPE" '.[$target].device_names | to_entries[] | "device.name" + ((.key + 1)|tostring) + "=" + .value' devices/playground.json)
+          DEV_NAMES_FORMATTED=$(jq -r --arg target "$BUILD_TYPE" '.[$target].device_names | to_entries[] | "device.name" + ((.key + 1)|tostring) + "=" + .value' "$CONFIG_FILE")
 
           rm -rf AnyKernel3
           git clone https://github.com/riarumoda/AnyKernel3 AnyKernel3 --depth=1
 
-          # Copy primary kernel image
           cp "$DIR/out/arch/arm64/boot/$IMAGE" AnyKernel3/
 
-          # Copy DTB image if specified and present
           if [ -n "$DTB" ] && [ -f "$DIR/out/arch/arm64/boot/$DTB" ]; then
             echo "Copying DTB image: $DTB"
             cp "$DIR/out/arch/arm64/boot/$DTB" AnyKernel3/
           fi
 
-          # Copy DTBO image if specified and present
           if [ -n "$DTBO" ] && [ -f "$DIR/out/arch/arm64/boot/$DTBO" ]; then
             echo "Copying DTBO image: $DTBO"
             cp "$DIR/out/arch/arm64/boot/$DTBO" AnyKernel3/
           fi
 
-          # Patch supported versions
           sed -i "s/supported.versions=11-16/supported.versions=$VERSIONS/" AnyKernel3/anykernel.sh
 
-          # Inject device names dynamically
           sed -i '/device.name[0-9]=/d' AnyKernel3/anykernel.sh
           awk -v dev="$DEV_NAMES_FORMATTED" '/supported.versions=/ {print dev} {print}' AnyKernel3/anykernel.sh > AnyKernel3/anykernel.sh.tmp && mv AnyKernel3/anykernel.sh.tmp AnyKernel3/anykernel.sh
 
-          # Patch banner
           sed -i "s/sweet (sm6150)/$BANNER/g" AnyKernel3/banner
 
       - name: Pack kernel with AnyKernel3
         run: |
-          ZIP_PREFIX=$(jq -r --arg target "$BUILD_TYPE" '.[$target].zip_prefix' devices/playground.json)
+          BUILD_TYPE="${{ matrix.build-type }}"
+          CONFIG_FILE="devices/playground.json"
+
+          ZIP_PREFIX=$(jq -r --arg target "$BUILD_TYPE" '.[$target].zip_prefix' "$CONFIG_FILE")
           ZIPNAME="${ZIP_PREFIX}-${{ steps.ts.outputs.DATE }}.zip"
 
           cd AnyKernel3
@@ -159,7 +159,7 @@ jobs:
       - name: Upload artifacts (All builds)
         uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.build-type }}-${{ matrix.ksu-type }}
+          name: ${{ matrix.build-type }}
           path: |
             *.zip
 

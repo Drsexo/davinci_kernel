@@ -1,104 +1,32 @@
 #!/bin/bash
 echo "- Setting up build environment..."
 
-# Device Default Exports
-echo "-- Exporting device settings..."
-export KBUILD_BUILD_USER=riarumoda-compile
-export KBUILD_BUILD_HOST=riaru.com
-export KERNEL_NAME="-perf-neon"
-export KERNEL_VERSION="4.14"
-export MAIN_DEFCONFIG="arch/arm64/configs/vendor/sdmsteppe-perf_defconfig"
-export ACTUAL_MAIN_DEFCONFIG="vendor/sdmsteppe-perf_defconfig"
-export COMMON_DEFCONFIG="vendor/debugfs.config"
-export FEATURE_DEFCONFIG=""
-
-# Device Settings - v3.7
-case "$DEVICE_IMPORT" in
-    # LineageOS - Xiaomi
-    sweet|davinci|tucana|violet)
-        export DEVICE_DEFCONFIG="vendor/${DEVICE_IMPORT}.config"
-        ;;
-    ginkgo|laurel_sprout)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/trinket-perf_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/trinket-perf_defconfig"
-        export COMMON_DEFCONFIG="vendor/debugfs.config vendor/xiaomi-trinket.config"
-        export DEVICE_DEFCONFIG="vendor/${DEVICE_IMPORT}.config"
-        export KBUILD_BUILD_USER=hiyorun-compile
-        ;;
-    umi|cmi)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/kona-perf_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/kona-perf_defconfig"
-        export DEVICE_DEFCONFIG="vendor/xiaomi/sm8250-common.config vendor/xiaomi/${DEVICE_IMPORT}.config"
-        export KERNEL_VERSION="4.19"
-        export KBUILD_BUILD_USER=kamilek-compile
-        ;;
-    miatoll)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/xiaomi/miatoll_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/xiaomi/miatoll_defconfig"
-        export DEVICE_DEFCONFIG=""
-        export KBUILD_BUILD_USER=eloxren-compile
-        ;;
-    # LineageOS - Samsung
-    a52q|a72q)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/lineage-${DEVICE_IMPORT}_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/lineage-${DEVICE_IMPORT}_defconfig"
-        export DEVICE_DEFCONFIG=""
-        export KBUILD_BUILD_USER=isaiah-compile
-        ;;
-    gta4l)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/bengal-perf_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/bengal-perf_defconfig"
-        export DEVICE_DEFCONFIG="vendor/gta4l-common.config"
-        export KERNEL_VERSION="4.19"
-        export KBUILD_BUILD_USER=hassansody-compile
-        ;;
-    d2s|d2x)
-        export MAIN_DEFCONFIG="arch/arm64/configs/exynos9820-${DEVICE_IMPORT}_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="exynos9820-${DEVICE_IMPORT}_defconfig"
-        export DEVICE_DEFCONFIG=""
-        export COMMON_DEFCONFIG=""
-    ;;
-    # Mi-Thorium
-    mi89x7-playground)
-        export MAIN_DEFCONFIG="arch/arm64/configs/vendor/msm8937-perf_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="vendor/msm8937-perf_defconfig"
-        export COMMON_DEFCONFIG="vendor/msm8937-legacy.config vendor/common.config"
-        export DEVICE_DEFCONFIG="vendor/xiaomi/msm8937/common.config vendor/xiaomi/msm8937/mi8937.config"
-        if [ "$DEVICE_IMPORT" = "mi89x7-playground" ]; then
-            export FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/exfat.config vendor/feature/kprobes.config vendor/feature/lmkd.config vendor/feature/ntfs.config vendor/feature/wireguard.config"
-            export KERNEL_NAME="-mithorium-neon"
-        fi
-        export KERNEL_VERSION="4.19"
-        ;;
-    # PixelOS
-    sweet-playground)
-        export MAIN_DEFCONFIG="arch/arm64/configs/sweet_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="sweet_defconfig"
-        export COMMON_DEFCONFIG="vendor/debugfs.config"
-        export DEVICE_DEFCONFIG=""
-        export KERNEL_NAME="-vantom-neon"
-        ;;
-    # MIUI
-    sweet-miui)
-        export DEVICE_DEFCONFIG="vendor/sweet.config"
-        export KERNEL_NAME="-miui-neon"
-        ;;
-    # OneUI
-    a9y18qlte)
-        export MAIN_DEFCONFIG="arch/arm64/configs/a9y18qlte_eur_open_defconfig"
-        export ACTUAL_MAIN_DEFCONFIG="a9y18qlte_eur_open_defconfig"
-        export COMMON_DEFCONFIG=""
-        export DEVICE_DEFCONFIG=""
-        export FEATURE_DEFCONFIG=""
-        export KERNEL_VERSION="4.4"
-        ;;
-    *)
-        echo "- Invalid DEVICE_IMPORT. Valid options: sweet, davinci, ginkgo, laurel_sprout, mi89x7-playground, sweet-miui, a9y18qlte. Yours: $DEVICE_IMPORT."
+# Find the device configuration file
+JSON_FILE="devices.json"
+if [ ! -f "$JSON_FILE" ]; then
+    if [ -f "../devices/weekly.json" ] && jq -e --arg t "$DEVICE_IMPORT" '.[$t]' ../devices/weekly.json &>/dev/null; then
+        JSON_FILE="../devices/weekly.json"
+    elif [ -f "../devices/playground.json" ] && jq -e --arg t "$DEVICE_IMPORT" '.[$t]' ../devices/playground.json &>/dev/null; then
+        JSON_FILE="../devices/playground.json"
+    else
+        echo "-- Fatal: No valid device configuration found for $DEVICE_IMPORT!"
         exit 1
-        ;;
-esac
+    fi
+fi
 
-# GCC and Clang settings
+# Device Settings parsed dynamically from JSON
+echo "-- Exporting device settings for $DEVICE_IMPORT from $JSON_FILE..."
+export KBUILD_BUILD_USER=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.kbuild_build_user // "riarumoda-compile"' "$JSON_FILE")
+export KBUILD_BUILD_HOST="riaru.com"
+export KERNEL_NAME=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.kernel_name // "-perf-neon"' "$JSON_FILE")
+export KERNEL_VERSION=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.kernel_version // "4.14"' "$JSON_FILE")
+export MAIN_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.main_defconfig // "arch/arm64/configs/vendor/sdmsteppe-perf_defconfig"' "$JSON_FILE")
+export ACTUAL_MAIN_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.actual_main_defconfig // "vendor/sdmsteppe-perf_defconfig"' "$JSON_FILE")
+export COMMON_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.common_defconfig // "vendor/debugfs.config"' "$JSON_FILE")
+export DEVICE_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.device_defconfig // ""' "$JSON_FILE")
+export FEATURE_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.feature_defconfig // ""' "$JSON_FILE")
+
+# Toolchain Settings
 echo "-- Exporting toolchain settings..."
 export CLANG_ROOT="$PWD/clang"
 export GCC64_ROOT="$PWD/gcc64"
@@ -129,34 +57,3 @@ for tc in "${TC_URLS[@]}"; do
         fi
     fi
 done
-
-# a9y18qlte specific settings
-if [ "$DEVICE_IMPORT" == "a9y18qlte" ]; then
-    echo "-- Setting up OpenSSL 1.1..."
-    export OPENSSL_DIR="$HOME/.openssl1.1"
-  
-    if [ ! -d "$OPENSSL_DIR" ]; then
-        wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz &> /dev/null || { echo "-- Fatal: Failed to download OpenSSL!"; exit 1; }
-        tar -xf openssl-1.1.1w.tar.gz
-        cd openssl-1.1.1w
-        ./config --prefix="$OPENSSL_DIR" --openssldir="$OPENSSL_DIR" &> /dev/null
-        make -s -j$(nproc) &> /dev/null
-        make -s install &> /dev/null
-        cd ..
-        rm -rf openssl-1.1.1w*
-    fi
-
-    export HOSTCFLAGS="-I$OPENSSL_DIR/include"
-    export HOSTLDFLAGS="-L$OPENSSL_DIR/lib -Wl,-rpath,$OPENSSL_DIR/lib"
-    export LD_LIBRARY_PATH="$OPENSSL_DIR/lib:$LD_LIBRARY_PATH"
-    export MY_OPENSSL_DIR="$OPENSSL_DIR"
-
-    echo "-- Setting up MAKE_ARGS..."
-    export MAKE_ARGS=(
-        ARCH=arm64 CC=aarch64-linux-android-gcc LD=aarch64-linux-android-ld.bfd
-        AR=aarch64-linux-android-ar AS=aarch64-linux-android-as NM=aarch64-linux-android-nm
-        OBJCOPY=aarch64-linux-android-objcopy OBJDUMP=aarch64-linux-android-objdump
-        STRIP=aarch64-linux-android-strip CROSS_COMPILE=aarch64-linux-android- 
-        HOSTCFLAGS="$HOSTCFLAGS" HOSTLDFLAGS="$HOSTLDFLAGS" OPENSSL="$MY_OPENSSL_DIR/bin/openssl"
-    )
-fi
