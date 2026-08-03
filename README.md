@@ -41,7 +41,7 @@ Currently available features:
 
 Currently added features into the kernel:   
 - Every features is guaranteed available on Weekly release.   
-- Redmi Mi89x7 (mithorium): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, LTO.    
+- Redmi Mi89x7 (mithorium) & Sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, LTO.    
 
 # Compatibility
 Currently supported device   
@@ -58,6 +58,7 @@ Externally compiled kernels
 - Xiaomi Mi 10 Pro ([cmi](https://download.lineageos.org/devices/cmi/builds)) from LineageOS   
 - Redmi 4A/5A/Note 5A Lite/Y1 Lite ([mi8917](https://download.lineageos.org/devices/Mi8917/builds)) from Mi-Thorium   
 - Redmi 3/3S/4/4X/Note 5A Prime/Y1 Prime ([mi8937](https://download.lineageos.org/devices/Mi8937/builds)) from Mi-Thorium   
+- Redmi Note 10 Pro/Pro Max ([sweet](https://pixelos.net/download/sweet)) from PixelOS   
 
 # Installation
 On Recovery   
