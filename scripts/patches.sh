@@ -107,7 +107,7 @@ case "$DEVICE_IMPORT" in
             echo "-- Reverting KSU commit..."
             revert_commit "https://github.com/Mi-Thorium/kernel_msm-4.19/commit/624875e8edc36ae280b1f8efc1d3c48a28da64ea.patch"
             # Fix hw key buttons for riva - thx to roman
-            sed -i 's/#define FTS_POINT_REPORT_CHECK_EN[[:space:]]*0/#define FTS_POINT_REPORT_CHECK_EN               1/g' drivers/input/touchscreen/focaltech_touch/focaltech_common.h
+            sed -i 's/#define FTS_POINT_REPORT_CHECK_EN[[:space:]]*0/#define FTS_POINT_REPORT_CHECK_EN               1/g' techpack/xiaomi-msm8937/touchscreen/focaltech_touch/focaltech_common.h
             sed -i '/input_report_key(input_dev, BTN_TOUCH, 0);/a \
                 if (ts_data->key_state) {\
                     struct fts_ts_platform_data *pdata = ts_data->pdata;\
@@ -130,7 +130,7 @@ case "$DEVICE_IMPORT" in
                         }\
                 }\
                 ts_data->key_state = 0;\
-            }' drivers/input/touchscreen/focaltech_touch/focaltech_point_report_check.c
+            }' techpack/xiaomi-msm8937/touchscreen/focaltech_touch/focaltech_point_report_check.c
         fi
         # Set drivers as built-in for 4.19
         if [[ "$DEVICE_IMPORT" == "gta4l" || "$DEVICE_IMPORT" == "umi" || "$DEVICE_IMPORT" == "cmi" || "$DEVICE_IMPORT" == "mi89x7-playground" ]]; then
