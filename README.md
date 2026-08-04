@@ -50,6 +50,9 @@ On Recovery:
 - Allow to continue if you see Error 21 signature invalid.
 - Reboot.
 
+If already rooted:
+- Use [Kernel Flasher](https://github.com/fatalcoder524/KernelFlasher)  
+
 Restore to default kernel:
 - You'll need to remove everything inside `/data/adb`. You can do this with `su -c rm -rf /data/adb/*`.
 - Then immediately reboot to fastboot.
