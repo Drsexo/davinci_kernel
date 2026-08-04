@@ -41,10 +41,6 @@ echo "CONFIG_KSU_MANUAL_HOOK=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_HAVE_SYSCALL_TRACEPOINTS=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_THREAD_INFO_IN_TASK=y" >> $MAIN_DEFCONFIG
 
-# Apply KSU Hooks
-echo "-- Applying KernelSU hooks..."
-curl -LSs --fail --retry 3 "$KSU_HOOK" | bash &> /dev/null || { echo "Fatal: KSU hook script failed to download/run!"; exit 1; }
-
 # SUSFS Logic
 echo "-- Setting up SUSFS support for KernelSU..."
 wget -qO- "$SUSFS_PATCH" | patch -s -p1 --fuzz=5
@@ -59,6 +55,20 @@ echo "CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_KSU_SUSFS_SUS_MAP=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> $MAIN_DEFCONFIG
+
+# SUSFS patch workaround
+if ! sed -n '/static struct file \*path_openat(/,/^}/p' fs/namei.c | grep -q "int old_dfd.*=.*nd->dfd"; then
+    echo "-- Injecting SUSFS path_openat declarations..."
+    sed -i '/static struct file \*path_openat(/,/^{/ {/^{/a \
+#ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
+}' fs/namei.c
+else
+    echo "-- SUSFS path_openat declarations already present, skipping injection."
+fi
+
+# Apply KSU Hooks
+echo "-- Applying KernelSU hooks..."
+curl -LSs --fail --retry 3 "$KSU_HOOK" | bash &> /dev/null || { echo "Fatal: KSU hook script failed to download/run!"; exit 1; }
 
 # Export SELinux Symbols
 echo "-- Checking and exporting static SELinux symbols..."
