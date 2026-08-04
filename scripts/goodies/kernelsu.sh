@@ -49,12 +49,6 @@ case "$KERNELSU_SELECTOR" in
             # Kernel 4.14 specific fixes for SUSFS
             if [[ "$KERNEL_VERSION" == "4.14" ]]; then
                 echo "-- Applying KernelSU SUSFS fixes for 4.14..."
-                sed -i '/static int do_tmpfile(/,/^{/ {/^{/a \
-                #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
-                }' fs/namei.c
-                sed -i '/static int do_o_path(/,/^{/ {/^{/a \
-                #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
-                }' fs/namei.c
                 sed -i '/static struct file \*path_openat(/,/^{/ {/^{/a \
                 #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
                 }' fs/namei.c
