@@ -46,12 +46,14 @@ case "$KERNELSU_SELECTOR" in
             echo "CONFIG_KSU_SUSFS_SUS_MAP=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> $MAIN_DEFCONFIG
 
-            # Kernel 4.14 specific fixes for SUSFS
+            # Kernel 4.14 device specific fixes for SUSFS
             if [[ "$KERNEL_VERSION" == "4.14" ]]; then
-                echo "-- Applying KernelSU SUSFS fixes for 4.14..."
-                sed -i '/static struct file \*path_openat(/,/^{/ {/^{/a \
-                #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
-                }' fs/namei.c
+                if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
+                    echo "-- Applying KernelSU SUSFS fixes for 4.14..."
+                    sed -i '/static struct file \*path_openat(/,/^{/ {/^{/a \
+                    #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
+                    }' fs/namei.c
+                fi
             fi
         fi
 
