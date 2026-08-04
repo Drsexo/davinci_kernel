@@ -30,10 +30,6 @@ case "$KERNELSU_SELECTOR" in
         echo "CONFIG_HAVE_SYSCALL_TRACEPOINTS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_THREAD_INFO_IN_TASK=y" >> $MAIN_DEFCONFIG
 
-        # Apply KSU Hooks
-        echo "-- Applying KernelSU hooks..."
-        bash "$KSU_HOOK" &> /dev/null || { echo "Fatal: KSU hook script failed to download/run!"; exit 1; }
-
         # SUSFS Logic
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
             echo "-- Setting up SUSFS support for KernelSU..."
@@ -50,6 +46,10 @@ case "$KERNELSU_SELECTOR" in
             echo "CONFIG_KSU_SUSFS_SUS_MAP=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> $MAIN_DEFCONFIG
         fi
+
+        # Apply KSU Hooks
+        echo "-- Applying KernelSU hooks..."
+        bash "$KSU_HOOK" &> /dev/null || { echo "Fatal: KSU hook script failed to download/run!"; exit 1; }
 
         # Kernel 4.4 specific fixes
         if [[ "$KERNEL_VERSION" == "4.4" ]]; then
