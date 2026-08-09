@@ -83,9 +83,11 @@ case "$DEVICE_IMPORT" in
                 echo "-- Applying KPATCH patches..."
                 apply_patches "$KPATCH_PATCH"
             fi
-            # Allow to compile on new AOSP clang
+        fi
+        # Allow kernel to compile under new clang versions
+        if [[ "$CLANG_STRAT" == "1" ]]; then
             echo "-- Allowing to compile on new AOSP clang..."
-            sed -i 's/-Wno-format-security/-Wno-format-security -Wno-enum-conversion -Wno-implicit-enum-enum-cast/g' Makefile
+            sed -i 's/-Wno-format-security/-Wno-format-security -Wno-enum-conversion -Wno-default-const-init-var-unsafe -Wno-implicit-enum-enum-cast/g' Makefile
         fi
         # Set drivers as built-in for 4.14
         if [[ "$DEVICE_IMPORT" == "ginkgo" ]] || [[ "$DEVICE_IMPORT" == "laurel_sprout" ]]; then
