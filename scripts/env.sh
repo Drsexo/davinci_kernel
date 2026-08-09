@@ -27,33 +27,66 @@ export DEVICE_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.device_defco
 export FEATURE_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.feature_defconfig // ""' "$JSON_FILE")
 
 # Toolchain Settings
+export CLANG_STRAT=1
 echo "-- Exporting toolchain settings..."
-export CLANG_ROOT="$PWD/clang"
-export GCC64_ROOT="$PWD/gcc64"
-export GCC32_ROOT="$PWD/gcc32"
-export PATH="$CLANG_ROOT/bin:$GCC64_ROOT/bin:$GCC32_ROOT/bin:/usr/bin:$PATH"
-export MAKE_ARGS=(
-        ARCH=arm64 LLVM=1 LLVM_IAS=1 CC=clang LD=ld.lld AR=llvm-ar AS=llvm-as
-        NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip
-        CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
-        CLANG_TRIPLE=aarch64-linux-gnu-
-)
-TC_URLS=(
-    "clang|https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
-    "gcc64|https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git"
-    "gcc32|https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git"
-)
+if [[ "$CLANG_STRAT" == "1" ]]; then
+    echo "-- Using new method to compile the kernel (Eva GCC only)"
+    export GCC64_ROOT="$PWD/gcc64"
+    export GCC32_ROOT="$PWD/gcc32"
+    export PATH="$GCC64_ROOT/bin:$GCC32_ROOT/bin:$PATH"
+    export MAKE_ARGS=(
+            ARCH=arm64 LLVM=0 LLVM_IAS=0 CC=aarch64-elf-gcc LD="$GCC64_ROOT/bin/aarch64-elf-ld" AR=aarch64-elf-gcc-ar AS=aarch64-elf-as
+            NM=aarch64-elf-nm OBJCOPY=aarch64-elf-objcopy OBJDUMP=aarch64-elf-objdump
+            CROSS_COMPILE=aarch64-elf- CROSS_COMPILE_COMPAT=arm-eabi-
+    )
+    TC_URLS=$(curl -s "https://api.github.com/repos/mvaisakh/gcc-build/releases/latest" | grep "browser_download_url" | cut -d '"' -f 4 | grep -E "eva-gcc-arm.*\.xz")
+else
+    echo "-- Using old method to compile the kernel (Clang + GCC64 + GCC32)"
+    export CLANG_ROOT="$PWD/clang"
+    export GCC64_ROOT="$PWD/gcc64"
+    export GCC32_ROOT="$PWD/gcc32"
+    export PATH="$CLANG_ROOT/bin:$GCC64_ROOT/bin:$GCC32_ROOT/bin:/usr/bin:$PATH"
+    export MAKE_ARGS=(
+            ARCH=arm64 LLVM=1 LLVM_IAS=1 CC=clang LD=ld.lld AR=llvm-ar AS=llvm-as
+            NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip
+            CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
+            CLANG_TRIPLE=aarch64-linux-gnu-
+    )
+    TC_URLS=(
+        "clang|https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
+        "gcc64|https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git"
+        "gcc32|https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git"
+    )
+fi
 
 # Clang and GCC Setup
-for tc in "${TC_URLS[@]}"; do
-    dir="${tc%%|*}"; url="${tc##*|}"
-    if [[ "$url" == *.git ]]; then
-        if [ ! -d "$dir/.git" ]; then
-            echo "-- Cloning $dir..."
-            rm -rf "$dir"
-            git clone "$url" --depth=1 "$dir" &> /dev/null || { echo "-- Fatal: Failed to clone $dir!"; exit 1; }
-        else
-            echo "-- Using local $dir"
+if [[ "$CLANG_STRAT" == "1" ]]; then
+    if [ ! -d "$PWD/gcc32" ] && [ ! -d "$PWD/gcc64" ]; then
+		for url in $TC_URLS; do
+			curl -L -O "$url"
+		done
+		for file in eva-gcc-arm*.xz; do
+			if [[ "$file" == *arm64* ]]; then
+				tar -xf "$file" && mv gcc-arm64 gcc64
+			else
+				tar -xf "$file" && mv gcc-arm gcc32
+			fi
+			rm -rf "$file"
+		done
+	else
+		echo "-- Using local $dir"
+	fi
+else
+    for tc in "${TC_URLS[@]}"; do
+        dir="${tc%%|*}"; url="${tc##*|}"
+        if [[ "$url" == *.git ]]; then
+            if [ ! -d "$dir/.git" ]; then
+                echo "-- Cloning $dir..."
+                rm -rf "$dir"
+                git clone "$url" --depth=1 "$dir" &> /dev/null || { echo "-- Fatal: Failed to clone $dir!"; exit 1; }
+            else
+                echo "-- Using local $dir"
+            fi
         fi
-    fi
-done
+    done
+fi
