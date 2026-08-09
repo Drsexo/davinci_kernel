@@ -167,7 +167,6 @@ case "$DEVICE_IMPORT" in
         if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
             echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-            echo "CONFIG_BPFILTER=n" >> $MAIN_DEFCONFIG
         fi
         echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
