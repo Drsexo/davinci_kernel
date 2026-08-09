@@ -30,16 +30,14 @@ export FEATURE_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.feature_def
 export CLANG_STRAT=1
 echo "-- Exporting toolchain settings..."
 if [[ "$CLANG_STRAT" == "1" ]]; then
-    echo "-- Using new method to compile the kernel (Eva GCC only)"
-    export GCC64_ROOT="$PWD/gcc64"
-    export GCC32_ROOT="$PWD/gcc32"
-    export PATH="$GCC64_ROOT/bin:$GCC32_ROOT/bin:$PATH"
+    echo "-- Using new method to compile the kernel (AOSP Clang Only)"
+    export CLANG_ROOT="$PWD/clang"
+    export PATH="$PWD/clang/bin/:$PATH"
     export MAKE_ARGS=(
-            ARCH=arm64 LLVM=0 LLVM_IAS=0 CC=aarch64-elf-gcc LD="$GCC64_ROOT/bin/aarch64-elf-ld" AR=aarch64-elf-gcc-ar AS=aarch64-elf-as
-            NM=aarch64-elf-nm OBJCOPY=aarch64-elf-objcopy OBJDUMP=aarch64-elf-objdump
-            CROSS_COMPILE=aarch64-elf- CROSS_COMPILE_COMPAT=arm-eabi-
+            ARCH=arm64 LLVM=1 LLVM_IAS=1 LD=ld.lld
+            CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
     )
-    TC_URLS=$(curl -s "https://api.github.com/repos/mvaisakh/gcc-build/releases/latest" | grep "browser_download_url" | cut -d '"' -f 4 | grep -E "eva-gcc-arm.*\.xz")
+    TC_URLS=$(curl -s https://api.github.com/repos/bachnxuan/aosp_clang_mirror/releases/latest | grep "browser_download_url" | head -n 1 | cut -d '"' -f 4)
 else
     echo "-- Using old method to compile the kernel (Clang + GCC64 + GCC32)"
     export CLANG_ROOT="$PWD/clang"
@@ -61,18 +59,29 @@ fi
 
 # Clang and GCC Setup
 if [[ "$CLANG_STRAT" == "1" ]]; then
-    if [ ! -d "$PWD/gcc32" ] && [ ! -d "$PWD/gcc64" ]; then
-		for url in $TC_URLS; do
-			curl -L -O "$url"
-		done
-		for file in eva-gcc-arm*.xz; do
-			if [[ "$file" == *arm64* ]]; then
-				tar -xf "$file" && mv gcc-arm64 gcc64
-			else
-				tar -xf "$file" && mv gcc-arm gcc32
-			fi
-			rm -rf "$file"
-		done
+    if [ -d "$PWD/clang" ]; then
+        	if [ -z "$(ls -A "$PWD/clang")" ] || [ ! -d "$PWD/clang/bin" ]; then
+                	echo "-- Warning: 'clang' directory is empty or incomplete. Cleaning up..."
+                	rm -rf "$PWD/clang"
+        	fi
+	fi
+
+	if [ ! -d "$PWD/clang" ]; then
+		echo "-- Downloading Clang..."
+                	if ! curl -L -O "$CLANG_URL"; then
+                        	echo "-- Error: Failed to download Clang from $CLANG_URL" >&2
+                        	exit 1
+                	fi
+		echo "-- Extracting Clang..."
+        	mkdir -p clang
+       		if ! tar -C clang -xf clang-*.tar.gz 2>/dev/null; then
+			echo "-- Error: Extraction failed! The archive might be corrupted." >&2
+			echo "-- Cleaning up corrupted files..."
+			rm -rf clang clang-*.tar.gz
+			exit 1
+		fi
+		rm clang-*.tar.gz
+		echo "-- Clang successfully downloaded!"
 	else
 		echo "-- Using local $dir"
 	fi
