@@ -157,6 +157,8 @@ case "$DEVICE_IMPORT" in
         sed -i 's/CONFIG_DRM_ANALOGIX_ANX7625=y/CONFIG_DRM_ANALOGIX_ANX7625=n/g' $MAIN_DEFCONFIG
         sed -i 's/CONFIG_DRM_LT_LT9611=y/CONFIG_DRM_LT_LT9611=n/g' $MAIN_DEFCONFIG
         sed -i 's/CONFIG_USB_ISP1760=y/CONFIG_USB_ISP1760=n/g' $MAIN_DEFCONFIG
+        echo "CONFIG_LEDS_CLASS=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_LEDS_TRIGGERS=y" >> $MAIN_DEFCONFIG
         # Common configs for 4.14
         echo "-- Tuning default configs..."
         if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
@@ -284,6 +286,8 @@ case "$DEVICE_IMPORT" in
         sed -i 's/CONFIG_DRM_ANALOGIX_ANX7625=y/CONFIG_DRM_ANALOGIX_ANX7625=n/g' $MAIN_DEFCONFIG
         sed -i 's/CONFIG_DRM_LT_LT9611=y/CONFIG_DRM_LT_LT9611=n/g' $MAIN_DEFCONFIG
         sed -i 's/CONFIG_USB_ISP1760=y/CONFIG_USB_ISP1760=n/g' $MAIN_DEFCONFIG
+        echo "CONFIG_LEDS_CLASS=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_LEDS_TRIGGERS=y" >> $MAIN_DEFCONFIG
         # Common configs for 4.19
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
