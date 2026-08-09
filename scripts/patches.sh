@@ -184,6 +184,7 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_NEW_LEDS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LEDS_CLASS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LEDS_TRIGGERS=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_USB=y" >> $MAIN_DEFCONFIG
         # Common configs for 4.14
         echo "-- Tuning default configs..."
         if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
@@ -335,6 +336,7 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_NEW_LEDS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LEDS_CLASS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LEDS_TRIGGERS=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_USB=y" >> $MAIN_DEFCONFIG
         # Common configs for 4.19
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
