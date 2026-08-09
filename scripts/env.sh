@@ -68,8 +68,8 @@ if [[ "$CLANG_STRAT" == "1" ]]; then
 
 	if [ ! -d "$PWD/clang" ]; then
 		echo "-- Downloading Clang..."
-                	if ! curl -L -O "$CLANG_URL"; then
-                        	echo "-- Error: Failed to download Clang from $CLANG_URL" >&2
+                	if ! curl -L -O "$TC_URLS"; then
+                        	echo "-- Error: Failed to download Clang from $TC_URLS" >&2
                         	exit 1
                 	fi
 		echo "-- Extracting Clang..."
