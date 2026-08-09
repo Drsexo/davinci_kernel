@@ -83,9 +83,12 @@ case "$DEVICE_IMPORT" in
                 echo "-- Applying KPATCH patches..."
                 apply_patches "$KPATCH_PATCH"
             fi
+            # Allow to compile on new AOSP clang
+            echo "-- Allowing to compile on new AOSP clang..."
+            sed -i 's/-Wno-format-security/-Wno-format-security -Wno-enum-conversion -Wno-implicit-enum-enum-cast/g' Makefile
         fi
         # Set drivers as built-in for 4.14
-        if [[ "$DEVICE_IMPORT" == "ginkgo" ]]; then
+        if [[ "$DEVICE_IMPORT" == "ginkgo" ]] || [[ "$DEVICE_IMPORT" == "laurel_sprout" ]]; then
             echo "-- Setting up drivers as built-in..."
             sed -i 's/default m/default y/g' techpack/data/drivers/rmnet/perf/Kconfig
             sed -i 's/default m/default y/g' techpack/data/drivers/rmnet/shs/Kconfig
