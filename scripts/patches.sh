@@ -148,7 +148,7 @@ case "$DEVICE_IMPORT" in
             }' techpack/xiaomi-msm8937/touchscreen/focaltech_touch/focaltech_point_report_check.c
         fi
         # Set drivers as built-in for 4.19
-        if [[ "$DEVICE_IMPORT" == "gta4l" || "$DEVICE_IMPORT" == "umi" || "$DEVICE_IMPORT" == "cmi" || "$DEVICE_IMPORT" == "mi89x7-playground" ]]; then
+        if [[ "$DEVICE_IMPORT" == "gta4l" || "$DEVICE_IMPORT" == "umi" || "$DEVICE_IMPORT" == "cmi" ]]; then
             echo "-- Setting up drivers as built-in..."
             sed -i 's/default m/default y/g' techpack/data/drivers/rmnet/perf/Kconfig
             sed -i 's/default m/default y/g' techpack/data/drivers/rmnet/shs/Kconfig
