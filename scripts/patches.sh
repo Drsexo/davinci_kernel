@@ -100,6 +100,9 @@ case "$DEVICE_IMPORT" in
         if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
             echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+            sed -i '$ a\
+            KBUILD_CFLAGS += -flto=thin -mtune=cortex-a53 -ffunction-sections -fdata-sections\
+            KBUILD_LDFLAGS += -flto=thin --gc-sections' Makefile
         fi
         echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
@@ -165,6 +168,9 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CC_OPTIMIZE_FOR_SIZE=y" >> $MAIN_DEFCONFIG
+        sed -i '$ a\
+        KBUILD_CFLAGS += -flto=thin -mtune=cortex-a53 -ffunction-sections -fdata-sections\
+        KBUILD_LDFLAGS += -flto=thin --gc-sections' Makefile
         ;;
     *)
         echo "No specific patches to apply for $DEVICE_IMPORT."
