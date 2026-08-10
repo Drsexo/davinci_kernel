@@ -100,9 +100,15 @@ case "$DEVICE_IMPORT" in
         if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
             echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-            sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a53 -ffunction-sections -fdata-sections\
-            KBUILD_LDFLAGS += --gc-sections' Makefile
+            # Set cpu tuning for 4.19
+            echo "-- Setting up CPU tuning..."
+            if [[ "$DEVICE_IMPORT" == "ginkgo" || "$DEVICE_IMPORT" == "laurel_sprout" ]]; then
+                sed -i '$ a\
+                KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
+            elif [[ "$DEVICE_IMPORT" == "sweet" || "$DEVICE_IMPORT" == "davinci" || "$DEVICE_IMPORT" == "tucana" || "$DEVICE_IMPORT" == "violet" ]]; then
+                sed -i '$ a\
+                KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
+            fi
         fi
         echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
@@ -160,6 +166,15 @@ case "$DEVICE_IMPORT" in
                 fi
             fi
         fi
+        # Set cpu tuning for 4.19
+        echo "-- Setting up CPU tuning..."
+        if [[ "$DEVICE_IMPORT" == "gta4l" || "$DEVICE_IMPORT" == "mi89x7-playground" ]]; then
+            sed -i '$ a\
+            KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
+        elif [[ "$DEVICE_IMPORT" == "umi" || "$DEVICE_IMPORT" == "cmi" ]]; then
+            sed -i '$ a\
+            KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
+        fi
         # Common configs for 4.19
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
@@ -168,9 +183,6 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CC_OPTIMIZE_FOR_SIZE=y" >> $MAIN_DEFCONFIG
-        sed -i '$ a\
-        KBUILD_CFLAGS += -mtune=cortex-a53 -ffunction-sections -fdata-sections\
-        KBUILD_LDFLAGS += --gc-sections' Makefile
         ;;
     *)
         echo "No specific patches to apply for $DEVICE_IMPORT."
