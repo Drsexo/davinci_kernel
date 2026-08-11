@@ -37,7 +37,7 @@ Currently available features:
 - NoMount Meta Module support   
 - Droidspaces container support   
 - ReKernel tombstones support   
-- Compiled with -O3, LTO, LLVM=1   
+- Compiled with -Os, LTO and latest AOSP clang   
 
 Currently added features into the kernel:   
 - Every features is guaranteed available on Weekly release.   
