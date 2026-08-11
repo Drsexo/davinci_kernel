@@ -43,6 +43,7 @@ Currently added features into the kernel:
 - Every features is guaranteed available on Weekly release.   
 - Redmi Mi89x7 (mithorium) & Sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, LTO.    
 
+Your device aren't yet supported? Go to the telegram channel to request your device for support.
 # Compatibility
 Currently supported device   
 - Redmi K20/Mi 9T ([davinci](https://download.lineageos.org/devices/davinci/builds))   
