@@ -89,6 +89,12 @@ case "$DEVICE_IMPORT" in
             echo "-- Allowing to compile on new AOSP clang..."
             sed -i 's/-Wno-format-security/-Wno-format-security -Wno-enum-conversion -Wno-default-const-init-var-unsafe -Wno-default-const-init-field-unsafe -Wno-implicit-enum-enum-cast/g' Makefile
         fi
+        # Compile kernel with -O3
+        if [[ "$DEVICE_IMPORT" == "sweet-playground" ]]; then
+            echo "-- Applying O3 flags..."
+            sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
+            sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
+        fi
         # Common configs for 4.14
         echo "-- Tuning default configs..."
         if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
@@ -154,6 +160,12 @@ case "$DEVICE_IMPORT" in
                 find techpack/audio -name "Kbuild*" -exec sed -i 's/obj-m/obj-y/g' {} +
                 echo "CONFIG_SENSORS_SSC=y" >> $MAIN_DEFCONFIG
             fi
+        fi
+        # Compile kernel with -O3
+        if [[ "$DEVICE_IMPORT" == "mi89x7-playground" ]]; then
+            echo "-- Applying O3 flags..."
+            sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
+            sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
         fi
         # Set cpu tuning for 4.19
         echo "-- Setting up CPU tuning..."
