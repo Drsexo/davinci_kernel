@@ -28,7 +28,7 @@ The naming, Perf Neon, is inspired by a Linux Distribution called KDE Neon, wher
 While it's mostly used for another kernel developers to compare their work with a literal close-to-stock kernel, it's also fulfill the dream of a purists, where they want everything stable but also wanted extra spices on top of it.   
 
 # Release schedules
-This kernel follows weekly builds of LineageOS, you will get a new kernel build every sunday. You might need to check out the GitHub repo for new releases.   
+This kernel follows weekly builds of LineageOS, you will get a new kernel build every sunday. You might need to check out the GitHub repo for new releases. Emergency rebuilt might happen if services that this builder rely on being broken or kernel source code have massive changes.   
 
 # Features
 Currently available features:   
@@ -43,8 +43,12 @@ Currently added features into the kernel:
 - Every features is guaranteed available on Weekly release.   
 - Redmi Mi89x7 (mithorium) & Sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, LTO.    
 
-Your device aren't yet supported? Go to the telegram channel to request your device for support.
 # Compatibility
+Currently supported Operating System   
+- LineageOS   
+- /e/ OS   
+- LibreMobileOS   
+
 Currently supported device   
 - Redmi K20/Mi 9T ([davinci](https://download.lineageos.org/devices/davinci/builds))   
 - Redmi Note 10 Pro/Pro Max ([sweet](https://download.lineageos.org/devices/sweet/builds))   
@@ -61,26 +65,31 @@ Externally compiled kernels
 - Redmi 3/3S/4/4X/Note 5A Prime/Y1 Prime ([mi8937](https://download.lineageos.org/devices/Mi8937/builds)) from Mi-Thorium   
 - Redmi Note 10 Pro/Pro Max ([sweet](https://pixelos.net/download/sweet)) from PixelOS   
 
+Notes   
+- Kernels that released on playground is not restricted with these OS constraints.   
+- Your device aren't yet supported? Go to the telegram channel to request your device for support.   
+
 # Installation
 On Recovery   
-- Download both the flashable zip and the original boot image for your device as a backup.   
+- Download both the flashable zip and the original boot and dtbo image for your device as a backup.   
 - Flash or Sideload the flashable zip with `adb sideload <package.zip>`  
 - Allow to continue if you see Error 21 signature invalid.   
-- Reboot to system and pray everything works.   
+- Reboot to system.   
 - Profit.   
 
 On ReSukiSU Manager   
 - On ReSukiSU Manager, click the "Working" card on the ReSukiSU Manager Home Screen.   
 - You'll see flash AnyKernel3, click it, and select the flashable zip.   
 - Click next and the flashable will be installed. If you see KPM option, just choose follow kernel.   
-- Reboot and pray everything works.   
+- Reboot.   
 - Profit.   
 
 Restore to default kernel   
 - You'll need to remove everything inside `/data/adb`. You can do this with `su -c rm -rf /data/adb/*`.   
 - Then immediately reboot to bootloader/fastbootd.   
-- Flash the stock boot image with `fastboot flash boot <theoriginalbootimage.img>`   
-- Reboot with `fastboot reboot` and pray everything works.   
+- Flash the stock boot image with `fastboot flash boot </path/to/original/boot/image.img>`   
+- Also flash the stock dtbo image with `fastboot flash boot </path/to/original/dtbo/image.img>`
+- Reboot with `fastboot reboot`.   
 - Profit.   
 
 # Credits
