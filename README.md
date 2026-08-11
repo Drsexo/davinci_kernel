@@ -41,7 +41,7 @@ Currently available features:
 
 Currently added features into the kernel:   
 - Every features is guaranteed available on Weekly release.   
-- Redmi Mi89x7 (mithorium) & Sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, LTO.    
+- Redmi Mi89x7 (mithorium) & Sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, -O3, LTO.    
 
 # Compatibility
 Currently supported Operating System   
