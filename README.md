@@ -32,10 +32,10 @@ New builds are published every Sunday, announced on the [Telegram channel](https
 
 # Features
 - **ReSukiSU & SUSFS support**: KernelSU fork with SUSFS integration for non-GKI 4.14 devices
-- **Baseband Guard**: LSM module that filters modem IPC traffic to mitigate baseband RCE attacks
-- **NoMount**: Meta module that lets root apps hide specific mounts from non-root process detection
-- **Droidspaces**: Adds container isolation patches and enables namespaces, netfilter, and bridge support for work profile apps like Shelter/Island
-- **ReKernel**: Captures kernel panic and app crash tombstones, surfaces them to userspace for diagnostics
+- **Baseband Guard**: Linux Security Module (LSM) that blocks unauthorized writes to critical partitions and device nodes (baseband, boot chain) at the kernel level. Prevents user-space bypass of partition protection.
+- **NoMount**: Meta module operating at the VFS layer. Avoids mount `--bind` so injections don't appear in `/proc/mounts` or `mountinfo`, making them invisible to detection methods.
+- **Droidspaces**: Container runtime using Linux kernel namespaces to run full Linux distributions on Android with proper process isolation (PID, MNT, UTS, IPC, cgroup). 
+- **ReKernel**: Exposes kernel events (panics, app crashes, tombstones) to userspace via a Netlink server. Lets tombstone tools capture and surface crash diagnostics
 - **LTO + ThinLTO**: Link-time optimization for smaller and faster kernel binary
 - **-O3**: Aggressive compiler optimization level
 - **LLVM=1**: Full LLVM/Clang toolchain build (clang, lld, llvm-ar, llvm-nm)
@@ -46,7 +46,7 @@ Always back up your stock boot image first!
 
 On Recovery:
 - Download the flashable zip.
-- Flash or Sideload the flashable zip with `adb -d sideload /path/to/zip`
+- Sideload the flashable zip with `adb -d sideload /path/to/zip`
 - Allow to continue if you see Error 21 signature invalid.
 - Reboot.
 
@@ -57,7 +57,6 @@ Restore to default kernel:
 - You'll need to remove everything inside `/data/adb`. You can do this with `su -c rm -rf /data/adb/*`.
 - Then immediately reboot to fastboot.
 - Flash the stock boot image with `fastboot flash boot path/to/img`
-- Reboot with `fastboot reboot`.
 
 > [!IMPORTANT]
 > PixelOS enforces signature verification on sideloaded zips. The kernel zip will fail to flash in the stock recovery. Use [OrangeFox recovery](https://sourceforge.net/projects/randomprojectfiles/files/ofox/latest) to flash this kernel.
@@ -70,12 +69,12 @@ Patches & buildscript:
 - [TheSillyOk](https://github.com/TheSillyOk) for LTO & kpatch fixup for 4.14 devices.
 
 Projects:
-- [ReSukiSU](https://github.com/ReSukiSU) for ReSukiSU.
-- [vc-teahouse](https://github.com/vc-teahouse) for Baseband Guard.
-- [maxsteeel](https://github.com/maxsteeel) for NoMount.
-- [ravindu644](https://github.com/ravindu644) for Droidspaces.
+- [ReSukiSU](https://github.com/ReSukiSU/ReSukiSU) for ReSukiSU.
+- [vc-teahouse](https://github.com/vc-teahouse/Baseband-guard) for Baseband Guard.
+- [maxsteeel](https://github.com/maxsteeel/nomount) for NoMount.
+- [ravindu644](https://github.com/ravindu644/Droidspaces-OSS) for Droidspaces.
 - [Sakion-Team](https://github.com/Sakion-Team/Re-Kernel) for ReKernel.
-- [Neutron-Toolchains](https://github.com/Neutron-Toolchains) for the Clang toolchain.
+- [Neutron-Toolchains](https://github.com/Neutron-Toolchains/clang-build-catalogue) for the Clang toolchain.
 
 Kernel source:
 - [LineageOS](https://github.com/LineageOS/android_kernel_xiaomi_sm6150)  
