@@ -47,7 +47,7 @@ else
     export MAKE_ARGS=(
             ARCH=arm64 LLVM=1 LLVM_IAS=1 CC=clang LD=ld.lld AR=llvm-ar AS=llvm-as
             NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip
-            CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+            CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-androideabi- CROSS_COMPILE_ARM32=arm-linux-androideabi-
             CLANG_TRIPLE=aarch64-linux-gnu-
     )
     TC_URLS=(
