@@ -79,6 +79,22 @@ case "$KERNELSU_SELECTOR" in
                     #else\
                     \t\treturn inode->i_op->getattr(path->mnt, path->dentry, stat);\
                     #endif' fs/stat.c
+                    echo "-- Fixing broken fs/proc/cmdline.c patch on tissot..."
+                    git checkout fs/proc/cmdline.c
+                    sed -i '/#include <asm\/setup.h>/a \
+                    \
+                    #ifdef CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG\
+                    extern struct static_key_false susfs_is_fake_cmdline_or_bootconfig_buffer_set;\
+                    extern void susfs_spoof_cmdline_or_bootconfig(struct seq_file *m);\
+                    #endif' fs/proc/cmdline.c
+                    sed -i '/seq_printf(m,/i \
+                    #ifdef CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG\
+                    \tif (static_branch_likely(&susfs_is_fake_cmdline_or_bootconfig_buffer_set)) {\
+                    \t\tsusfs_spoof_cmdline_or_bootconfig(m);\
+                    \t\tseq_putc(m, '\''\\n'\'');\
+                    \t\treturn 0;\
+                    \t}\
+                    #endif' fs/proc/cmdline.c
                 fi
             fi
         fi
