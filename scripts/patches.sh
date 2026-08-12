@@ -100,7 +100,6 @@ case "$DEVICE_IMPORT" in
         if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
             echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-            echo "CONFIG_CC_OPTIMIZE_FOR_SIZE=y" >> $MAIN_DEFCONFIG
             # Set cpu tuning for 4.19
             echo "-- Setting up CPU tuning..."
             if [[ "$DEVICE_IMPORT" == "ginkgo" || "$DEVICE_IMPORT" == "laurel_sprout" ]]; then
@@ -183,9 +182,6 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        if [[ "$DEVICE_IMPORT" != "mi89x7-playground" ]]; then
-            echo "CONFIG_CC_OPTIMIZE_FOR_SIZE=y" >> $MAIN_DEFCONFIG
-        fi
         ;;
     tissot-playground-treble|tissot-playground-nontreble)
         # remove hardcoded kernel build user and host on tissot
