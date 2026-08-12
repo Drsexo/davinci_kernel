@@ -196,9 +196,11 @@ case "$DEVICE_IMPORT" in
         fi
         # Common configs for 4.9
         echo "-- Tuning default configs..."
+        if [[ "$DEVICE_IMPORT" != "tissot-playground-nontreble" && "$DEVICE_IMPORT" != "tissot-playground-treble" ]]; then
+            echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
+            echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+        fi
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         ;;
     *)
         echo "No specific patches to apply for $DEVICE_IMPORT."
