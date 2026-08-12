@@ -187,7 +187,7 @@ case "$DEVICE_IMPORT" in
             echo "CONFIG_CC_OPTIMIZE_FOR_SIZE=y" >> $MAIN_DEFCONFIG
         fi
         ;;
-    tissot-playground-nontreble|tissot-playground-nontreble)
+    tissot-playground-treble|tissot-playground-nontreble)
         # Set cpu tuning for 4.9
         echo "-- Setting up CPU tuning..."
         if [[ "$DEVICE_IMPORT" == "tissot-playground-nontreble" || "$DEVICE_IMPORT" == "tissot-playground-treble" ]]; then

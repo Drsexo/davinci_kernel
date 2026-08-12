@@ -45,7 +45,6 @@ case "$KERNELSU_SELECTOR" in
             echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_SUS_MAP=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> $MAIN_DEFCONFIG
-
             # Kernel 4.14 device specific fixes for SUSFS
             if [[ "$KERNEL_VERSION" == "4.14" ]]; then
                 if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
@@ -53,6 +52,33 @@ case "$KERNELSU_SELECTOR" in
                     sed -i '/static struct file \*path_openat(/,/^{/ {/^{/a \
                     #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
                     }' fs/namei.c
+                fi
+            fi
+            # kernel 4.9 device specific fixes for SUSFS
+            if [[ "$KERNEL_VERSION" == "4.9" ]]; then
+                if [[ "$DEVICE_IMPORT" == "tissot-playground-nontreble" || "$DEVICE_IMPORT" == "tissot-playground-treble" ]]; then
+                    echo "-- Fixing broken fs/stat.c patch on tissot..."
+                    git checkout fs/stat.c
+                    sed -i '/#include <asm\/unistd.h>/a \
+                    \
+                    #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT\
+                    extern void susfs_sus_kstat_spoof_generic_fillattr(struct inode *inode, struct kstat *stat);\
+                    #endif' fs/stat.c
+                    sed -i '/stat->blocks = inode->i_blocks;/a \
+                    #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT\
+                    \tsusfs_sus_kstat_spoof_generic_fillattr(inode, stat);\
+                    #endif' fs/stat.c
+                    sed -i '/return inode->i_op->getattr(path->mnt, path->dentry, stat);/c\
+                    #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT\
+                    \t{\
+                    \t\tint err = inode->i_op->getattr(path->mnt, path->dentry, stat);\
+                    \t\tif (!err)\
+                    \t\t\tsusfs_sus_kstat_spoof_generic_fillattr(inode, stat);\
+                    \t\treturn err;\
+                    \t}\
+                    #else\
+                    \t\treturn inode->i_op->getattr(path->mnt, path->dentry, stat);\
+                    #endif' fs/stat.c
                 fi
             fi
         fi
