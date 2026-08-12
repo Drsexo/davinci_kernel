@@ -14,7 +14,7 @@
       "common_defconfig": "vendor/debugfs.config",
       "device_defconfig": "",
       "kernel_name": "-vantom-neon",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "sources": [
       { "repo": "https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150.git", "branch": "sixteen-qpr2", "path": "." }
