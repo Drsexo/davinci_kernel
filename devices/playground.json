@@ -93,5 +93,51 @@
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm8250.git", "branch": "lineage-23.2", "path": "." }
     ]
+  },
+  "tissot-playground-nontreble": {
+    "dir": "android_kernel_xiaomi_msm8953",
+    "image": "Image.gz-dtb",
+    "dtb": "",
+    "dtbo": "",
+    "supported_versions": "10-13",
+    "device_names": ["tissot"],
+    "banner": "tissot (msm8953)",
+    "zip_prefix": "another-nontreble-tissot-playground",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/tissot_defconfig",
+      "actual_main_defconfig": "tissot_defconfig",
+      "common_defconfig": "",
+      "device_defconfig": "",
+      "feature_defconfig": "",
+      "kernel_name": "-another-nontreble-neon",
+      "kernel_version": "4.9",
+      "clang_strat": "1"
+    },
+    "sources": [
+      { "repo": "https://github.com/romiyusnandar/Another_Kernel_tissot-4.9", "branch": "Non-Treble-Non-KSU", "path": "." }
+    ]
+  },
+  "tissot-playground-treble": {
+    "dir": "android_kernel_xiaomi_msm8953",
+    "image": "Image.gz-dtb",
+    "dtb": "",
+    "dtbo": "",
+    "supported_versions": "10-13",
+    "device_names": ["tissot"],
+    "banner": "tissot (msm8953)",
+    "zip_prefix": "another-treble-tissot-playground",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/tissot_defconfig",
+      "actual_main_defconfig": "tissot_defconfig",
+      "common_defconfig": "",
+      "device_defconfig": "",
+      "feature_defconfig": "",
+      "kernel_name": "-another-treble-neon",
+      "kernel_version": "4.9",
+      "clang_strat": "1"
+    },
+    "sources": [
+      { "repo": "https://github.com/romiyusnandar/Another_Kernel_tissot-4.9", "branch": "Treble-Non-KSU", "path": "." }
+    ]
   }
 }
