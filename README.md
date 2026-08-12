@@ -41,7 +41,9 @@ Currently available features:
 
 Currently added features into the kernel:   
 - Every features is guaranteed available on Weekly release.   
-- Redmi Mi89x7 (mithorium) & Sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, -O3, LTO.    
+- Redmi Mi89x7 (mithorium): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, -O3, LTO.   
+- Redmi sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, -O3, Clang 12 + Android GCC 4.9.   
+- Redmi tissot (Another): KernelSU w/ SUSFS, Baseband Guard, Nomount, -O2, Clang 12 + Android GCC 4.9.   
 
 # Compatibility
 Currently supported Operating System   
@@ -64,6 +66,7 @@ Externally compiled kernels
 - Redmi 4A/5A/Note 5A Lite/Y1 Lite ([mi8917](https://download.lineageos.org/devices/Mi8917/builds)) from Mi-Thorium   
 - Redmi 3/3S/4/4X/Note 5A Prime/Y1 Prime ([mi8937](https://download.lineageos.org/devices/Mi8937/builds)) from Mi-Thorium   
 - Redmi Note 10 Pro/Pro Max ([sweet](https://pixelos.net/download/sweet)) from PixelOS   
+- Redmi A1 ([tissot](https://github.com/romiyusnandar/Another_Kernel_tissot-4.9)) from Another Kernel   
 
 Notes   
 - Kernels that released on playground is not restricted with these OS constraints.   
