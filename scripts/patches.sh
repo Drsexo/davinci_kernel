@@ -187,6 +187,19 @@ case "$DEVICE_IMPORT" in
             echo "CONFIG_CC_OPTIMIZE_FOR_SIZE=y" >> $MAIN_DEFCONFIG
         fi
         ;;
+    tissot-playground-nontreble|tissot-playground-nontreble)
+        # Set cpu tuning for 4.9
+        echo "-- Setting up CPU tuning..."
+        if [[ "$DEVICE_IMPORT" == "tissot-playground-nontreble" || "$DEVICE_IMPORT" == "tissot-playground-treble" ]]; then
+            sed -i '$ a\
+            KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
+        fi
+        # Common configs for 4.9
+        echo "-- Tuning default configs..."
+        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+        ;;
     *)
         echo "No specific patches to apply for $DEVICE_IMPORT."
         ;;
