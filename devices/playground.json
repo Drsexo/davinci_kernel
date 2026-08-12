@@ -13,7 +13,8 @@
       "actual_main_defconfig": "sweet_defconfig",
       "common_defconfig": "vendor/debugfs.config",
       "device_defconfig": "",
-      "kernel_name": "-vantom-neon"
+      "kernel_name": "-vantom-neon",
+      "clang_strat": "1"
     },
     "sources": [
       { "repo": "https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150.git", "branch": "sixteen-qpr2", "path": "." }
@@ -35,7 +36,8 @@
       "device_defconfig": "vendor/xiaomi/msm8937/common.config vendor/xiaomi/msm8937/mi8937.config",
       "feature_defconfig": "vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/exfat.config vendor/feature/kprobes.config vendor/feature/lmkd.config vendor/feature/ntfs.config vendor/feature/wireguard.config",
       "kernel_name": "-mithorium-neon",
-      "kernel_version": "4.19"
+      "kernel_version": "4.19",
+      "clang_strat": "1"
     },
     "sources": [
       { "repo": "https://github.com/Mi-Thorium/kernel_msm-4.19", "branch": "mithorium/a13/master", "path": "." },
@@ -64,7 +66,8 @@
       "actual_main_defconfig": "vendor/kona-perf_defconfig",
       "device_defconfig": "vendor/xiaomi/sm8250-common.config vendor/xiaomi/umi.config",
       "kernel_version": "4.19",
-      "kbuild_build_user": "kamilek-compile"
+      "kbuild_build_user": "kamilek-compile",
+      "clang_strat": "1"
     },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm8250.git", "branch": "lineage-23.2", "path": "." }
@@ -84,7 +87,8 @@
       "actual_main_defconfig": "vendor/kona-perf_defconfig",
       "device_defconfig": "vendor/xiaomi/sm8250-common.config vendor/xiaomi/cmi.config",
       "kernel_version": "4.19",
-      "kbuild_build_user": "kamilek-compile"
+      "kbuild_build_user": "kamilek-compile",
+      "clang_strat": "1"
     },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm8250.git", "branch": "lineage-23.2", "path": "." }

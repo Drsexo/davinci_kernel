@@ -25,9 +25,9 @@ export ACTUAL_MAIN_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.actual_
 export COMMON_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.common_defconfig // "vendor/debugfs.config"' "$JSON_FILE")
 export DEVICE_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.device_defconfig // ""' "$JSON_FILE")
 export FEATURE_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.feature_defconfig // ""' "$JSON_FILE")
+export CLANG_STRAT=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.clang_strat // "1"' "$JSON_FILE")
 
 # Toolchain Settings
-export CLANG_STRAT=1
 echo "-- Exporting toolchain settings..."
 if [[ "$CLANG_STRAT" == "1" ]]; then
     echo "-- Using new method to compile the kernel (AOSP Clang Only)"
