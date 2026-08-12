@@ -49,6 +49,22 @@ jobs:
             droidspaces-type: droidspaces
             rekernel-type: rekernel
 
+          # --- tissot-playground-treble Builds ---
+          - build-type: tissot-playground-treble
+            ksu-type: zako-susfs
+            bbg-type: bbg
+            nomount-type: nomount
+            droidspaces-type: none
+            rekernel-type: none
+
+          # --- tissot-playground-nontreble Builds ---
+          - build-type: tissot-playground-nontreble
+            ksu-type: zako-susfs
+            bbg-type: bbg
+            nomount-type: nomount
+            droidspaces-type: none
+            rekernel-type: none
+
     steps:
       - uses: actions/checkout@v6
 
