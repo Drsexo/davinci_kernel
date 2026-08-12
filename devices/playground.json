@@ -111,7 +111,7 @@
       "feature_defconfig": "",
       "kernel_name": "-another-nontreble-neon",
       "kernel_version": "4.9",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "sources": [
       { "repo": "https://github.com/romiyusnandar/Another_Kernel_tissot-4.9", "branch": "Non-Treble-Non-KSU", "path": "." }
@@ -134,7 +134,7 @@
       "feature_defconfig": "",
       "kernel_name": "-another-treble-neon",
       "kernel_version": "4.9",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "sources": [
       { "repo": "https://github.com/romiyusnandar/Another_Kernel_tissot-4.9", "branch": "Treble-Non-KSU", "path": "." }
