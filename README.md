@@ -37,13 +37,13 @@ Currently available features:
 - NoMount Meta Module support   
 - Droidspaces container support   
 - ReKernel tombstones support   
-- Compiled with -Os, LTO and latest AOSP clang   
+- Compiled with LTO and latest AOSP clang   
 
 Currently added features into the kernel:   
 - Every features is guaranteed available on Weekly release.   
 - Redmi Mi89x7 (mithorium): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, -O3, LTO.   
 - Redmi sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, -O3, Clang 12 + Android GCC 4.9.   
-- Redmi tissot (Another): KernelSU w/ SUSFS, Baseband Guard, Nomount, -O2, Clang 12 + Android GCC 4.9.   
+- Redmi tissot (Another): KernelSU w/ SUSFS, Baseband Guard, Nomount, Clang 12 + Android GCC 4.9.   
 
 # Compatibility
 Currently supported Operating System   
