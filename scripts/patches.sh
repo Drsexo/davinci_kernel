@@ -188,6 +188,12 @@ case "$DEVICE_IMPORT" in
         fi
         ;;
     tissot-playground-treble|tissot-playground-nontreble)
+        # remove hardcoded kernel build user and host on tissot
+        if [[ "$DEVICE_IMPORT" == "tissot-playground-treble" || "$DEVICE_IMPORT" == "tissot-playground-nontreble" ]]; then
+            echo "-- Removing hardcoded kernel build user and host..."
+            sed -i '/LINUX_COMPILE_BY="romi"/d' scripts/mkcompile_h
+            sed -i '/LINUX_COMPILE_HOST="build"/d' scripts/mkcompile_h
+        fi
         # Set cpu tuning for 4.9
         echo "-- Setting up CPU tuning..."
         if [[ "$DEVICE_IMPORT" == "tissot-playground-nontreble" || "$DEVICE_IMPORT" == "tissot-playground-treble" ]]; then
