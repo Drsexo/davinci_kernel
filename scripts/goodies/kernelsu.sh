@@ -33,7 +33,7 @@ case "$KERNELSU_SELECTOR" in
         # SUSFS Logic
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
             echo "-- Setting up SUSFS support for KernelSU..."
-            patch -s -p1 --fuzz=5 < "$SUSFS_PATCH"
+            # Enable SUSFS configs
             echo "CONFIG_KSU_SUSFS=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> $MAIN_DEFCONFIG
@@ -45,6 +45,13 @@ case "$KERNELSU_SELECTOR" in
             echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_SUS_MAP=y" >> $MAIN_DEFCONFIG
             echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> $MAIN_DEFCONFIG
+            # Patch SUSFS to the kernel source
+            echo "-- Applying SUSFS patch to the kernel source..."
+            if [[ "$DEVICE_IMPORT" != "sweet-crdroid" ]]; then
+                patch -s -p1 --fuzz=5 < "$SUSFS_PATCH"
+            else
+                echo "-- Skipping SUSFS patch for sweet-crdroid..."
+            fi
             # Kernel 4.14 device specific fixes for SUSFS
             if [[ "$KERNEL_VERSION" == "4.14" ]]; then
                 if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
