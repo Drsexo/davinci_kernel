@@ -75,17 +75,17 @@ case "$DEVICE_IMPORT" in
             echo "-- Applying DTB patches..."
             apply_patches "${DTBO_PATCHES[@]}"
         fi
+        # Completely remove kernelsu drivers
+        if [[ "$DEVICE_IMPORT" == "sweet-crdroid" ]]; then
+            echo "-- Reverting hard to commits before KSU is being added..."
+            git reset --hard 78088ffb401b570b8de9408662c8fc931e9cf1a5 &> /dev/null
+        fi
         # LTO and kpatch patches for 4.14
         if [[ "$DEVICE_IMPORT" != "sweet-playground" && "$DEVICE_IMPORT" != "sweet-crdroid" ]]; then
             echo "-- Applying LTO patches..."
             apply_patches "$LTO_PATCH"
             echo "-- Applying KPATCH patches..."
             apply_patches "$KPATCH_PATCH"
-        fi
-        # Completely remove kernelsu drivers
-        if [[ "$DEVICE_IMPORT" == "sweet-crdroid" ]]; then
-            echo "-- Force removing kernelsu drivers..."
-            rm -rf drivers/kernelsu
         fi
         # Allow kernel to compile under new clang versions
         if [[ "$CLANG_STRAT" == "1" ]]; then
