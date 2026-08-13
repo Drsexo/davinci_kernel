@@ -64,7 +64,7 @@ jobs:
             [ "$SUB_PATH" != "." ] && DEST="$DIR/$SUB_PATH"
 
             echo "Cloning $REPO ($BRANCH) -> $DEST"
-            git clone "$REPO" --depth=1 -b "$BRANCH" "$DEST"
+            git clone "$REPO" -b "$BRANCH" "$DEST"
           done
 
           echo "Copying buildscript and config..."
