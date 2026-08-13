@@ -82,6 +82,11 @@ case "$DEVICE_IMPORT" in
             echo "-- Applying KPATCH patches..."
             apply_patches "$KPATCH_PATCH"
         fi
+        # Completely remove kernelsu drivers
+        if [[ "$DEVICE_IMPORT" == "sweet-crdroid" ]]; then
+            echo "-- Force removing kernelsu drivers..."
+            rm -rf drivers/kernelsu
+        fi
         # Allow kernel to compile under new clang versions
         if [[ "$CLANG_STRAT" == "1" ]]; then
             echo "-- Allowing to compile on new AOSP clang..."
