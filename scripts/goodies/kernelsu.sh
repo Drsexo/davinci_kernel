@@ -47,11 +47,7 @@ case "$KERNELSU_SELECTOR" in
             echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> $MAIN_DEFCONFIG
             # Patch SUSFS to the kernel source
             echo "-- Applying SUSFS patch to the kernel source..."
-            if [[ "$DEVICE_IMPORT" != "sweet-crdroid" ]]; then
-                patch -s -p1 --fuzz=5 < "$SUSFS_PATCH"
-            else
-                echo "-- Skipping SUSFS patch for sweet-crdroid..."
-            fi
+            patch -s -p1 --fuzz=5 < "$SUSFS_PATCH"
             # Kernel 4.14 device specific fixes for SUSFS
             if [[ "$KERNEL_VERSION" == "4.14" ]]; then
                 if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
