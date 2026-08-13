@@ -76,7 +76,7 @@ case "$DEVICE_IMPORT" in
             apply_patches "${DTBO_PATCHES[@]}"
         fi
         # LTO and kpatch patches for 4.14
-        if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
+        if [[ "$DEVICE_IMPORT" != "sweet-playground" && "$DEVICE_IMPORT" != "sweet-crdroid" ]]; then
             echo "-- Applying LTO patches..."
             apply_patches "$LTO_PATCH"
             echo "-- Applying KPATCH patches..."
