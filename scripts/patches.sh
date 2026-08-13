@@ -35,7 +35,7 @@ KPATCH_PATCH="https://github.com/TheSillyOk/kernel_ls_patches/raw/refs/heads/mas
 
 # Patcher - 1.0
 case "$DEVICE_IMPORT" in
-    sweet|davinci|tucana|violet|ginkgo|laurel_sprout|sweet-playground)
+    sweet|davinci|tucana|violet|ginkgo|laurel_sprout|sweet-playground|sweet-crdroid)
         # Device specific for 4.14
         if [[ "$DEVICE_IMPORT" == "sweet-playground" ]]; then
             echo "-- Applying LN8K patches..."
@@ -71,7 +71,7 @@ case "$DEVICE_IMPORT" in
             "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/2628183db0d96be8dae38a21f2b09cb10978f423.patch"
             "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/31f4577af3f8255ae503a5b30d8f68906edde85f.patch"
         )
-         if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
+         if [[ "$DEVICE_IMPORT" != "sweet-playground" && "$DEVICE_IMPORT" != "sweet-crdroid" ]]; then
             echo "-- Applying DTB patches..."
             apply_patches "${DTBO_PATCHES[@]}"
         fi
@@ -79,10 +79,8 @@ case "$DEVICE_IMPORT" in
         if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
             echo "-- Applying LTO patches..."
             apply_patches "$LTO_PATCH"
-            if [[ "$DEVICE_IMPORT" != "d2s" && "$DEVICE_IMPORT" != "d2x" ]]; then
-                echo "-- Applying KPATCH patches..."
-                apply_patches "$KPATCH_PATCH"
-            fi
+            echo "-- Applying KPATCH patches..."
+            apply_patches "$KPATCH_PATCH"
         fi
         # Allow kernel to compile under new clang versions
         if [[ "$CLANG_STRAT" == "1" ]]; then
