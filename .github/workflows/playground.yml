@@ -65,6 +65,14 @@ jobs:
             droidspaces-type: none
             rekernel-type: none
 
+          # --- sweet-crdroid Builds ---
+          - build-type: sweet-crdroid
+            ksu-type: zako-susfs
+            bbg-type: bbg
+            nomount-type: nomount
+            droidspaces-type: droidspaces
+            rekernel-type: rekernel
+
     steps:
       - uses: actions/checkout@v6
 
