@@ -44,6 +44,9 @@ echo "CONFIG_F2FS_FS_LZ4=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_F2FS_FS_LZO=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_F2FS_FS_ZSTD=y" >> $MAIN_DEFCONFIG
 
+# Checkpoint/restore
+echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
+
 # CPU tuning
 echo "-- Applying CPU tuning..."
 sed -i '$ a\KBUILD_CFLAGS += -mcpu=cortex-a76+crc+crypto -mtune=cortex-a76 -march=armv8.2-a+crc+crypto' Makefile

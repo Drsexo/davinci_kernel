@@ -5,7 +5,14 @@ echo "- Setting up build environment..."
 echo "-- Exporting device settings..."
 export KBUILD_BUILD_USER=drsexo-compile
 export KBUILD_BUILD_HOST=drsexo
-export KERNEL_NAME="-Nebula_ReSukiSU"
+# ROM-specific kernel name
+case "$ROM_IMPORT" in
+    lineageos)  ROM_DISPLAY="LineageOS" ;;
+    pixelos)    ROM_DISPLAY="PixelOS" ;;
+    derpfest)   ROM_DISPLAY="DerpFest" ;;
+    *)          ROM_DISPLAY="$ROM_IMPORT" ;;
+esac
+export KERNEL_NAME="-Nebula_${ROM_DISPLAY}"
 export KERNEL_VERSION="4.14"
 
 # PixelOS ships davinci as one standalone defconfig, no vendor/ fragment to merge

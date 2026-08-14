@@ -1,7 +1,7 @@
 #!/bin/bash
-echo "- Setting up zram improvements..."
+echo "- Setting up miscellaneous improvements..."
 
-# ZRAM default compressor: lz4
+# ZRAM lz4
 echo "-- Setting zram default compressor to lz4..."
 sed -i 's/default_compressor = "lzo"/default_compressor = "lz4"/' drivers/block/zram/zram_drv.c 2>/dev/null || true
 echo "CONFIG_ZRAM_DEF_COMP_LZ4=y" >> $MAIN_DEFCONFIG
@@ -54,3 +54,18 @@ config ZRAM_SIZE_OVERRIDE
 EOF
 fi
 echo "CONFIG_ZRAM_SIZE_OVERRIDE=3" >> $MAIN_DEFCONFIG
+
+# Cache pressure reduction
+echo "-- Reducing vfs cache pressure..."
+sed -i 's/int sysctl_vfs_cache_pressure __read_mostly = 100;/int sysctl_vfs_cache_pressure __read_mostly = 50;/' fs/dcache.c
+
+# Force deep sleep instead of s2idle
+echo "-- Forcing deep sleep instead of s2idle..."
+sed -i 's/suspend_state_t mem_sleep_current = PM_SUSPEND_TO_IDLE;/suspend_state_t mem_sleep_current = PM_SUSPEND_MEM;/' kernel/power/suspend.c
+
+# Suppress overlayfs log spam
+echo "-- Suppressing overlayfs log spam..."
+sed -i 's/pr_err("overlayfs: upperdir is in-use/pr_debug_once("overlayfs: upperdir is in-use/' fs/overlayfs/super.c
+sed -i 's/pr_warn("overlayfs: upperdir is in-use/pr_debug_once("overlayfs: upperdir is in-use/' fs/overlayfs/super.c
+sed -i 's/pr_err("overlayfs: workdir is in-use/pr_debug_once("overlayfs: workdir is in-use/' fs/overlayfs/super.c
+sed -i 's/pr_warn("overlayfs: workdir is in-use/pr_debug_once("overlayfs: workdir is-in-use/' fs/overlayfs/super.c

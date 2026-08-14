@@ -4,6 +4,7 @@
 echo "-- Applying O3 flags before compiling..."
 sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
 sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
+touch .scmversion
 
 # Make sure out folder exist
 mkdir -p out &> /dev/null
