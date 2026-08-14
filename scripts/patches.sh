@@ -215,10 +215,29 @@ case "$DEVICE_IMPORT" in
             KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        ;;
+    ;;
+    # Titanium
+    mi8953-titanium-playground)
+        echo "-- Reverting KSU Commits..."
+        revert_commit "https://github.com/imren0x/msm-4.19/commit/054db634954f3ab6ffe1d7aea505c1d851eee24c.patch"
+        revert_commit "https://github.com/imren0x/msm-4.19/commit/03cf4fbc3bb64353be356b143aacac9efe6c09a3.patch"
+        revert_commit "https://github.com/imren0x/msm-4.19/commit/4c708b3ce7f7773b733c55ba2c9a587133d2ab7c.patch"
+        echo "-- Applying O3 flags..."
+        sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
+        sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
+        echo "-- Setting up mtune..."
+        sed -i '$ a\
+            KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
+        echo "-- Tuning default configs..."
+        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
+    ;;
     *)
         echo "No specific patches to apply for $DEVICE_IMPORT."
-        ;;
+    ;;
 esac
 
 if [[ "$CLANG_STRAT" == "1" ]]; then
