@@ -70,6 +70,7 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     ginkgo-lineage|laurel_sprout-lineage)
         echo "-- Applying DTC patches..."
@@ -89,6 +90,7 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     gta4l-lineage)
         echo "-- Fixing scripts/dtc/livetree.c..."
@@ -109,6 +111,7 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     # CrDroid
     sweet-crdroid|davinci-crdroid|tucana-crdroid)
@@ -133,6 +136,7 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     # PixelOS
     sweet-playground)
@@ -199,6 +203,7 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     # Another Kernels
     tissot-playground-treble|tissot-playground-nontreble)
