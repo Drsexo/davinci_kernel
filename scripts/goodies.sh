@@ -28,3 +28,7 @@ source scripts/goodies/droidspaces.sh
 # ReKernel
 chmod +x scripts/goodies/rekernel.sh
 source scripts/goodies/rekernel.sh
+
+# ZRAM
+chmod +x scripts/goodies/zram.sh
+source scripts/goodies/zram.sh

@@ -46,8 +46,8 @@ echo "CONFIG_F2FS_FS_ZSTD=y" >> $MAIN_DEFCONFIG
 
 # CPU tuning
 echo "-- Applying CPU tuning..."
-sed -i '$ a\KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
+sed -i '$ a\KBUILD_CFLAGS += -mcpu=cortex-a76+crc+crypto -mtune=cortex-a76 -march=armv8.2-a+crc+crypto' Makefile
 
-# Zram: default to lz4
-sed -i 's/default_compressor = "lzo"/default_compressor = "lz4"/' drivers/block/zram/zram_drv.c 2>/dev/null || true
-echo "CONFIG_ZRAM_DEF_COMP_LZ4=y" >> $MAIN_DEFCONFIG
+# F2FS IO timeout
+echo "-- Fixing F2FS IO timeout..."
+sed -i 's/#define\tDEFAULT_IO_TIMEOUT\t(msecs_to_jiffies(1))/#define\tDEFAULT_IO_TIMEOUT\t(msecs_to_jiffies(6))/' fs/f2fs/f2fs.h
