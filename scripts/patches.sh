@@ -118,6 +118,8 @@ case "$DEVICE_IMPORT" in
             echo "-- Fixing goodix driver..."
             sed -i 's/static void gtp_set_edge_filter_normal()/static void gtp_set_edge_filter_normal(void)/g' drivers/input/touchscreen/f4_goodix_driver_gt9886/goodix_ts_core.c
             sed -i 's/static int gtp_send_cur_cmd()/static int gtp_send_cur_cmd(void)/g' drivers/input/touchscreen/f4_goodix_driver_gt9886/goodix_ts_core.c
+            echo "-- Fixing fts driver..."
+            sed -i 's/"%100s %d %d"/"%99s %d %d"/g' drivers/input/touchscreen/fts_521/fts.c
         fi
         echo "-- Setting up mtune..."
         sed -i '$ a\
