@@ -111,9 +111,14 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
     ;;
     # CrDroid
-    sweet-crdroid|davinci-crdroid|tucana-crdroid|violet-crdroid)
+    sweet-crdroid|davinci-crdroid|tucana-crdroid)
         echo "-- Reverting hard to commits before KSU is being added..."
         git reset --hard 78088ffb401b570b8de9408662c8fc931e9cf1a5 &> /dev/null
+        if [[ "$DEVICE_IMPORT" == "tucana-crdroid" ]]; then
+            echo "-- Fixing goodix driver..."
+            sed -i 's/static void gtp_set_edge_filter_normal()/static void gtp_set_edge_filter_normal(void)/g' drivers/input/touchscreen/f4_goodix_driver_gt9886/goodix_ts_core.c
+            sed -i 's/static int gtp_send_cur_cmd()/static int gtp_send_cur_cmd(void)/g' drivers/input/touchscreen/f4_goodix_driver_gt9886/goodix_ts_core.c
+        fi
         echo "-- Setting up mtune..."
         sed -i '$ a\
             KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
