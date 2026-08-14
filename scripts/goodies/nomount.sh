@@ -12,6 +12,9 @@ case "$NOMOUNT_SELECTOR" in
 
         # Enable the necessary Nomount configs
         echo "CONFIG_NOMOUNT=y" >> $MAIN_DEFCONFIG
+
+        # Allow nomount to compile on C89 environment
+        echo "ccflags-y += -Wno-declaration-after-statement" >> fs/nomount/Makefile
         ;;
     none|"")
         echo "-- Nomount is not selected."
