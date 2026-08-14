@@ -187,7 +187,7 @@
     "image": "Image.gz-dtb",
     "dtb": "",
     "dtbo": "",
-    "supported_versions": "13-16",
+    "supported_versions": "11-16",
     "device_names": ["mi8953", "ysl", "rosy", "vince", "nikel", "mido", "markw"],
     "banner": "mi8953 (msm8953)",
     "zip_prefix": "titanium-mi8953-playground",
@@ -209,7 +209,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/romiyusnandar/Another_Kernel_tissot-4.9", "branch": "Treble-Non-KSU", "path": "." }
+      { "repo": "https://github.com/imren0x/msm-4.19", "branch": "mi8953/latest", "path": "." }
     ]
   }
 }
