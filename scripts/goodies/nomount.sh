@@ -8,7 +8,7 @@ case "$NOMOUNT_SELECTOR" in
     nomount)
         # Setup nomount
         echo "-- Running nomount setup script..."
-        curl -LSs --fail --retry 3 "$KSU_SETUP_URI" | bash -s "$KSU_SETUP_BRANCH" &> /dev/null || { echo "Fatal: KSU setup script failed to download/run!"; exit 1; }
+        curl -LSs --fail --retry 3 "$NOMOUNT_SETUP_URI" | bash -s "$NOMOUNT_SETUP_BRANCH" &> /dev/null || { echo "Fatal: Nomount setup script failed to download/run!"; exit 1; }
 
         # Enable the necessary Nomount configs
         echo "CONFIG_NOMOUNT=y" >> $MAIN_DEFCONFIG
