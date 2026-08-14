@@ -51,7 +51,7 @@ case "$KERNELSU_SELECTOR" in
             # Kernel 4.14 patchup failure fix for SUSFS
             if [[ "$KERNEL_VERSION" == "4.14" ]]; then
                 # Check if the patch is already present in the file
-                if ! grep -q "int old_dfd __maybe_unused = nd->dfd;" fs/namei.c; then
+                if ! grep -qE "old_dfd.*=.*nd->dfd|fake_filename" fs/namei.c; then
                     echo "-- Applying KernelSU SUSFS fixes for 4.14..."
                     sed -i '/static struct file \*path_openat(/,/^{/ {/^{/a \
                     #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
