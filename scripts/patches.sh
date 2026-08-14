@@ -197,7 +197,6 @@ case "$DEVICE_IMPORT" in
         echo "-- Setting up mtune..."
         sed -i '$ a\
             KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
-        # Common configs for 4.9
         echo "-- Tuning default configs..."
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
