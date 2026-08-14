@@ -198,8 +198,6 @@ case "$DEVICE_IMPORT" in
         sed -i '$ a\
             KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
         echo "-- Tuning default configs..."
-        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         ;;
     *)
