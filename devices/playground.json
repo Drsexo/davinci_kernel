@@ -2,7 +2,7 @@
   "sweet-playground": {
     "dir": "android_kernel_xiaomi_sm6150",
     "image": "Image.gz",
-    "dtb": "dtb.img",
+    "dtb": "",
     "dtbo": "dtbo.img",
     "supported_versions": "12-16",
     "device_names": ["sweet", "sweetin"],
@@ -71,7 +71,7 @@
     "image": "Image",
     "dtb": "",
     "dtbo": "",
-    "supported_versions": "15-17",
+    "supported_versions": "13-16",
     "device_names": ["umi", "umiin"],
     "banner": "umi (sm8250)",
     "zip_prefix": "perf-neon-umi-playground",
@@ -99,7 +99,7 @@
     "image": "Image",
     "dtb": "",
     "dtbo": "",
-    "supported_versions": "15-17",
+    "supported_versions": "13-16",
     "device_names": ["cmi", "cmiiin"],
     "banner": "cmi (sm8250)",
     "zip_prefix": "perf-neon-cmi-playground",
@@ -177,6 +177,36 @@
       "nomount_type": "nomount",
       "droidspaces_type": "none",
       "rekernel_type": "none"
+    },
+    "sources": [
+      { "repo": "https://github.com/romiyusnandar/Another_Kernel_tissot-4.9", "branch": "Treble-Non-KSU", "path": "." }
+    ]
+  },
+  "mi8953-titanium-playground": {
+    "dir": "android_kernel_xiaomi_msm8953",
+    "image": "Image.gz-dtb",
+    "dtb": "",
+    "dtbo": "",
+    "supported_versions": "13-16",
+    "device_names": ["mi8953", "ysl", "rosy", "vince", "nikel", "mido", "markw"],
+    "banner": "mi8953 (msm8953)",
+    "zip_prefix": "titanium-mi8953-playground",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/vendor/msm8953-perf_defconfig",
+      "actual_main_defconfig": "vendor/msm8953-perf_defconfig",
+      "common_defconfig": "vendor/mi8953.config vendor/debugfs.config",
+      "device_defconfig": "vendor/akari.config",
+      "feature_defconfig": "",
+      "kernel_name": "-titanium-neon",
+      "kernel_version": "4.19",
+      "clang_strat": "1"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "none",
+      "rekernel_type": "rekernel"
     },
     "sources": [
       { "repo": "https://github.com/romiyusnandar/Another_Kernel_tissot-4.9", "branch": "Treble-Non-KSU", "path": "." }
