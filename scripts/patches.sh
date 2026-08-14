@@ -222,6 +222,10 @@ case "$DEVICE_IMPORT" in
         revert_commit "https://github.com/imren0x/msm-4.19/commit/054db634954f3ab6ffe1d7aea505c1d851eee24c.patch"
         revert_commit "https://github.com/imren0x/msm-4.19/commit/03cf4fbc3bb64353be356b143aacac9efe6c09a3.patch"
         revert_commit "https://github.com/imren0x/msm-4.19/commit/4c708b3ce7f7773b733c55ba2c9a587133d2ab7c.patch"
+        echo "-- Fixing msm clk broken redifinition..."
+        sed -i 's/static inline void clk_debug_print_hw.*/void clk_debug_print_hw(struct clk *clk, struct seq_file *f);/' include/linux/clk/msm-clk-provider.h
+        sed -i '/static inline int clock_debug_register/,/}/c\int clock_debug_register(struct clk *clk);' drivers/clk/msm/clock.h
+        sed -i '/static inline void clock_debug_print_enabled.*/c\void clock_debug_print_enabled(bool print_parent);' drivers/clk/msm/clock.h
         echo "-- Applying O3 flags..."
         sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
         sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
