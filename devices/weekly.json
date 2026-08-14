@@ -300,35 +300,5 @@
     "sources": [
       { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150", "branch": "16.0", "path": "." }
     ]
-  },
-  "violet-crdroid": {
-    "dir": "android_kernel_xiaomi_sm6150",
-    "image": "Image.gz",
-    "dtb": "",
-    "dtbo": "dtbo.img",
-    "supported_versions": "13-16",
-    "device_names": ["violet", "violetin"],
-    "banner": "violet (sm6150)",
-    "zip_prefix": "crdroid-neon-violet-weekly",
-    "env": {
-      "main_defconfig": "arch/arm64/configs/vendor/sdmsteppe-perf_defconfig",
-      "actual_main_defconfig": "vendor/sdmsteppe-perf_defconfig",
-      "common_defconfig": "vendor/debugfs.config",
-      "device_defconfig": "vendor/violet.config",
-      "feature_defconfig": "",
-      "kernel_name": "-crdroid-neon",
-      "kernel_version": "4.14",
-      "clang_strat": "1"
-    },
-    "build_flags": {
-      "ksu_type": ["zako-susfs", "none"], 
-      "bbg_type": "bbg",
-      "nomount_type": "nomount",
-      "droidspaces_type": "droidspaces",
-      "rekernel_type": "rekernel"
-    },
-    "sources": [
-      { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150", "branch": "16.0", "path": "." }
-    ]
   }
 }
