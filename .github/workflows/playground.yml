@@ -9,72 +9,21 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
     outputs:
+      matrix_combinations: ${{ steps.set-matrix.outputs.matrix_combinations }}
       timestamp: ${{ steps.ts.outputs.TIME }}
       date: ${{ steps.ts.outputs.DATE }}
-    strategy:
-      matrix:
-        include:
-          # --- sweet-playground Builds ---
-          - build-type: sweet-playground
-            ksu-type: zako-susfs
-            bbg-type: bbg
-            nomount-type: nomount
-            droidspaces-type: none
-            rekernel-type: rekernel
-
-          # --- mi89x7-playground Builds ---
-          - build-type: mi89x7-playground
-            ksu-type: zako-susfs
-            bbg-type: bbg
-            nomount-type: nomount
-            droidspaces-type: none
-            rekernel-type: rekernel
-
-          # --- umi Builds ---
-          - build-type: umi
-            ksu-type: zako-susfs
-            bbg-type: bbg
-            nomount-type: nomount
-            droidspaces-type: droidspaces
-            rekernel-type: rekernel
-
-          # --- cmi Builds ---
-          - build-type: cmi
-            ksu-type: zako-susfs
-            bbg-type: bbg
-            nomount-type: nomount
-            droidspaces-type: droidspaces
-            rekernel-type: rekernel
-
-          # --- tissot-playground-treble Builds ---
-          - build-type: tissot-playground-treble
-            ksu-type: zako-susfs
-            bbg-type: bbg
-            nomount-type: nomount
-            droidspaces-type: none
-            rekernel-type: none
-
-          # --- tissot-playground-nontreble Builds ---
-          - build-type: tissot-playground-nontreble
-            ksu-type: zako-susfs
-            bbg-type: bbg
-            nomount-type: nomount
-            droidspaces-type: none
-            rekernel-type: none
-
-          # --- sweet-crdroid Builds ---
-          - build-type: sweet-crdroid
-            ksu-type: zako-susfs
-            bbg-type: bbg
-            nomount-type: nomount
-            droidspaces-type: droidspaces
-            rekernel-type: rekernel
-
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
+
+      - name: Generate dynamic job combinations from JSON
+        id: set-matrix
+        run: |
+          CONFIG_FILE="devices/playground.json"
+          MATRIX_JSON=$(jq -c '[to_entries[] | .key as $build | .value.build_flags | (if (.ksu_type | type) == "array" then .ksu_type[] else .ksu_type end) as $ksu | { "build_type": $build, "ksu_type": $ksu }]' "$CONFIG_FILE")
+          echo "matrix_combinations=$MATRIX_JSON" >> $GITHUB_OUTPUT
 
       - name: Timestamp
         id: ts
@@ -83,6 +32,17 @@ jobs:
           TIME=$(date +'%s')
           echo "DATE=$DATE" >> $GITHUB_OUTPUT
           echo "TIME=$TIME" >> $GITHUB_OUTPUT
+
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.matrix_combinations) }}
+
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Install build dependencies
         run: |
@@ -94,7 +54,7 @@ jobs:
 
       - name: Preparing kernel sources
         run: |
-          BUILD_TYPE="${{ matrix.build-type }}"
+          BUILD_TYPE="${{ matrix.build_type }}"
           CONFIG_FILE="devices/playground.json"
           DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir // empty' "$CONFIG_FILE")
 
@@ -125,17 +85,24 @@ jobs:
 
       - name: Compile the kernel
         run: |
-          BUILD_TYPE="${{ matrix.build-type }}"
+          BUILD_TYPE="${{ matrix.build_type }}"
+          KSU_TYPE="${{ matrix.ksu_type }}"
           CONFIG_FILE="devices/playground.json"
           DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' "$CONFIG_FILE")
+          
+          # Pull the rest of the standard build flags from JSON
+          BBG=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.bbg_type // empty' "$CONFIG_FILE")
+          NOMOUNT=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.nomount_type // empty' "$CONFIG_FILE")
+          DROIDSPACES=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.droidspaces_type // empty' "$CONFIG_FILE")
+          REKERNEL=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.rekernel_type // empty' "$CONFIG_FILE")
 
-          echo "Starting to compile in $DIR..."
+          echo "Starting compile in $DIR for $BUILD_TYPE with KSU: $KSU_TYPE..."
           cd "$DIR"
-          ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
+          ./build.sh $BUILD_TYPE $KSU_TYPE $BBG $NOMOUNT $DROIDSPACES $REKERNEL
 
       - name: Preparing AnyKernel3 sources
         run: |
-          BUILD_TYPE="${{ matrix.build-type }}"
+          BUILD_TYPE="${{ matrix.build_type }}"
           CONFIG_FILE="devices/playground.json"
           DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' "$CONFIG_FILE")
           IMAGE=$(jq -r --arg target "$BUILD_TYPE" '.[$target].image' "$CONFIG_FILE")
@@ -171,25 +138,25 @@ jobs:
 
       - name: Pack kernel with AnyKernel3
         run: |
-          BUILD_TYPE="${{ matrix.build-type }}"
+          BUILD_TYPE="${{ matrix.build_type }}"
+          KSU_TYPE="${{ matrix.ksu_type }}"
           CONFIG_FILE="devices/playground.json"
-
           ZIP_PREFIX=$(jq -r --arg target "$BUILD_TYPE" '.[$target].zip_prefix' "$CONFIG_FILE")
-          ZIPNAME="${ZIP_PREFIX}-${{ steps.ts.outputs.DATE }}.zip"
+          ZIPNAME="${ZIP_PREFIX}-${KSU_TYPE}-${{ needs.setup.outputs.date }}.zip"
 
           cd AnyKernel3
           zip -rq9 "../$ZIPNAME" ./*
           cd ..
 
-      - name: Upload artifacts (All builds)
-        uses: actions/upload-artifact@v6
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.build-type }}
+          name: ${{ matrix.build_type }}-${{ matrix.ksu_type }}
           path: |
             *.zip
 
   release:
-    needs: build
+    needs: [setup, build]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -214,13 +181,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: kernel-playground-${{ needs.build.outputs.timestamp }}
+          tag_name: kernel-playground-${{ needs.setup.outputs.timestamp }}
           name: Playground - ${{ steps.ts.outputs.FANCYDATE }}
           draft: false
           prerelease: false
           body: |
             > [!IMPORTANT]   
-            > - This sections contains community-built kernels thats not a part of LineageOS official releases, also some Official LineageOS kernels that did not meet the standard weekly release.   
+            > - This section contains community-built kernels that are not a part of LineageOS official releases, also some Official LineageOS kernels that did not meet the standard weekly release.   
 
             > [!CAUTION]   
             > - Always backup your boot and dtbo image first before proceeding!   

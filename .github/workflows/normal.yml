@@ -9,22 +9,21 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
     outputs:
+      matrix_combinations: ${{ steps.set-matrix.outputs.matrix_combinations }}
       timestamp: ${{ steps.ts.outputs.TIME }}
       date: ${{ steps.ts.outputs.DATE }}
-    strategy:
-      matrix:
-        build-type: [sweet, davinci, tucana, violet, ginkgo, laurel_sprout, gta4l]
-        ksu-type: [zako-susfs]
-        bbg-type: [bbg]
-        nomount-type: [nomount]
-        droidspaces-type: [droidspaces]
-        rekernel-type: [rekernel]
-
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
+
+      - name: Generate dynamic job combinations from JSON
+        id: set-matrix
+        run: |
+          CONFIG_FILE="devices/weekly.json"
+          MATRIX_JSON=$(jq -c '[to_entries[] | .key as $build | .value.build_flags | (if (.ksu_type | type) == "array" then .ksu_type[] else .ksu_type end) as $ksu | { "build_type": $build, "ksu_type": $ksu }]' "$CONFIG_FILE")
+          echo "matrix_combinations=$MATRIX_JSON" >> $GITHUB_OUTPUT
 
       - name: Timestamp
         id: ts
@@ -33,6 +32,17 @@ jobs:
           TIME=$(date +'%s')
           echo "DATE=$DATE" >> $GITHUB_OUTPUT
           echo "TIME=$TIME" >> $GITHUB_OUTPUT
+
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.matrix_combinations) }}
+
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Install build dependencies
         run: |
@@ -44,7 +54,7 @@ jobs:
 
       - name: Preparing kernel sources
         run: |
-          BUILD_TYPE="${{ matrix.build-type }}"
+          BUILD_TYPE="${{ matrix.build_type }}"
           CONFIG_FILE="devices/weekly.json"
           DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir // empty' "$CONFIG_FILE")
 
@@ -75,17 +85,24 @@ jobs:
 
       - name: Compile the kernel
         run: |
-          BUILD_TYPE="${{ matrix.build-type }}"
+          BUILD_TYPE="${{ matrix.build_type }}"
+          KSU_TYPE="${{ matrix.ksu_type }}"
           CONFIG_FILE="devices/weekly.json"
           DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' "$CONFIG_FILE")
+          
+          # Pull the rest of the standard build flags from JSON
+          BBG=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.bbg_type // empty' "$CONFIG_FILE")
+          NOMOUNT=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.nomount_type // empty' "$CONFIG_FILE")
+          DROIDSPACES=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.droidspaces_type // empty' "$CONFIG_FILE")
+          REKERNEL=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.rekernel_type // empty' "$CONFIG_FILE")
 
-          echo "Starting to compile in $DIR..."
+          echo "Starting compile in $DIR for $BUILD_TYPE with KSU: $KSU_TYPE..."
           cd "$DIR"
-          ./build.sh ${{ matrix.build-type }} ${{ matrix.ksu-type }} ${{ matrix.bbg-type }} ${{ matrix.nomount-type }} ${{ matrix.droidspaces-type }} ${{ matrix.rekernel-type }}
+          ./build.sh $BUILD_TYPE $KSU_TYPE $BBG $NOMOUNT $DROIDSPACES $REKERNEL
 
       - name: Preparing AnyKernel3 sources
         run: |
-          BUILD_TYPE="${{ matrix.build-type }}"
+          BUILD_TYPE="${{ matrix.build_type }}"
           CONFIG_FILE="devices/weekly.json"
           DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' "$CONFIG_FILE")
           IMAGE=$(jq -r --arg target "$BUILD_TYPE" '.[$target].image' "$CONFIG_FILE")
@@ -117,29 +134,29 @@ jobs:
           awk -v dev="$DEV_NAMES_FORMATTED" '/supported.versions=/ {print dev} {print}' AnyKernel3/anykernel.sh > AnyKernel3/anykernel.sh.tmp && mv AnyKernel3/anykernel.sh.tmp AnyKernel3/anykernel.sh
 
           sed -i "s/sweet (sm6150)/$BANNER/g" AnyKernel3/banner
-          sed -i 's/KERNEL_BUILD_TYPE="Weekly"/KERNEL_BUILD_TYPE="Weekly"/' AnyKernel3/anykernel.sh
+          sed -i 's/KERNEL_BUILD_TYPE="Weekly"/KERNEL_BUILD_TYPE="Playground"/' AnyKernel3/anykernel.sh
 
       - name: Pack kernel with AnyKernel3
         run: |
-          BUILD_TYPE="${{ matrix.build-type }}"
+          BUILD_TYPE="${{ matrix.build_type }}"
+          KSU_TYPE="${{ matrix.ksu_type }}"
           CONFIG_FILE="devices/weekly.json"
-
           ZIP_PREFIX=$(jq -r --arg target "$BUILD_TYPE" '.[$target].zip_prefix' "$CONFIG_FILE")
-          ZIPNAME="${ZIP_PREFIX}-${{ steps.ts.outputs.DATE }}.zip"
+          ZIPNAME="${ZIP_PREFIX}-${KSU_TYPE}-${{ needs.setup.outputs.date }}.zip"
 
           cd AnyKernel3
           zip -rq9 "../$ZIPNAME" ./*
           cd ..
 
-      - name: Upload artifacts (All builds)
-        uses: actions/upload-artifact@v6
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.build-type }}
+          name: ${{ matrix.build_type }}-${{ matrix.ksu_type }}
           path: |
             *.zip
 
   release:
-    needs: build
+    needs: [setup, build]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -164,7 +181,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: kernel-weekly-${{ needs.build.outputs.timestamp }}
+          tag_name: kernel-weekly-${{ needs.setup.outputs.timestamp }}
           name: Weekly - ${{ steps.ts.outputs.FANCYDATE }}
           draft: false
           prerelease: false
