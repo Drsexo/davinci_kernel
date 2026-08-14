@@ -16,6 +16,13 @@
       "kernel_name": "-vantom-neon",
       "clang_strat": "0"
     },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "none",
+      "rekernel_type": "rekernel"
+    },
     "sources": [
       { "repo": "https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150.git", "branch": "sixteen-qpr2", "path": "." }
     ]
@@ -38,6 +45,13 @@
       "kernel_name": "-mithorium-neon",
       "kernel_version": "4.19",
       "clang_strat": "1"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "none",
+      "rekernel_type": "rekernel"
     },
     "sources": [
       { "repo": "https://github.com/Mi-Thorium/kernel_msm-4.19", "branch": "mithorium/a13/master", "path": "." },
@@ -69,6 +83,13 @@
       "kbuild_build_user": "kamilek-compile",
       "clang_strat": "1"
     },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "droidspaces",
+      "rekernel_type": "rekernel"
+    },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm8250.git", "branch": "lineage-23.2", "path": "." }
     ]
@@ -89,6 +110,13 @@
       "kernel_version": "4.19",
       "kbuild_build_user": "kamilek-compile",
       "clang_strat": "1"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "droidspaces",
+      "rekernel_type": "rekernel"
     },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm8250.git", "branch": "lineage-23.2", "path": "." }
@@ -113,6 +141,13 @@
       "kernel_version": "4.9",
       "clang_strat": "0"
     },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "none",
+      "rekernel_type": "none"
+    },
     "sources": [
       { "repo": "https://github.com/romiyusnandar/Another_Kernel_tissot-4.9", "branch": "Non-Treble-Non-KSU", "path": "." }
     ]
@@ -136,31 +171,15 @@
       "kernel_version": "4.9",
       "clang_strat": "0"
     },
-    "sources": [
-      { "repo": "https://github.com/romiyusnandar/Another_Kernel_tissot-4.9", "branch": "Treble-Non-KSU", "path": "." }
-    ]
-  },
-  "sweet-crdroid": {
-    "dir": "android_kernel_xiaomi_sm6150",
-    "image": "Image.gz",
-    "dtb": "dtb.img",
-    "dtbo": "dtbo.img",
-    "supported_versions": "12-16",
-    "device_names": ["sweet", "sweetin"],
-    "banner": "sweet (sm6150)",
-    "zip_prefix": "crdroid-sweet-playground",
-    "env": {
-      "main_defconfig": "arch/arm64/configs/vendor/sdmsteppe-perf_defconfig",
-      "actual_main_defconfig": "vendor/sdmsteppe-perf_defconfig",
-      "common_defconfig": "vendor/debugfs.config",
-      "device_defconfig": "vendor/sweet.config",
-      "feature_defconfig": "",
-      "kernel_name": "-crdroid-neon",
-      "kernel_version": "4.14",
-      "clang_strat": "1"
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "none",
+      "rekernel_type": "none"
     },
     "sources": [
-      { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150", "branch": "16.0", "path": "." }
+      { "repo": "https://github.com/romiyusnandar/Another_Kernel_tissot-4.9", "branch": "Treble-Non-KSU", "path": "." }
     ]
   }
 }
