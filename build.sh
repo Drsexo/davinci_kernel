@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Nebula build script 1.0 - by drsexo"
+echo "Nebula build script 2.0 - by drsexo"
 
 # Validate input arguments
 echo "- Validating input arguments..."

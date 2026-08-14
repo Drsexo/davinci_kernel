@@ -43,6 +43,7 @@ echo "CONFIG_THREAD_INFO_IN_TASK=y" >> $MAIN_DEFCONFIG
 
 # SUSFS Logic
 echo "-- Setting up SUSFS support for KernelSU..."
+echo "-- Applying SUSFS patch to the kernel source..."
 wget -qO- "$SUSFS_PATCH" | patch -s -p1 --fuzz=5
 echo "CONFIG_KSU_SUSFS=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> $MAIN_DEFCONFIG
@@ -57,7 +58,8 @@ echo "CONFIG_KSU_SUSFS_SUS_MAP=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> $MAIN_DEFCONFIG
 
 # SUSFS patch workaround
-if ! sed -n '/static struct file \*path_openat(/,/^}/p' fs/namei.c | grep -q "int old_dfd.*=.*nd->dfd"; then
+# Check if the patch is already present in path_openat's opening lines
+if ! grep -A 20 "static struct file \*path_openat(" fs/namei.c | grep -q "old_dfd"; then
     echo "-- Injecting SUSFS path_openat declarations..."
     sed -i '/static struct file \*path_openat(/,/^{/ {/^{/a \
 #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
