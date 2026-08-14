@@ -48,9 +48,10 @@ case "$KERNELSU_SELECTOR" in
             # Patch SUSFS to the kernel source
             echo "-- Applying SUSFS patch to the kernel source..."
             patch -s -p1 --fuzz=5 < "$SUSFS_PATCH"
-            # Kernel 4.14 device specific fixes for SUSFS
+            # Kernel 4.14 patchup failure fix for SUSFS
             if [[ "$KERNEL_VERSION" == "4.14" ]]; then
-                if [[ "$DEVICE_IMPORT" != "sweet-playground" ]]; then
+                # Check if the patch is already present in the file
+                if ! grep -q "int old_dfd __maybe_unused = nd->dfd;" fs/namei.c; then
                     echo "-- Applying KernelSU SUSFS fixes for 4.14..."
                     sed -i '/static struct file \*path_openat(/,/^{/ {/^{/a \
                     #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
