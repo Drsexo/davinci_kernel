@@ -239,6 +239,20 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
     ;;
+    # Spiteful MIUI Buildout
+    spiteful-sweet-miui-buildout)
+        echo "-- Reverting hard to commits before KSU is being added..."
+        git reset --hard 1c950660849776c0105ae268270acb590d1df308 &> /dev/null
+        echo "-- Setting up mtune..."
+        sed -i '$ a\
+            KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
+        echo "-- Tuning default configs..."
+        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
+    ;;
     *)
         echo "No specific patches to apply for $DEVICE_IMPORT."
     ;;
