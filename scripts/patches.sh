@@ -249,7 +249,7 @@ case "$DEVICE_IMPORT" in
         echo "-- Allowing the kernel source to be compiled on new compiler..."
         sed -i '/^LDFLAGS_vmlinux/a LDFLAGS_vmlinux += -Wl,-mllvm,-enable-ml-inliner=default' Makefile
         echo "-- Tuning default configs..."
-        sed -i 's/# CONFIG_CC_STACKPROTECTOR_REGULAR is not set/CONFIG_CC_STACKPROTECTOR_REGULAR=y/g' $MAIN_DEFCONFIG
+        sed -i 's/# CONFIG_CC_STACKPROTECTOR_NONE is not set/CONFIG_CC_STACKPROTECTOR_NONE=y/g' $MAIN_DEFCONFIG
         sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $MAIN_DEFCONFIG
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
