@@ -246,6 +246,8 @@ case "$DEVICE_IMPORT" in
         echo "-- Setting up mtune..."
         sed -i '$ a\
             KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
+        echo "-- Allowing the kernel source to be compiled on new compiler..."
+        sed -i '/^LDFLAGS_vmlinux/a LDFLAGS_vmlinux += -Wl,-mllvm,-enable-ml-inliner=default' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
