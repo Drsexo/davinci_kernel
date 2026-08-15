@@ -248,6 +248,13 @@ case "$DEVICE_IMPORT" in
             KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
         echo "-- Allowing the kernel source to be compiled on new compiler..."
         sed -i '/^LDFLAGS_vmlinux/a LDFLAGS_vmlinux += -Wl,-mllvm,-enable-ml-inliner=default' Makefile
+        echo "-- Completely disabling LTO..."
+        sed -i \
+            -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
+            -e 's/^CONFIG_THINLTO=y/# CONFIG_THINLTO is not set/' \
+            -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
+            -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
+            $MAIN_DEFCONFIG
         echo "-- Tuning default configs..."
         # sed -i 's/# CONFIG_CC_STACKPROTECTOR_NONE is not set/CONFIG_CC_STACKPROTECTOR_NONE=y/g' $MAIN_DEFCONFIG
         # sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $MAIN_DEFCONFIG
