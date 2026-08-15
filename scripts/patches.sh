@@ -253,6 +253,9 @@ case "$DEVICE_IMPORT" in
             -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
             -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
             $MAIN_DEFCONFIG
+        echo "-- Applying O3 flags..."
+        sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
+        sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
         echo "-- Tuning default configs..."
         # sed -i 's/# CONFIG_CC_STACKPROTECTOR_NONE is not set/CONFIG_CC_STACKPROTECTOR_NONE=y/g' $MAIN_DEFCONFIG
         # sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $MAIN_DEFCONFIG
