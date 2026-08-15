@@ -60,12 +60,16 @@ echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> $MAIN_DEFCONFIG
 # SUSFS patch workaround
 # Check if the patch is already present in path_openat's opening lines
 if ! grep -A 20 "static struct file \*path_openat(" fs/namei.c | grep -q "old_dfd"; then
-    echo "-- Injecting SUSFS path_openat declarations..."
+    echo "-- Patching fs/namei.c for susfs_open_redirect..."
     sed -i '/static struct file \*path_openat(/,/^{/ {/^{/a \
 #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
 }' fs/namei.c
-else
-    echo "-- SUSFS path_openat declarations already present, skipping injection."
+fi
+# Check if the susfs_spoof_uname hook is already present in kernel/sys.c
+if ! grep -q "susfs_is_uname_spoof_buffer_set" kernel/sys.c; then
+    echo "-- Patching kernel/sys.c for susfs_spoof_uname..."
+    sed -i 's/^SYSCALL_DEFINE1(newuname/#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\nextern struct static_key_false susfs_is_uname_spoof_buffer_set;\nextern void susfs_spoof_uname(struct new_utsname* tmp);\n#endif\nSYSCALL_DEFINE1(newuname/' kernel/sys.c
+    sed -i 's/memcpy(&tmp, utsname(), sizeof(tmp));/&\n#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\n\tif (static_branch_likely(\&susfs_is_uname_spoof_buffer_set))\n\t\tsusfs_spoof_uname(\&tmp);\n#endif/' kernel/sys.c
 fi
 
 # Apply KSU Hooks
