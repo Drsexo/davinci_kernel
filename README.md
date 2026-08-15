@@ -42,6 +42,7 @@ Currently available features:
 Currently added features into the kernel:   
 - Every features is guaranteed available on Weekly release.   
 - Redmi Mi89x7 & Mi8953 (mithorium, titanium): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, -O3, LTO.   
+- Redmi sweet (Spiteful): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, -O3.   
 - Redmi sweet (PixelOS): KernelSU w/ SUSFS, Baseband Guard, Nomount, ReKernel, -O3, Clang 12 + Android GCC 4.9.   
 - Redmi tissot (Another): KernelSU w/ SUSFS, Baseband Guard, Nomount, Clang 12 + Android GCC 4.9.   
 
@@ -70,7 +71,8 @@ Externally compiled kernels
 - Redmi 3/3S/4/4X/Note 5A Prime/Y1 Prime ([mi8937](https://download.lineageos.org/devices/Mi8937/builds)) from Mi-Thorium   
 - Redmi Note 10 Pro/Pro Max ([sweet](https://pixelos.net/download/sweet)) from PixelOS   
 - Redmi A1 ([tissot](https://github.com/romiyusnandar/Another_Kernel_tissot-4.9)) from Another Kernel   
-- Redmi S2/Y2/5 Plus/Note 4/Note 4X/Mi 5X ([mi8953](https://github.com/imren0x/msm-4.19)) from Mi-Titanium
+- Redmi S2/Y2/5 Plus/Note 4/Note 4X/Mi 5X ([mi8953](https://github.com/imren0x/msm-4.19)) from Mi-Titanium   
+- Redmi Note 10 Pro/Pro Max ([sweet](https://github.com/tbyool/android_kernel_xiaomi_sm6150)) from Spiteful Kernel   
 
 Notes   
 - Kernels that released on playground is not restricted with these OS constraints.   
@@ -101,7 +103,7 @@ Restore to default kernel
 
 # Credits
 Patches & buildscript
-- [TBYOOL](https://github.com/tbyool) for the buildscripts & kernel patches.   
+- [TBYOOL](https://github.com/tbyool) for the buildscripts, kernel sources & kernel patches.   
 - [xiaomi-sm6150](https://github.com/xiaomi-sm6150) for the DTB patches.   
 - [JackA1ltMan](https://github.com/JackA1ltman) for ReSukiSU hook scripts, ReKernel scripts & SUSFS patches.   
 - [TheSillyOk](https://github.com/TheSillyOk) for LTO & kpatch fixup for 4.14 devices.   
