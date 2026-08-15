@@ -246,8 +246,6 @@ case "$DEVICE_IMPORT" in
         echo "-- Setting up mtune..."
         sed -i '$ a\
             KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
-        echo "-- Allowing the kernel source to be compiled on new compiler..."
-        sed -i '/^LDFLAGS_vmlinux/a LDFLAGS_vmlinux += -Wl,-mllvm,-enable-ml-inliner=default' Makefile
         echo "-- Completely disabling LTO..."
         sed -i \
             -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
