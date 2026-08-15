@@ -1,6 +1,42 @@
 #!/bin/bash
 echo "- Setting up miscellaneous improvements..."
 
+# LZ4 1.10 upgrade
+# Source: SOVIET-ANDROID/kernel_xiaomi_raphael 
+# Commit: ce31fef3ea2e6ca2a9349641ea0829397b255a69
+# Author: Juhyung Park <qkrwngud825@gmail.com>
+if [ -f lib/lz4/lz4.c ]; then
+    echo "-- LZ4 1.10 already present, skipping."
+else
+    echo "-- Upgrading LZ4 to v1.10.0..."
+
+    LZ4_RAW="https://raw.githubusercontent.com/Drsexo/davinci_kernel/lz4-1.10"
+
+    rm -f lib/lz4/lz4_compress.c lib/lz4/lz4_decompress.c lib/lz4/lz4defs.h lib/lz4/lz4hc_compress.c
+    rm -rf lib/lz4/lz4armv8
+
+    for f in lz4.c lz4.h lz4hc.c lz4hc.h; do
+        curl -fsSL "$LZ4_RAW/$f" -o "lib/lz4/$f" \
+            || { echo "Fatal: Failed to download lib/lz4/$f"; exit 1; }
+    done
+
+    cat > lib/lz4/Makefile << 'EOF'
+ccflags-y += -O3 \
+    -DLZ4_FREESTANDING=1
+
+obj-$(CONFIG_LZ4_COMPRESS) += lz4.o
+obj-$(CONFIG_LZ4_DECOMPRESS) += lz4.o
+obj-$(CONFIG_LZ4HC_COMPRESS) += lz4hc.o
+EOF
+
+    curl -fsSL "$LZ4_RAW/lz4_wrapper.h" -o include/linux/lz4.h \
+        || { echo "Fatal: Failed to download include/linux/lz4.h"; exit 1; }
+
+    sed -i '/#include "lz4armv8\/lz4accel.h"/d' lib/lz4/lz4.h
+
+    echo "-- LZ4 upgraded to v1.10.0."
+fi
+
 # ZRAM lz4
 echo "-- Setting zram default compressor to lz4..."
 sed -i 's/default_compressor = "lzo"/default_compressor = "lz4"/' drivers/block/zram/zram_drv.c 2>/dev/null || true
@@ -55,10 +91,6 @@ EOF
 fi
 echo "CONFIG_ZRAM_SIZE_OVERRIDE=3" >> $MAIN_DEFCONFIG
 
-# Cache pressure reduction
-echo "-- Reducing vfs cache pressure..."
-sed -i 's/int sysctl_vfs_cache_pressure __read_mostly = 100;/int sysctl_vfs_cache_pressure __read_mostly = 50;/' fs/dcache.c
-
 # Force deep sleep instead of s2idle
 echo "-- Forcing deep sleep instead of s2idle..."
 sed -i 's/suspend_state_t mem_sleep_current = PM_SUSPEND_TO_IDLE;/suspend_state_t mem_sleep_current = PM_SUSPEND_MEM;/' kernel/power/suspend.c
@@ -68,4 +100,4 @@ echo "-- Suppressing overlayfs log spam..."
 sed -i 's/pr_err("overlayfs: upperdir is in-use/pr_debug_once("overlayfs: upperdir is in-use/' fs/overlayfs/super.c
 sed -i 's/pr_warn("overlayfs: upperdir is in-use/pr_debug_once("overlayfs: upperdir is in-use/' fs/overlayfs/super.c
 sed -i 's/pr_err("overlayfs: workdir is in-use/pr_debug_once("overlayfs: workdir is in-use/' fs/overlayfs/super.c
-sed -i 's/pr_warn("overlayfs: workdir is in-use/pr_debug_once("overlayfs: workdir is-in-use/' fs/overlayfs/super.c
+sed -i 's/pr_warn("overlayfs: workdir is in-use/pr_debug_once("overlayfs: workdir is in-use/' fs/overlayfs/super.c
