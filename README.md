@@ -95,7 +95,7 @@ Restore to default kernel
 - You'll need to remove everything inside `/data/adb`. You can do this with `su -c rm -rf /data/adb/*`.   
 - Then immediately reboot to bootloader/fastbootd.   
 - Flash the stock boot image with `fastboot flash boot </path/to/original/boot/image.img>`   
-- Also flash the stock dtbo image with `fastboot flash boot </path/to/original/dtbo/image.img>`
+- Also flash the stock dtbo image with `fastboot flash dtbo </path/to/original/dtbo/image.img>`
 - Reboot with `fastboot reboot`.   
 - Profit.   
 
