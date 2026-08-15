@@ -91,6 +91,10 @@ EOF
 fi
 echo "CONFIG_ZRAM_SIZE_OVERRIDE=3" >> $MAIN_DEFCONFIG
 
+# Swappiness
+echo "-- Reducing vm swappiness to 30..."
+sed -i 's/^int vm_swappiness = [0-9]*;/int vm_swappiness = 30;/' mm/vmscan.c
+
 # Force deep sleep instead of s2idle
 echo "-- Forcing deep sleep instead of s2idle..."
 sed -i 's/suspend_state_t mem_sleep_current = PM_SUSPEND_TO_IDLE;/suspend_state_t mem_sleep_current = PM_SUSPEND_MEM;/' kernel/power/suspend.c
