@@ -235,7 +235,7 @@
       "ksu_type": ["zako-susfs", "none"], 
       "bbg_type": "bbg",
       "nomount_type": "nomount",
-      "droidspaces_type": "none",
+      "droidspaces_type": "droidspaces",
       "rekernel_type": "rekernel"
     },
     "sources": [
