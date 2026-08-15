@@ -77,8 +77,6 @@ case "$DEVICE_IMPORT" in
         apply_patches "${DTC_PATCHES[@]}"
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
-        echo "-- Applying LTO patches..."
-        apply_patches "$LTO_PATCH"
         echo "-- Applying KPATCH patches..."
         apply_patches "$KPATCH_PATCH"
         echo "-- Setting up mtune..."
