@@ -209,7 +209,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/imren0x/msm-4.19", "branch": "mi8953/latest", "path": "." }
+      { "repo": "https://github.com/imren0x/msm-4.19", "branch": "mi8953/latest1", "path": "." }
     ]
   },
   "spiteful-sweet-miui-buildout": {
