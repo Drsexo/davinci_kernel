@@ -297,6 +297,10 @@ case "$DEVICE_IMPORT" in
         sed -i 's/CONFIG_LLVM_POLLY=y/# CONFIG_LLVM_POLLY is not set/g' $MAIN_DEFCONFIG
         echo "-- Removing reggaloc advisor..."
         sed -i '/-regalloc-enable-advisor=release/d' Makefile
+        echo "-- Removing array-parameter flag on qcacld-3.0..."
+        sed -i 's/-Wno-error=array-parameter//g' drivers/staging/qcacld-3.0/Kbuild
+        echo "-- Fixing broken selinux when compiling on new KSU..."
+        sed -i 's/struct type_datum \*\*type_val_to_struct_array;/union { struct type_datum \*\*type_val_to_struct_array; struct type_datum \*\*type_val_to_struct; };/g' security/selinux/ss/policydb.h
         echo "-- Applying O3 flags..."
         sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
         sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
