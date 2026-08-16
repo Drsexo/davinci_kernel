@@ -47,7 +47,7 @@ Currently added features into the kernel:
 - Redmi tissot (Another): KernelSU w/ SUSFS, Baseband Guard, Nomount, Clang 12 + Android GCC 4.9.   
 
 # Compatibility
-Currently supported Operating System   
+Currently supported Operating System (Weekly release only)   
 - LineageOS   
 - /e/ OS   
 - LibreMobileOS   
@@ -73,6 +73,14 @@ Externally compiled kernels
 - Redmi A1 ([tissot](https://github.com/romiyusnandar/Another_Kernel_tissot-4.9)) from Another Kernel   
 - Redmi S2/Y2/5 Plus/Note 4/Note 4X/Mi 5X ([mi8953](https://github.com/imren0x/msm-4.19)) from Mi-Titanium   
 - Redmi Note 10 Pro/Pro Max ([sweet](https://github.com/tbyool/android_kernel_xiaomi_sm6150)) from Spiteful Kernel   
+
+Android Version Constraints
+- ```lineage-neon```: Android 13 to Android 16.
+- ```crdroid-neon```: Android 13 to Android 16.
+- ```another-nontreble``` & ```another-nontreble```: Android 10 to Android 13.
+- ```mithorium``` & ```titanium```: Android 11 to Android 16.
+- ```spiteful```: Android 11 to Android 15.
+- ```vantom```: Android 12 to Android 16.
 
 Notes   
 - Kernels that released on playground is not restricted with these OS constraints.   
