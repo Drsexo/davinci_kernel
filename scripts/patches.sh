@@ -281,6 +281,26 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
+    # ZeloKernel AOSP
+    zelo-sweet-aosp)
+        echo "-- Setting up mtune..."
+        sed -i '$ a\
+            KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
+        # echo "-- Completely disabling LTO..."
+        # sed -i \
+        #     -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
+        #     -e 's/^CONFIG_THINLTO=y/# CONFIG_THINLTO is not set/' \
+        #     -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
+        #     -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
+        #     $MAIN_DEFCONFIG
+        echo "-- Applying O3 flags..."
+        sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
+        sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
+        echo "-- Tuning default configs..."
+        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
+    ;;
     *)
         echo "No specific patches to apply for $DEVICE_IMPORT."
     ;;
