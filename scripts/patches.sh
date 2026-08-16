@@ -295,8 +295,9 @@ case "$DEVICE_IMPORT" in
         #     $MAIN_DEFCONFIG
         echo "-- Disabling LLVM Polly..."
         sed -i 's/CONFIG_LLVM_POLLY=y/# CONFIG_LLVM_POLLY is not set/g' $MAIN_DEFCONFIG
-        echo "-- Removing reggaloc advisor..."
+        echo "-- Removing reggaloc advisor and unknown lto flags..."
         sed -i '/-regalloc-enable-advisor=release/d' Makefile
+        sed -i '/lto-clang-flags[[:space:]]*:=[[:space:]]*-funified-lto/d' Makefile
         echo "-- Removing array-parameter flag on qcacld-3.0..."
         sed -i 's/-Wno-error=array-parameter//g' drivers/staging/qcacld-3.0/Kbuild
         echo "-- Fixing broken selinux when compiling on new KSU..."
