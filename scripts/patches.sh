@@ -293,6 +293,8 @@ case "$DEVICE_IMPORT" in
         #     -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
         #     -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
         #     $MAIN_DEFCONFIG
+        echo "-- Disabling LLVM Polly..."
+        sed -i 's/CONFIG_LLVM_POLLY=y/# CONFIG_LLVM_POLLY is not set/g' $MAIN_DEFCONFIG
         echo "-- Applying O3 flags..."
         sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
         sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
