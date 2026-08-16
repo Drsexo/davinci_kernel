@@ -295,6 +295,8 @@ case "$DEVICE_IMPORT" in
         #     $MAIN_DEFCONFIG
         echo "-- Disabling LLVM Polly..."
         sed -i 's/CONFIG_LLVM_POLLY=y/# CONFIG_LLVM_POLLY is not set/g' $MAIN_DEFCONFIG
+        echo "-- Removing reggaloc advisor..."
+        sed -i '/-regalloc-enable-advisor=release/d' Makefile
         echo "-- Applying O3 flags..."
         sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
         sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
