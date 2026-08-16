@@ -52,6 +52,7 @@ LN8K_COMMON=(
 LN8K_EXTRA="https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/9e8d4be7a3e2868491486ac86c9e5aa52a5a0c53.patch"
 
 # Patcher - 1.5
+echo "- Patching kernel source for $DEVICE_IMPORT..."
 case "$DEVICE_IMPORT" in
     # LineageOS
     sweet-lineage|davinci-lineage|tucana-lineage|violet-lineage)
