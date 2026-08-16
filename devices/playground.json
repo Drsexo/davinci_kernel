@@ -289,7 +289,7 @@
       "feature_defconfig": "",
       "kernel_name": "-zeloaosp-neon",
       "kernel_version": "4.14",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
