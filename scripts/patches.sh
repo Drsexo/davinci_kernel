@@ -173,8 +173,6 @@ case "$DEVICE_IMPORT" in
         fi
         echo "-- Applying LTO patches..."
         apply_patches "$LTO_PATCH"
-        echo "-- Applying KPATCH patches..."
-        apply_patches "$KPATCH_PATCH"
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
