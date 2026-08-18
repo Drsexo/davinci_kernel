@@ -248,6 +248,9 @@ case "$DEVICE_IMPORT" in
             sed -i '/export KBUILD_CFLAGS/i \
             KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
         fi
+        echo "-- Disallowing qcacld-3.0 to compile with polly..."
+        sed -i '1i KBUILD_CFLAGS := $(subst -mllvm -polly,,$(KBUILD_CFLAGS))' drivers/staging/qcacld-3.0/Makefile
+        sed -i '2i KBUILD_CFLAGS := $(subst -O3,-O2,$(KBUILD_CFLAGS))' drivers/staging/qcacld-3.0/Makefile
         echo "-- Completely disabling LTO..."
         sed -i \
             -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
@@ -280,6 +283,9 @@ case "$DEVICE_IMPORT" in
             -e 's/^# CONFIG_CC_STACKPROTECTOR_NONE is not set/CONFIG_CC_STACKPROTECTOR_NONE=y/' \
             -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
             $MAIN_DEFCONFIG
+        echo "-- Disallowing qcacld-3.0 to compile with polly..."
+        sed -i '1i KBUILD_CFLAGS := $(subst -mllvm -polly,,$(KBUILD_CFLAGS))' drivers/staging/qcacld-3.0/Makefile
+        sed -i '2i KBUILD_CFLAGS := $(subst -O3,-O2,$(KBUILD_CFLAGS))' drivers/staging/qcacld-3.0/Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
