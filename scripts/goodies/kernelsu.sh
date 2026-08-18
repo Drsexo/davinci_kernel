@@ -90,10 +90,21 @@ case "$KERNELSU_SELECTOR" in
                 fi
                 # Complicated fs/proc/task_mmu.c ifxup in surya-crdroid
                 echo "-- Checking for patch fuzzing in fs/proc/task_mmu.c..."
-                if grep -q "CONFIG_KSU_SUSFS_SUS_MAP" fs/proc/task_mmu.c; then
-                    echo "-- Detected misplaced return 0 in susfs_sus_map. Converting to return;..."
-                    sed -i '/#ifdef CONFIG_KSU_SUSFS_SUS_MAP/,/#endif/ s/return 0;/return;/g' fs/proc/task_mmu.c
-                fi
+                awk '
+                /^[a-zA-Z_][a-zA-Z0-9_*[:space:]]+[[:space:]]+[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]*\(/ {
+                    func_name = $0
+                }
+                in_sus_map && /return/ {
+                    if (func_name ~ /show_smap/) {
+                        sub(/return[^;]*;/, "return 0;")
+                    } else {
+                        sub(/return[^;]*;/, "return;")
+                    }
+                }
+                /#ifdef CONFIG_KSU_SUSFS_SUS_MAP/ { in_sus_map = 1 }
+                /#endif/ { in_sus_map = 0 }
+                { print }
+                ' fs/proc/task_mmu.c > fs/proc/task_mmu.c.tmp && mv fs/proc/task_mmu.c.tmp fs/proc/task_mmu.c
             fi
             # Kernel 4.19 patchup failure fix for SUSFS
             if [[ "$KERNEL_VERSION" == "4.19" ]]; then
