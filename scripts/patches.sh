@@ -253,6 +253,8 @@ case "$DEVICE_IMPORT" in
             -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
             -e 's/^CONFIG_THINLTO=y/# CONFIG_THINLTO is not set/' \
             -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
+            -e 's/^CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/' \
+            -e 's/^# CONFIG_CC_STACKPROTECTOR_NONE is not set/CONFIG_CC_STACKPROTECTOR_NONE=y/' \
             -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
             $MAIN_DEFCONFIG
         echo "-- Tuning default configs..."
@@ -274,6 +276,8 @@ case "$DEVICE_IMPORT" in
             -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
             -e 's/^CONFIG_THINLTO=y/# CONFIG_THINLTO is not set/' \
             -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
+            -e 's/^CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/' \
+            -e 's/^# CONFIG_CC_STACKPROTECTOR_NONE is not set/CONFIG_CC_STACKPROTECTOR_NONE=y/' \
             -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
             $MAIN_DEFCONFIG
         echo "-- Tuning default configs..."
