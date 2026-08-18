@@ -145,6 +145,19 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
+    surya-crdroid)
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
+        fi
+        echo "-- Tuning default configs..."
+        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
+    ;;
     # PixelOS
     sweet-playground)
         echo "-- Applying LN8K patches..."

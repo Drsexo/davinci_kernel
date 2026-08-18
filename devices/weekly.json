@@ -300,5 +300,35 @@
     "sources": [
       { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150", "branch": "16.0", "path": "." }
     ]
+  },
+  "surya-crdroid": {
+    "dir": "android_kernel_xiaomi_surya",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-16",
+    "device_names": ["surya", "karna"],
+    "banner": "surya (sm6150)",
+    "zip_prefix": "crdroid-neon-surya-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/surya_defconfig",
+      "actual_main_defconfig": "surya_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "",
+      "feature_defconfig": "",
+      "kernel_name": "-crdroid-neon",
+      "kernel_version": "4.14",
+      "clang_strat": "1"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "droidspaces",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_surya", "branch": "16.0", "path": "." }
+    ]
   }
 }
