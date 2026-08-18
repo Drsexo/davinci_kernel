@@ -67,25 +67,26 @@ case "$KERNELSU_SELECTOR" in
                 ALLOC_LINE=$(awk '/^static int mnt_alloc_group_id/{print NR; exit}' fs/namespace.c)
                 if [ -n "$ALLOC_LINE" ]; then
                     if awk "NR > $ALLOC_LINE && NR < $ALLOC_LINE + 25 && /^[[:space:]]*return;/" fs/namespace.c | grep -q "return;"; then
-                    echo "-- Detected misplaced SusFS patch in mnt_alloc_group_id. Fixing..."
-                    START_LINE=$(awk "NR > $ALLOC_LINE && /#ifdef CONFIG_KSU_SUSFS/ {print NR; exit}" fs/namespace.c)
-                    END_LINE=$(awk "NR > $START_LINE && /#endif/ {print NR; exit}" fs/namespace.c)
-                    if [ -n "$START_LINE" ] && [ -n "$END_LINE" ]; then
-                        sed -n "${START_LINE},${END_LINE}p" fs/namespace.c > /tmp/susfs_misplaced_block.c
-                        sed -i "${START_LINE},${END_LINE}d" fs/namespace.c
-                        FREE_LINE=$(awk '/^static void mnt_free_id/{print NR; exit}' fs/namespace.c)
-                        WORK_LINE=$(awk "NR > $FREE_LINE && /(ida_remove|ida_free|spin_lock)/ {print NR; exit}" fs/namespace.c)
-                        if [ -n "$WORK_LINE" ]; then
-                            sed -i "$((WORK_LINE - 1))r /tmp/susfs_misplaced_block.c" fs/namespace.c
-                            echo "-- Successfully moved the SusFS block back to mnt_free_id."
+                        echo "-- Detected misplaced SusFS patch in mnt_alloc_group_id. Fixing..."
+                        START_LINE=$(awk "NR > $ALLOC_LINE && /#ifdef CONFIG_KSU_SUSFS/ {print NR; exit}" fs/namespace.c)
+                        END_LINE=$(awk "NR > $START_LINE && /#endif/ {print NR; exit}" fs/namespace.c)
+                        if [ -n "$START_LINE" ] && [ -n "$END_LINE" ]; then
+                            sed -n "${START_LINE},${END_LINE}p" fs/namespace.c > /tmp/susfs_misplaced_block.c
+                            sed -i "${START_LINE},${END_LINE}d" fs/namespace.c
+                            FREE_LINE=$(awk '/^static void mnt_free_id/{print NR; exit}' fs/namespace.c)
+                            WORK_LINE=$(awk "NR > $FREE_LINE && /(ida_remove|ida_free|spin_lock)/ {print NR; exit}" fs/namespace.c)
+                            if [ -n "$WORK_LINE" ]; then
+                                sed -i "$((WORK_LINE - 1))r /tmp/susfs_misplaced_block.c" fs/namespace.c
+                                echo "-- Successfully moved the SusFS block back to mnt_free_id."
+                            else
+                                echo "-- Failed to find injection point in mnt_free_id."
+                            fi
                         else
-                            echo "-- Failed to find injection point in mnt_free_id."
+                            echo "-- Could not determine the boundaries of the misplaced block."
                         fi
                     else
-                        echo "-- Could not determine the boundaries of the misplaced block."
+                        echo "-- fs/namespace.c is clean, no fix needed."
                     fi
-                else
-                    echo "-- fs/namespace.c is clean, no fix needed."
                 fi
             fi
             # Kernel 4.19 patchup failure fix for SUSFS
