@@ -319,7 +319,13 @@ if [[ "$CLANG_STRAT" == "1" ]]; then
     sed -i 's/-Wno-format-security/-Wno-format-security -Wno-enum-conversion -Wno-default-const-init-var-unsafe -Wno-default-const-init-field-unsafe -Wno-implicit-enum-enum-cast/g' Makefile
     echo "-- Setting up -O3 flags..."
     sed -i 's/KBUILD_CFLAGS.*+= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
-    echo "-- Adding default clang tweaks..."
-    sed -i '/export KBUILD_CFLAGS/i \
-    KBUILD_CFLAGS += -mllvm -polly -mllvm -enable-gvn-hoist -Wno-unused-command-line-argument' Makefile
+    if [[ $DEVICE_IMPORT == "spiteful-sweet-miui-buildout" || $DEVICE_IMPORT == "spiteful-sweet-aosp-buildout" ]]; then
+        echo "-- Adding default clang tweaks..."
+        sed -i '/export KBUILD_CFLAGS/i \
+        KBUILD_CFLAGS += -mllvm -enable-gvn-hoist -Wno-unused-command-line-argument' Makefile
+    else
+        echo "-- Adding default clang tweaks..."
+        sed -i '/export KBUILD_CFLAGS/i \
+        KBUILD_CFLAGS += -mllvm -polly -mllvm -enable-gvn-hoist -Wno-unused-command-line-argument' Makefile
+    fi
 fi
