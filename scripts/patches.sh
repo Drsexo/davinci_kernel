@@ -322,4 +322,7 @@ if [[ "$CLANG_STRAT" == "1" ]]; then
         sed -i '/export KBUILD_CFLAGS/i \
         KBUILD_CFLAGS += -mllvm -polly -mllvm -enable-gvn-hoist -Wno-unused-command-line-argument' Makefile
     fi
+    echo "-- Enabling Identical Code Folding for the linker..."
+    sed -i '/export LDFLAGS_vmlinux/i \
+    LDFLAGS_vmlinux += --icf=all -O2' Makefile
 fi
