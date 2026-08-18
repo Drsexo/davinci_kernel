@@ -56,6 +56,11 @@ echo "- Patching kernel source for $DEVICE_IMPORT..."
 case "$DEVICE_IMPORT" in
     # LineageOS
     sweet-lineage|davinci-lineage|tucana-lineage|violet-lineage)
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
+        fi
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
         echo "-- Applying LTO patches..."
@@ -71,6 +76,11 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     ginkgo-lineage|laurel_sprout-lineage)
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8-a+crypto+crc -mcpu=cortex-a73' Makefile
+        fi
         echo "-- Applying DTC patches..."
         apply_patches "${DTC_PATCHES[@]}"
         echo "-- Applying DTB patches..."
@@ -86,6 +96,11 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     gta4l-lineage)
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8-a+crypto+crc -mcpu=cortex-a73' Makefile
+        fi
         echo "-- Fixing scripts/dtc/livetree.c..."
         sed -i '/assert(generate_fixups);/d' scripts/dtc/livetree.c
         echo "-- Setting up extra drivers as built-in for gta4l..."
@@ -118,6 +133,12 @@ case "$DEVICE_IMPORT" in
             sed -i 's/struct i2c_client \*getClient()/struct i2c_client \*getClient(void)/g' drivers/input/touchscreen/fts_521/fts_lib/ftsIO.c
             echo "ccflags-y += -Wno-strict-prototypes" >> drivers/input/touchscreen/fts_521/Makefile
         fi
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
+        fi
+        echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
@@ -137,6 +158,11 @@ case "$DEVICE_IMPORT" in
     mi89x7-playground)
         echo "-- Reverting KSU commit..."
         revert_commit "https://github.com/Mi-Thorium/kernel_msm-4.19/commit/624875e8edc36ae280b1f8efc1d3c48a28da64ea.patch"
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8-a+crypto+crc -mcpu=cortex-a53' Makefile
+        fi
         echo "-- Fixing HW key for riva..."
         sed -i 's/#define FTS_POINT_REPORT_CHECK_EN[[:space:]]*0/#define FTS_POINT_REPORT_CHECK_EN               1/g' techpack/xiaomi-msm8937/touchscreen/focaltech_touch/focaltech_common.h
         sed -i '/input_report_key(input_dev, BTN_TOUCH, 0);/a \
@@ -170,6 +196,11 @@ case "$DEVICE_IMPORT" in
     ;;
     # Other devices
     umi|cmi)
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a77' Makefile
+        fi
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
@@ -196,6 +227,11 @@ case "$DEVICE_IMPORT" in
         sed -i 's/static inline void clk_debug_print_hw.*/void clk_debug_print_hw(struct clk *clk, struct seq_file *f);/' include/linux/clk/msm-clk-provider.h
         sed -i '/static inline int clock_debug_register/,/}/c\int clock_debug_register(struct clk *clk);' drivers/clk/msm/clock.h
         sed -i '/static inline void clock_debug_print_enabled.*/c\void clock_debug_print_enabled(bool print_parent);' drivers/clk/msm/clock.h
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8-a+crypto+crc -mcpu=cortex-a53' Makefile
+        fi
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
@@ -207,9 +243,11 @@ case "$DEVICE_IMPORT" in
     spiteful-sweet-miui-buildout)
         echo "-- Reverting hard to commits before KSU is being added..."
         git reset --hard 1c950660849776c0105ae268270acb590d1df308 &> /dev/null
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
+        fi
         echo "-- Completely disabling LTO..."
         sed -i \
             -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
@@ -226,9 +264,11 @@ case "$DEVICE_IMPORT" in
     spiteful-sweet-aosp-buildout)
         echo "-- Reverting hard to commits before KSU is being added..."
         git reset --hard 1b133f3054948bee6c59332c83699ff2b95d7978 &> /dev/null
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
+        fi
         echo "-- Completely disabling LTO..."
         sed -i \
             -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
