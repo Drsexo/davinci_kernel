@@ -88,6 +88,15 @@ case "$KERNELSU_SELECTOR" in
                         echo "-- fs/namespace.c is clean, no fix needed."
                     fi
                 fi
+                # Complicated fs/proc/task_mmu.c ifxup in surya-crdroid
+                echo "-- Checking for patch fuzzing in fs/proc/task_mmu.c..."
+                TASK_MMU_LINE=$(awk '/^[^[:space:]].*smap_gather_stats/{print NR; exit}' fs/proc/task_mmu.c)
+                if [ -n "$TASK_MMU_LINE" ]; then
+                    if awk "NR > $TASK_MMU_LINE && NR < $TASK_MMU_LINE + 35 && /return 0;/" fs/proc/task_mmu.c | grep -q "return 0;"; then
+                        echo "-- Detected misplaced return 0 in smap_gather_stats. Converting to return;..."
+                        sed -i '/smap_gather_stats/,/^[[:space:]]*}/ s/return 0;/return;/g' fs/proc/task_mmu.c
+                    fi
+                fi
             fi
             # Kernel 4.19 patchup failure fix for SUSFS
             if [[ "$KERNEL_VERSION" == "4.19" ]]; then
