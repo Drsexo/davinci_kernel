@@ -311,5 +311,5 @@ if [[ "$CLANG_STRAT" == "1" ]]; then
     sed -i 's/KBUILD_CFLAGS.*+= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
     echo "-- Adding default clang tweaks..."
     sed -i '/export KBUILD_CFLAGS/i \
-    KBUILD_CFLAGS += -mllvm -polly -mllvm -polly-ast-detect-scops -mllvm -enable-gvn-hoist -mllvm -align-all-functions=32 -Wno-unused-command-line-argument' Makefile
+    KBUILD_CFLAGS += -mllvm -polly -mllvm -enable-gvn-hoist -mllvm -align-all-functions=32 -Wno-unused-command-line-argument' Makefile
 fi
