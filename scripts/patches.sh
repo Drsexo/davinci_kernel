@@ -62,9 +62,6 @@ case "$DEVICE_IMPORT" in
         apply_patches "$LTO_PATCH"
         echo "-- Applying KPATCH patches..."
         apply_patches "$KPATCH_PATCH"
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
@@ -80,9 +77,6 @@ case "$DEVICE_IMPORT" in
         apply_patches "${DTBO_PATCHES[@]}"
         echo "-- Applying KPATCH patches..."
         apply_patches "$KPATCH_PATCH"
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
@@ -101,9 +95,6 @@ case "$DEVICE_IMPORT" in
         find techpack/audio -name "Makefile*" -exec sed -i 's/obj-m/obj-y/g' {} +
         find techpack/audio -name "Kbuild*" -exec sed -i 's/obj-m/obj-y/g' {} +
         echo "CONFIG_SENSORS_SSC=y" >> $MAIN_DEFCONFIG
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
@@ -127,10 +118,6 @@ case "$DEVICE_IMPORT" in
             sed -i 's/struct i2c_client \*getClient()/struct i2c_client \*getClient(void)/g' drivers/input/touchscreen/fts_521/fts_lib/ftsIO.c
             echo "ccflags-y += -Wno-strict-prototypes" >> drivers/input/touchscreen/fts_521/Makefile
         fi
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
-        echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
@@ -143,9 +130,6 @@ case "$DEVICE_IMPORT" in
         apply_patches "${LN8K_COMMON[@]}"
         wget -qO- "$LN8K_EXTRA" | filterdiff -x a/drivers/power/supply/qcom/smb5-lib.c | patch -s -p1
         echo "CONFIG_CHARGER_LN8000=y" >> $MAIN_DEFCONFIG
-        echo "-- Applying O3 flags..."
-        sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
-        sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
     ;;
@@ -178,13 +162,6 @@ case "$DEVICE_IMPORT" in
             }\
             ts_data->key_state = 0;\
         }' techpack/xiaomi-msm8937/touchscreen/focaltech_touch/focaltech_point_report_check.c
-        echo "-- Applying O3 flags..."
-        sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
-        sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
-        echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
@@ -193,9 +170,6 @@ case "$DEVICE_IMPORT" in
     ;;
     # Other devices
     umi|cmi)
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
@@ -209,9 +183,6 @@ case "$DEVICE_IMPORT" in
         echo "-- Removing hardcoded kernel build user and host..."
         sed -i '/LINUX_COMPILE_BY="romi"/d' scripts/mkcompile_h
         sed -i '/LINUX_COMPILE_HOST="build"/d' scripts/mkcompile_h
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
     ;;
@@ -225,12 +196,6 @@ case "$DEVICE_IMPORT" in
         sed -i 's/static inline void clk_debug_print_hw.*/void clk_debug_print_hw(struct clk *clk, struct seq_file *f);/' include/linux/clk/msm-clk-provider.h
         sed -i '/static inline int clock_debug_register/,/}/c\int clock_debug_register(struct clk *clk);' drivers/clk/msm/clock.h
         sed -i '/static inline void clock_debug_print_enabled.*/c\void clock_debug_print_enabled(bool print_parent);' drivers/clk/msm/clock.h
-        echo "-- Applying O3 flags..."
-        sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
-        sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a53' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
@@ -252,9 +217,6 @@ case "$DEVICE_IMPORT" in
             -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
             -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
             $MAIN_DEFCONFIG
-        echo "-- Applying O3 flags..."
-        sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
-        sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
@@ -274,9 +236,6 @@ case "$DEVICE_IMPORT" in
             -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
             -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
             $MAIN_DEFCONFIG
-        echo "-- Applying O3 flags..."
-        sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
-        sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
@@ -284,16 +243,6 @@ case "$DEVICE_IMPORT" in
     ;;
     # ZeloKernel AOSP
     zelo-sweet-aosp)
-        echo "-- Setting up mtune..."
-        sed -i '$ a\
-            KBUILD_CFLAGS += -mtune=cortex-a55' Makefile
-        # echo "-- Completely disabling LTO..."
-        # sed -i \
-        #     -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
-        #     -e 's/^CONFIG_THINLTO=y/# CONFIG_THINLTO is not set/' \
-        #     -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
-        #     -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
-        #     $MAIN_DEFCONFIG
         echo "-- Disabling LLVM Polly..."
         sed -i 's/CONFIG_LLVM_POLLY=y/# CONFIG_LLVM_POLLY is not set/g' $MAIN_DEFCONFIG
         echo "-- Removing reggaloc advisor and unknown lto flags..."
@@ -304,9 +253,6 @@ case "$DEVICE_IMPORT" in
         echo "-- Fixing broken selinux when compiling on new KSU..."
         sed -i 's/struct type_datum \*\*type_val_to_struct_array;/union { struct type_datum \*\*type_val_to_struct_array; struct type_datum \*\*type_val_to_struct; };/g' security/selinux/ss/policydb.h
         sed -i 's/static ssize_t (\*const write_op/ssize_t (\*const write_op/g' security/selinux/selinuxfs.c
-        echo "-- Applying O3 flags..."
-        sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
-        sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
