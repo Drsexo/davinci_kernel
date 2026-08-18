@@ -146,6 +146,26 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     surya-crdroid)
+        echo "-- Reverting SUSFS commits..."
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/47140d7ff95d7c86fa1a41da8f3db26aa3659c3e.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/428375f331cf3bbcd6512e825686e239f2c28742.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/84ebf21d3fd0ffda7db1e0cd999ea0edba548253.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/13a80e7aa5c642e6bc64f199ce7feb0d2caa30e4.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/d75fcba752e5925218015f53f650b05b68eec17c.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/42125145f25bd1d8809720870764b934f151e273.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/f3993c906b1c6e0f912e3fc574f2b47946218804.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/f9cf0fd520a72dd19a9b07e5b5f50b6fee7e2091.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/7270786ff109269cfa4680624440bc142074058a.patch"
+        echo "-- Reverting KSU commits..."
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/df304eed2cde9410c37d0f159f35cf615dbfbc93.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/7e0e3e2f6a586bf9e453ef2a8a9d1d2dc23f172d.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/6046a6ed077ae25526da535e39e66a4a586c4721.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/ef98668e687ef6c8d3ee873d77bd97a6c91a7a68.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/3676095dd4139a6ae4ae880062bf3d930024af44.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/906c6a6987bb3d50aa2c4c947282c41f3d2a26a3.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/340e3b3a4662d51dd743b087d440a2538534d576.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/80652cb8b40fd63da65ea046f39ecb86de5dc648.patch"
+        revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/3c8c1cd917d6b986bdbe88d66571b91a804d8add.patch"
         if [[ $CLANG_STRAT == "1" ]]; then
             echo "-- Tuning CPU flags..."
             sed -i '/export KBUILD_CFLAGS/i \
