@@ -264,6 +264,12 @@ case "$DEVICE_IMPORT" in
 esac
 
 if [[ "$CLANG_STRAT" == "1" ]]; then
-    echo "- Allowing to compile on new AOSP clang..."
+    echo "- Variable clang_strat is set to $CLANG_START! applying extra ptches..."
+    echo "-- Allowing to compile on new AOSP clang..."
     sed -i 's/-Wno-format-security/-Wno-format-security -Wno-enum-conversion -Wno-default-const-init-var-unsafe -Wno-default-const-init-field-unsafe -Wno-implicit-enum-enum-cast/g' Makefile
+    echo "-- Setting up -O3 flags..."
+    sed -i 's/KBUILD_CFLAGS.*+= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
+    echo "-- Adding default clang tweaks..."
+    sed -i '/export KBUILD_CFLAGS/i \
+    KBUILD_CFLAGS += -mllvm -polly -mllvm -polly-ast-detect-scops -mllvm -enable-gvn-hoist -mllvm -align-all-functions=32 -Wno-unused-command-line-argument' Makefile
 fi
