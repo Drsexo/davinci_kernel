@@ -306,30 +306,13 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
-    # ZeloKernel AOSP
-    zelo-sweet-aosp)
-        echo "-- Disabling LLVM Polly..."
-        sed -i 's/CONFIG_LLVM_POLLY=y/# CONFIG_LLVM_POLLY is not set/g' $MAIN_DEFCONFIG
-        echo "-- Removing reggaloc advisor and unknown lto flags..."
-        sed -i '/-regalloc-enable-advisor=release/d' Makefile
-        sed -i '/lto-clang-flags[[:space:]]*:=[[:space:]]*-funified-lto/d' Makefile
-        echo "-- Removing array-parameter flag on qcacld-3.0..."
-        sed -i 's/-Wno-error=array-parameter//g' drivers/staging/qcacld-3.0/Kbuild
-        echo "-- Fixing broken selinux when compiling on new KSU..."
-        sed -i 's/struct type_datum \*\*type_val_to_struct_array;/union { struct type_datum \*\*type_val_to_struct_array; struct type_datum \*\*type_val_to_struct; };/g' security/selinux/ss/policydb.h
-        sed -i 's/static ssize_t (\*const write_op/ssize_t (\*const write_op/g' security/selinux/selinuxfs.c
-        echo "-- Tuning default configs..."
-        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
-    ;;
     *)
         echo "No specific patches to apply for $DEVICE_IMPORT."
     ;;
 esac
 
 if [[ "$CLANG_STRAT" == "1" ]]; then
-    echo "- Variable clang_strat is set to 1! applying extra ptches..."
+    echo "- Variable clang_strat is set to 1! applying extra patches..."
     echo "-- Allowing to compile on new AOSP clang..."
     sed -i 's/-Wno-format-security/-Wno-format-security -Wno-enum-conversion -Wno-default-const-init-var-unsafe -Wno-default-const-init-field-unsafe -Wno-misleading-indentation -Wno-unsequenced -Wno-implicit-enum-enum-cast/g' Makefile
     echo "-- Setting up -O3 flags..."

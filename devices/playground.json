@@ -271,35 +271,5 @@
     "sources": [
       { "repo": "https://github.com/tbyool/android_kernel_xiaomi_sm6150", "branch": "AOSP-buildout", "path": "." }
     ]
-  },
-  "zelo-sweet-aosp": {
-    "dir": "android_kernel_xiaomi_sm6150",
-    "image": "Image.gz",
-    "dtb": "",
-    "dtbo": "dtbo.img",
-    "supported_versions": "11-14",
-    "device_names": ["sweet", "sweetin"],
-    "banner": "sweet (sm6150)",
-    "zip_prefix": "zeloaosp-sweet-playground",
-    "env": {
-      "main_defconfig": "arch/arm64/configs/sweet_defconfig",
-      "actual_main_defconfig": "sweet_defconfig",
-      "common_defconfig": "vendor/debugfs.config",
-      "device_defconfig": "",
-      "feature_defconfig": "",
-      "kernel_name": "-zeloaosp-neon",
-      "kernel_version": "4.14",
-      "clang_strat": "0"
-    },
-    "build_flags": {
-      "ksu_type": ["zako-susfs", "none"], 
-      "bbg_type": "bbg",
-      "nomount_type": "nomount",
-      "droidspaces_type": "none",
-      "rekernel_type": "rekernel"
-    },
-    "sources": [
-      { "repo": "https://github.com/zelodev/kernel_xiaomi_sm6150", "branch": "zelo-13", "path": "." }
-    ]
   }
 }
