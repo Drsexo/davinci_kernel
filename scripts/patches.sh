@@ -354,5 +354,5 @@ if [[ "$CLANG_STRAT" == "1" ]]; then
     fi
     echo "-- Enabling Identical Code Folding for the linker..."
     sed -i '/export LDFLAGS_vmlinux/i \
-    LDFLAGS_vmlinux += --icf=all -O2' Makefile
+    LDFLAGS_vmlinux += --icf=safe -O2' Makefile
 fi
