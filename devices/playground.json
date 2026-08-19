@@ -32,7 +32,7 @@
     "image": "Image.gz-dtb",
     "dtb": "",
     "dtbo": "",
-    "supported_versions": "11-16",
+    "supported_versions": "11-17",
     "device_names": ["mi8937", "mi8917", "santoni", "prada", "rolex", "ugglite", "riva", "ugg", "land"],
     "banner": "mi8937 and mi8917 (msm8937)",
     "zip_prefix": "mithorium-mi89x7-playground",
