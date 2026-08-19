@@ -47,6 +47,9 @@ jobs:
       - name: Install build dependencies
         run: |
           echo "- Changing packages source into official ubuntu instead of azure..."
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            sudo sed -i 's/azure.archive.ubuntu.com/archive.ubuntu.com/g' /etc/apt/apt-mirrors.txt
+          fi
           sudo find /etc/apt/ -type f \( -name "*.list" -o -name "*.sources" \) -exec sed -i 's/azure.archive.ubuntu.com/archive.ubuntu.com/g' {} +
           echo "- Fetching update database..."
           sudo apt-get update
