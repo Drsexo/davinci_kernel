@@ -278,18 +278,11 @@ case "$DEVICE_IMPORT" in
     spiteful-sweet-miui-buildout)
         echo "-- Reverting hard to commits before KSU is being added..."
         git reset --hard 1c950660849776c0105ae268270acb590d1df308 &> /dev/null
-        if [[ $CLANG_STRAT == "1" ]]; then
-            echo "-- Tuning CPU flags..."
-            sed -i '/export KBUILD_CFLAGS/i \
-            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
-        fi
         echo "-- Completely disabling LTO..."
         sed -i \
             -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
             -e 's/^CONFIG_THINLTO=y/# CONFIG_THINLTO is not set/' \
             -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
-            -e 's/^CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/' \
-            -e 's/^# CONFIG_CC_STACKPROTECTOR_NONE is not set/CONFIG_CC_STACKPROTECTOR_NONE=y/' \
             -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
             $MAIN_DEFCONFIG
         echo "-- Tuning default configs..."
@@ -341,11 +334,7 @@ if [[ "$CLANG_STRAT" == "1" ]]; then
     sed -i 's/-Wno-format-security/-Wno-format-security -Wno-enum-conversion -Wno-default-const-init-var-unsafe -Wno-default-const-init-field-unsafe -Wno-misleading-indentation -Wno-unsequenced -Wno-implicit-enum-enum-cast/g' Makefile
     echo "-- Setting up -O3 flags..."
     sed -i 's/KBUILD_CFLAGS.*+= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
-    if [[ $DEVICE_IMPORT == "spiteful-sweet-miui-buildout" ]]; then
-        echo "-- Adding default clang tweaks..."
-        sed -i '/export KBUILD_CFLAGS/i \
-        KBUILD_CFLAGS += -mllvm -enable-gvn-hoist -Wno-unused-command-line-argument' Makefile
-    elif [[ $DEVICE_IMPORT == "spiteful-sweet-aosp-buildout" ]]; then
+    if [[ $DEVICE_IMPORT == "spiteful-sweet-aosp-buildout" || $DEVICE_IMPORT == "spiteful-sweet-miui-buildout" ]]; then
         echo "-- Default clang tweaks skipped."
     else
         echo "-- Adding default clang tweaks..."
