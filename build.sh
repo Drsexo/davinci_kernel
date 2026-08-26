@@ -3,10 +3,10 @@ echo "Nebula build script 2.0 - by drsexo"
 
 # Validate input arguments
 echo "- Validating input arguments..."
-if [ $# -ne 7 ]; then
+if [ $# -ne 2 ]; then
     echo ""
-    echo "-- Usage: $0 [rom] [device] [kernelsu_options] [bbg_options] [nomount_options] [droidspaces_options] [rekernel_options]"
-    echo "-- Example: $0 lineageos davinci resukisu-susfs bbg nomount droidspaces rekernel"
+    echo "-- Usage: $0 [rom] [device]"
+    echo "-- Example: $0 lineageos davinci"
     echo ""
     exit 1
 fi
@@ -15,11 +15,6 @@ fi
 echo "- Exporting input arguments..."
 export ROM_IMPORT="$1"
 export DEVICE_IMPORT="$2"
-export KERNELSU_SELECTOR="$3"
-export BBG_SELECTOR="$4"
-export NOMOUNT_SELECTOR="$5"
-export DROIDSPACES_SELECTOR="$6"
-export REKERNEL_SELECTOR="$7"
 
 # Setup Environment
 chmod +x scripts/env.sh

@@ -136,7 +136,7 @@ jobs:
         run: |
           echo "Starting to compile..."
           cd android_kernel_xiaomi_sm6150/
-          ./build.sh ${{ matrix.rom }} davinci resukisu-susfs bbg nomount droidspaces rekernel
+          ./build.sh ${{ matrix.rom }} davinci
           cd ..
           ccache -s
 
@@ -321,6 +321,7 @@ jobs:
             ${{ steps.assemble.outputs.rom_lines }}
 
             [ReSukiSU manager](https://resukisu.github.io/guide/install.html#Get-manager)
+            [NoMount meta module](https://nightly.link/maxsteeel/nomount/workflows/build/dev)
           files: Nebula-*.zip
           overwrite_files: true
 
@@ -359,7 +360,8 @@ jobs:
           <b>Built with</b>  <code>${CD}</code>
 
           ${ROM_LINES_HTML}
-          <a href=\"https://t.me/ReSukiSU/4\">ReSukiSU Manager</a>"
+          <a href=\"https://t.me/ReSukiSU/4\">ReSukiSU Manager</a>
+          <a href=\"https://nightly.link/maxsteeel/nomount/workflows/build/dev\">NoMount meta module</a>"
 
           curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
             --form-string "chat_id=${TG_CHAT}" \
