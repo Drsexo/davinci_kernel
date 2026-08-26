@@ -254,10 +254,10 @@ case "$DEVICE_IMPORT" in
     ;;
     # Titanium
     mi8953-titanium-playground)
-        # echo "-- Fixing msm clk broken redifinition..."
-        # sed -i 's/static inline void clk_debug_print_hw.*/void clk_debug_print_hw(struct clk *clk, struct seq_file *f);/' include/linux/clk/msm-clk-provider.h
-        # sed -i '/static inline int clock_debug_register/,/}/c\int clock_debug_register(struct clk *clk);' drivers/clk/msm/clock.h
-        # sed -i '/static inline void clock_debug_print_enabled.*/c\void clock_debug_print_enabled(bool print_parent);' drivers/clk/msm/clock.h
+        echo "-- Fixing msm clk broken redifinition..."
+        sed -i 's/static inline void clk_debug_print_hw.*/void clk_debug_print_hw(struct clk *clk, struct seq_file *f);/' include/linux/clk/msm-clk-provider.h
+        sed -i '/static inline int clock_debug_register/,/}/c\int clock_debug_register(struct clk *clk);' drivers/clk/msm/clock.h
+        sed -i '/static inline void clock_debug_print_enabled.*/c\void clock_debug_print_enabled(bool print_parent);' drivers/clk/msm/clock.h
         if [[ $CLANG_STRAT == "1" ]]; then
             echo "-- Tuning CPU flags..."
             sed -i '/export KBUILD_CFLAGS/i \
