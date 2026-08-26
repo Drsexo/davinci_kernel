@@ -30,6 +30,12 @@ echo "-- Appending kernel name..."
 echo "CONFIG_LOCALVERSION=\"$KERNEL_NAME\"" >> out/.config
 echo "CONFIG_LOCALVERSION_AUTO=n" >> out/.config
 
+# Enable pstore on all kernels
+echo "CONFIG_PSTORE=y" >> out/.config
+echo "CONFIG_PSTORE_CONSOLE=y" >> out/.config
+echo "CONFIG_PSTORE_PMSG=y" >> out/.config
+echo "CONFIG_PSTORE_RAM=y" >> out/.config
+
 # Config generation
 echo "-- Executing olddefconfig and syncconfig..."
 { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" olddefconfig &> /dev/null
