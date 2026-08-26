@@ -236,6 +236,8 @@ case "$DEVICE_IMPORT" in
             sed -i '/export KBUILD_CFLAGS/i \
             KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a77' Makefile
         fi
+        echo "-- Fixing broken strbuff on fts touchscreen..."
+        sed -i 's/snprintf(all_strbuff, sizeof(all_strbuff)/snprintf(all_strbuff, 4096/g' drivers/input/touchscreen/fts_521/fts.c
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
