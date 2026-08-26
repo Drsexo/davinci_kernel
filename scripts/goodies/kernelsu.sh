@@ -200,7 +200,7 @@ case "$KERNELSU_SELECTOR" in
         # Revert some recent commits
         cd drivers/kernelsu
         revert_commit "https://github.com/ReSukiSU/ReSukiSU/commit/03b60f260cce36f23efbd26c9c334edfdc9ce7eb.patch"
-        cd ..
+        cd ../../
         ;;
     none|"")
         echo "-- KernelSU is not selected."
