@@ -1,19 +1,5 @@
 #!/bin/bash
 
-# Commit reverter - 1.5
-revert_commit() {
-    for patch_url in "$@"; do
-        echo "-- Reverting commit: $(basename "$patch_url")"
-        curl -sL --fail --retry 3 "$patch_url" -o /tmp/temp_revert.patch
-        if [ -s /tmp/temp_revert.patch ]; then
-            patch -R -s -p1 < /tmp/temp_revert.patch || { echo "Fatal: Failed to revert commit!"; exit 1; }
-        else
-            echo "Fatal: Failed to download revert patch from $patch_url"
-            exit 1
-        fi
-    done
-}
-
 # Default exports
 export SUSFS_PATCH="scripts/goodies/assets/Patches/Patch/susfs_patch_to_${KERNEL_VERSION}.patch"
 
@@ -22,7 +8,7 @@ case "$KERNELSU_SELECTOR" in
         # Start of KernelSU integration
         echo "-- Setting up KernelSU integration: $KERNELSU_SELECTOR"
         KSU_SETUP_URI="https://github.com/ReSukiSU/ReSukiSU/raw/refs/heads/main/kernel/setup.sh"
-        KSU_SETUP_BRANCH="main"
+        KSU_SETUP_BRANCH="v4.2.0-rc1"
 
         # Check if susfs are used or not, and set the appropriate hook script URL
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
@@ -196,11 +182,6 @@ case "$KERNELSU_SELECTOR" in
         unstatic "security/selinux/ss/services.c" "DEFINE_MUTEX(selinux_status_lock);"
         unstatic "security/selinux/ss/services.c" "DEFINE_RWLOCK(policy_rwlock);"
         unstatic "security/selinux/hooks.c" "struct security_operations selinux_ops"
-
-        # Revert some recent commits
-        cd drivers/kernelsu
-        revert_commit "https://github.com/ReSukiSU/ReSukiSU/commit/03b60f260cce36f23efbd26c9c334edfdc9ce7eb.patch"
-        cd ../../
         ;;
     none|"")
         echo "-- KernelSU is not selected."
