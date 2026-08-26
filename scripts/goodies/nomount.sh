@@ -2,7 +2,7 @@
 
 # Default exports
 export NOMOUNT_SETUP_URI="https://github.com/maxsteeel/nomount/raw/refs/heads/dev/kernel/setup.sh"
-export NOMOUNT_SETUP_BRANCH="dev"
+export NOMOUNT_SETUP_BRANCH="master"
 
 case "$NOMOUNT_SELECTOR" in
     nomount)
