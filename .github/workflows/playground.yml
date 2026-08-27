@@ -110,10 +110,10 @@ jobs:
           echo "Starting compile in $DIR for $BUILD_TYPE with KSU: $KSU_TYPE..."
           cd "$DIR"
           ./build.sh $BUILD_TYPE $KSU_TYPE $BBG $NOMOUNT $DROIDSPACES $REKERNEL 2>&1 | tee build.log
-          KSU_NAME=$(grep -m 1 "-- ReSukiSU version name:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
-          KSU_CODE=$(grep -m 1 "-- ReSukiSU version code:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
-          SUSFS_VER=$(grep -m 1 "-- SUSFS_VERSION:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
-          BBG_VER=$(grep -m 1 "-- BBG version:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+          KSU_NAME=$(grep -m 1 -e "-- ReSukiSU version name:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+          KSU_CODE=$(grep -m 1 -e "-- ReSukiSU version code:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+          SUSFS_VER=$(grep -m 1 -e "-- SUSFS_VERSION:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+          BBG_VER=$(grep -m 1 -e "-- BBG version:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
           NOMOUNT_VER=$(grep -m 1 "NOMOUNT_VERSION" fs/nomount/nomount.h 2>/dev/null | awk -F'"' '{print $2}' | tr -d '[:space:]')
           cd ..
           echo "KSU_NAME=${KSU_NAME:-N/A}" >> release_info.txt
