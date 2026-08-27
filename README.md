@@ -92,6 +92,7 @@ On Recovery
 - Flash or Sideload the flashable zip with `adb sideload </path/to/flashable.zip>`  
 - Allow to continue if you see Error 21 signature invalid.   
 - Reboot to system.   
+- Install lastest KernelSU Manager from [here](https://github.com/ReSukiSU/ReSukiSU/releases). (Optional)
 - Profit.   
 
 On ReSukiSU Manager   
