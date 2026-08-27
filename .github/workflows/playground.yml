@@ -109,7 +109,18 @@ jobs:
 
           echo "Starting compile in $DIR for $BUILD_TYPE with KSU: $KSU_TYPE..."
           cd "$DIR"
-          ./build.sh $BUILD_TYPE $KSU_TYPE $BBG $NOMOUNT $DROIDSPACES $REKERNEL
+          ./build.sh $BUILD_TYPE $KSU_TYPE $BBG $NOMOUNT $DROIDSPACES $REKERNEL 2>&1 | tee build.log
+          KSU_NAME=$(grep -m 1 "-- ReSukiSU version name:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+          KSU_CODE=$(grep -m 1 "-- ReSukiSU version code:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+          SUSFS_VER=$(grep -m 1 "-- SUSFS_VERSION:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+          BBG_VER=$(grep -m 1 "-- BBG version:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+          NOMOUNT_VER=$(grep -m 1 "NOMOUNT_VERSION" fs/nomount/nomount.h 2>/dev/null | awk -F'"' '{print $2}' | tr -d '[:space:]')
+          cd ..
+          echo "KSU_NAME=${KSU_NAME:-N/A}" >> release_info.txt
+          echo "KSU_CODE=${KSU_CODE:-N/A}" >> release_info.txt
+          echo "SUSFS_VER=${SUSFS_VER:-N/A}" >> release_info.txt
+          echo "BBG_VER=${BBG_VER:-N/A}" >> release_info.txt
+          echo "NOMOUNT_VER=${NOMOUNT_VER:-N/A}" >> release_info.txt
 
       - name: Preparing AnyKernel3 sources
         run: |
@@ -165,6 +176,7 @@ jobs:
           name: ${{ matrix.build_type }}-${{ matrix.ksu_type }}
           path: |
             *.zip
+            release_info.txt
 
   release:
     needs: [setup, build]
@@ -181,11 +193,26 @@ jobs:
       - name: List downloaded zips
         run: ls -lah artifacts
 
-      - name: Timestamp
+      - name: Timestamp & Build info
         id: ts
         run: |
           FANCYDATE=$(date +'%Y/%m/%d')
           echo "FANCYDATE=$FANCYDATE" >> $GITHUB_OUTPUT
+
+          INFO_FILE=$(find ./artifacts -path "*zako*" -name "release_info.txt" | head -n 1)
+          if [ -z "$INFO_FILE" ]; then
+            INFO_FILE=$(find ./artifacts -name "release_info.txt" | head -n 1)
+          fi
+          if [ -n "$INFO_FILE" ] && [ -f "$INFO_FILE" ]; then
+            cat "$INFO_FILE" >> $GITHUB_OUTPUT
+            echo "Successfully loaded compile log versions from $INFO_FILE!"
+          else
+            echo "KSU_NAME=Unknown" >> $GITHUB_OUTPUT
+            echo "KSU_CODE=Unknown" >> $GITHUB_OUTPUT
+            echo "SUSFS_VER=Unknown" >> $GITHUB_OUTPUT
+            echo "BBG_VER=Unknown" >> $GITHUB_OUTPUT
+            echo "NOMOUNT_VER=Unknown" >> $GITHUB_OUTPUT
+          fi
 
       - name: Create Release and Upload builds
         uses: softprops/action-gh-release@v2
@@ -197,8 +224,16 @@ jobs:
           draft: false
           prerelease: false
           body: |
-            > [!IMPORTANT]   
-            > - This section contains community-built kernels that are not a part of LineageOS official releases, also some Official LineageOS kernels that did not meet the standard weekly release.   
+            > [!NOTE]   
+            > - ReSukiSU Version: ${{ steps.ts.outputs.KSU_NAME }} (${{ steps.ts.outputs.KSU_CODE }})   
+            > - SuSFS Version: ${{ steps.ts.outputs.SUSFS_VER }}   
+            > - Baseband Guard Version: ${{ steps.ts.outputs.BBG_VER }}   
+            > - Nomount Version: ${{ steps.ts.outputs.NOMOUNT_VER }}   
+
+            > [!IMPORTANT]
+            > - The feature set can be seen in [here](https://github.com/riarumoda/perf_neon-builder#features).   
+            > - The compatibility list can be seen in [here](https://github.com/riarumoda/perf_neon-builder#compatibility).   
+            > - The installation steps can be seen in [here](https://github.com/riarumoda/perf_neon-builder#installation).   
 
             > [!CAUTION]   
             > - Always backup your boot and dtbo image first before proceeding!   
