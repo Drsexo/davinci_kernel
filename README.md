@@ -78,7 +78,8 @@ Android Version Constraints
 - ```lineage-neon```: Android 13 to Android 16.
 - ```crdroid-neon```: Android 13 to Android 16.
 - ```another-nontreble``` & ```another-nontreble```: Android 10 to Android 13.
-- ```mithorium``` & ```titanium```: Android 11 to Android 16.
+- ```mithorium```: Android 11 to Android 17.
+- ```titanium```: Android 11 to Android 16.
 - ```spiteful```: Android 11 to Android 15.
 - ```vantom```: Android 12 to Android 16.
 
