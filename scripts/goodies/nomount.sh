@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Default exports
-export NOMOUNT_SETUP_URI="https://github.com/maxsteeel/nomount/raw/refs/heads/dev/kernel/setup.sh"
-export NOMOUNT_SETUP_BRANCH="dev"
+export NOMOUNT_SETUP_URI="https://github.com/maxsteeel/nomount/raw/refs/heads/master/kernel/setup.sh"
+export NOMOUNT_SETUP_BRANCH="master"
 
 echo "-- Running nomount setup script..."
 curl -LSs --fail --retry 3 "$NOMOUNT_SETUP_URI" | bash -s "$NOMOUNT_SETUP_BRANCH" &> /dev/null || { echo "Fatal: Nomount setup script failed to download/run!"; exit 1; }

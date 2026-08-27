@@ -321,7 +321,7 @@ jobs:
             ${{ steps.assemble.outputs.rom_lines }}
 
             [ReSukiSU manager](https://resukisu.github.io/guide/install.html#Get-manager)
-            [NoMount meta module](https://nightly.link/maxsteeel/nomount/workflows/build/dev)
+            [NoMount meta module](https://github.com/maxsteeel/nomount/releases)
           files: Nebula-*.zip
           overwrite_files: true
 
@@ -361,7 +361,7 @@ jobs:
 
           ${ROM_LINES_HTML}
           <a href=\"https://t.me/ReSukiSU/4\">ReSukiSU Manager</a>
-          <a href=\"https://nightly.link/maxsteeel/nomount/workflows/build/dev\">NoMount meta module</a>"
+          <a href=\"https://github.com/maxsteeel/nomount/releases\">NoMount meta module</a>"
 
           curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
             --form-string "chat_id=${TG_CHAT}" \
