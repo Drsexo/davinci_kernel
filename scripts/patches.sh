@@ -187,8 +187,6 @@ case "$DEVICE_IMPORT" in
             sed -i '/export KBUILD_CFLAGS/i \
             KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
         fi
-        echo "-- Applying LTO patches..."
-        apply_patches "$LTO_PATCH"
         echo "-- Applying KPATCH patches..."
         apply_patches "$KPATCH_PATCH"
         echo "-- Tuning default configs..."
