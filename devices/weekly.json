@@ -330,5 +330,155 @@
     "sources": [
       { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_surya", "branch": "16.0", "path": "." }
     ]
+  },
+  "sweet-voltage": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-16",
+    "device_names": ["sweet", "sweetin"],
+    "banner": "sweet (sm6150)",
+    "zip_prefix": "voltage-neon-sweet-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/vendor/sdmsteppe-perf_defconfig",
+      "actual_main_defconfig": "vendor/sdmsteppe-perf_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "vendor/sweet.config",
+      "feature_defconfig": "",
+      "kernel_name": "-voltage-neon",
+      "kernel_version": "4.14",
+      "clang_strat": "1"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "droidspaces",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/VoltageOS-Devices/kernel_xiaomi_sm6150", "branch": "17", "path": "." }
+    ]
+  },
+  "davinci-voltage": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-16",
+    "device_names": ["davinci", "davinciin"],
+    "banner": "davinci (sm6150)",
+    "zip_prefix": "voltage-neon-davinci-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/vendor/sdmsteppe-perf_defconfig",
+      "actual_main_defconfig": "vendor/sdmsteppe-perf_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "vendor/davinci.config",
+      "feature_defconfig": "",
+      "kernel_name": "-voltage-neon",
+      "kernel_version": "4.14",
+      "clang_strat": "1"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "droidspaces",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/VoltageOS-Devices/kernel_xiaomi_sm6150", "branch": "17", "path": "." }
+    ]
+  },
+  "tucana-voltage": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-16",
+    "device_names": ["tucana", "tucanain"],
+    "banner": "tucana (sm6150)",
+    "zip_prefix": "voltage-neon-tucana-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/vendor/sdmsteppe-perf_defconfig",
+      "actual_main_defconfig": "vendor/sdmsteppe-perf_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "vendor/tucana.config",
+      "feature_defconfig": "",
+      "kernel_name": "-voltage-neon",
+      "kernel_version": "4.14",
+      "clang_strat": "1"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "droidspaces",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/VoltageOS-Devices/kernel_xiaomi_sm6150", "branch": "17", "path": "." }
+    ]
+  },
+  "violet-voltage": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-16",
+    "device_names": ["violet", "violetin"],
+    "banner": "violet (sm6150)",
+    "zip_prefix": "voltage-neon-violet-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/vendor/sdmsteppe-perf_defconfig",
+      "actual_main_defconfig": "vendor/sdmsteppe-perf_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "vendor/violet.config",
+      "feature_defconfig": "",
+      "kernel_name": "-voltage-neon",
+      "kernel_version": "4.14",
+      "clang_strat": "1"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "droidspaces",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/VoltageOS-Devices/kernel_xiaomi_sm6150", "branch": "17", "path": "." }
+    ]
+  },
+  "raphael-voltage": {
+    "dir": "android_kernel_xiaomi_sm8150",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-16",
+    "device_names": ["raphael", "raphaelin"],
+    "banner": "raphael (sm8150)",
+    "zip_prefix": "voltage-neon-raphael-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/sm8150-perf_defconfig",
+      "actual_main_defconfig": "sm8150-perf_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "",
+      "feature_defconfig": "",
+      "kernel_name": "-voltage-neon",
+      "kernel_version": "4.14",
+      "clang_strat": "1"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "droidspaces",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/VoltageOS-Devices/kernel_xiaomi_raphael", "branch": "17", "path": "." }
+    ]
   }
 }
