@@ -180,6 +180,45 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
+    # VoltageOS
+    sweet-voltage|davinci-voltage|tucana-voltage|violet-voltage)
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
+        fi
+        echo "-- Applying LTO patches..."
+        apply_patches "$LTO_PATCH"
+        echo "-- Applying KPATCH patches..."
+        apply_patches "$KPATCH_PATCH"
+        echo "-- Tuning default configs..."
+        echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
+    ;;
+    raphael-voltage)
+        if [[ $CLANG_STRAT == "1" ]]; then
+            echo "-- Tuning CPU flags..."
+            sed -i '/export KBUILD_CFLAGS/i \
+            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
+        fi
+        echo "-- Applying DTC patches..."
+        apply_patches "${DTC_PATCHES[@]}"
+        echo "-- Applying DTB patches..."
+        apply_patches "${DTBO_PATCHES[@]}"
+        echo "-- Applying KPATCH patches..."
+        apply_patches "$KPATCH_PATCH"
+        echo "-- Tuning default configs..."
+        echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
+    ;;
     # PixelOS
     sweet-playground)
         echo "-- Applying LN8K patches..."
