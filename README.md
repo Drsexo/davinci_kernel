@@ -77,7 +77,7 @@ Externally compiled kernels
 Android Version Constraints
 - ```lineage-neon```: Android 13 to Android 17.
 - ```crdroid-neon```: Android 13 to Android 17.
-- ```another-nontreble``` & ```another-nontreble```: Android 10 to Android 13.
+- ```another-treble``` & ```another-nontreble```: Android 10 to Android 13.
 - ```mithorium```: Android 11 to Android 17.
 - ```titanium```: Android 11 to Android 16.
 - ```spiteful```: Android 11 to Android 15.
