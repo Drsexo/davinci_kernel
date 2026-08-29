@@ -75,7 +75,7 @@ Externally compiled kernels
 - Redmi Note 10 Pro/Pro Max ([sweet](https://github.com/tbyool/android_kernel_xiaomi_sm6150)) from Spiteful Kernel   
 
 Android Version Constraints
-- ```lineage-neon```: Android 13 to Android 16.
+- ```lineage-neon```: Android 13 to Android 17.
 - ```crdroid-neon```: Android 13 to Android 17.
 - ```another-nontreble``` & ```another-nontreble```: Android 10 to Android 13.
 - ```mithorium```: Android 11 to Android 17.
