@@ -181,7 +181,7 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     # VoltageOS
-    sweet-voltage|davinci-voltage|tucana-voltage|violet-voltage)
+    violet-voltage)
         if [[ $CLANG_STRAT == "1" ]]; then
             echo "-- Tuning CPU flags..."
             sed -i '/export KBUILD_CFLAGS/i \
