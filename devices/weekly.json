@@ -119,6 +119,36 @@
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-23.2", "path": "." }
     ]
   },
+  "toco-lineage": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-17",
+    "device_names": ["toco", "tocoin"],
+    "banner": "toco (sm6150)",
+    "zip_prefix": "lineage-neon-toco-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/vendor/sdmsteppe-perf_defconfig",
+      "actual_main_defconfig": "vendor/sdmsteppe-perf_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "vendor/toco.config",
+      "feature_defconfig": "",
+      "kernel_name": "-lineage-neon",
+      "kernel_version": "4.14",
+      "clang_strat": "1"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "droidspaces",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-23.2", "path": "." }
+    ]
+  },
   "ginkgo-lineage": {
     "dir": "android_kernel_xiaomi_sm6125",
     "image": "Image.gz",
