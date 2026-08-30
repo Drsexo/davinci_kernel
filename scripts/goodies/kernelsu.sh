@@ -156,14 +156,6 @@ case "$KERNELSU_SELECTOR" in
                     #endif' fs/proc/cmdline.c
                     # fs/proc/task_mmu.c
                     echo "-- Fixing broken fs/proc/task_mmu.c patch on tissot..."
-                    sed -i '/show_map_vma(struct seq_file/i \
-                    #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT\
-                    extern void susfs_sus_kstat_spoof_show_map_vma(struct inode *inode, dev_t *out_dev, unsigned long *out_ino);\
-                    #endif\
-                    #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\
-                    extern struct srcu_struct susfs_srcu_open_redirect;\
-                    extern int susfs_open_redirect_spoof_show_map_vma_srcu(struct inode *inode, unsigned long *out_ino, dev_t *out_dev, char **out_spoofed_name);\
-                    #endif' fs/proc/task_mmu.c
                     sed -i '/struct inode \*inode = file_inode(vma->vm_file);/a \
                     #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\
                     \t\tif (SUSFS_IS_INODE_OPEN_REDIRECT(inode)) {\
