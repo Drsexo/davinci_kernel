@@ -60,6 +60,7 @@ Currently supported device (LineageOS & CrDroid)
 
 Currently supported device (LineageOS Only)   
 - Redmi Note 7 Pro ([violet](https://download.lineageos.org/devices/violet/builds))   
+- Xiaomi Mi Note 10 Lite ([toco](https://t.me/xiaomiminote10lite))   
 - Redmi Note 8/8T ([ginkgo/willow](https://download.lineageos.org/devices/ginkgo/builds))   
 - Xiaomi Mi A3 ([laurel_sprout](https://download.lineageos.org/devices/laurel_sprout/builds))    
 - Samsung Tab A7 10.4 2020 ([gta4l](https://download.lineageos.org/devices/gta4l/builds))   
