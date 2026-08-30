@@ -1,4 +1,4 @@
-name: Weekly Kernel Build
+name: Testing Kernel Build
 
 on:
   workflow_dispatch:
@@ -15,11 +15,9 @@ on:
         description: 'Build Derpfest'
         type: boolean
         default: true
-  schedule:
-    - cron: '5 3 * * 0'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   determine_roms:
@@ -42,7 +40,7 @@ jobs:
           ROMS="[]"
           [ "$BUILD_LINEAGEOS" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"lineageos","repo":"LineageOS/android_kernel_xiaomi_sm6150","display":"LineageOS"}]')
           [ "$BUILD_PIXELOS" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"pixelos","repo":"PixelOS-Devices/android_kernel_xiaomi_sm6150","display":"PixelOS"}]')
-          [ "$BUILD_DERPFEST" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"derpfest","repo":"DerpFest-Devices/kernel_xiaomi_sm6150","display":"Derpfest"}]')
+          [ "$BUILD_DERPFEST" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"derpfest","repo":"DerpFest-Devices/kernel_xiaomi_sm6150","display":"DerpFest"}]')
 
           if [ "$ROMS" = "[]" ]; then
             echo "Fatal: no ROM selected"
@@ -217,7 +215,7 @@ jobs:
           cd ..
           echo "ZIPNAME=$ZIPNAME" >> $GITHUB_ENV
 
-      - name: Stage build for combined release
+      - name: Stage build for artifacts job
         run: |
           STAGE="/tmp/release_stage_${{ matrix.rom }}"
           mkdir -p "$STAGE"
@@ -231,13 +229,13 @@ jobs:
           echo "${{ steps.meta.outputs.nomount_version }}" > "$STAGE/nomount_version.txt"
           echo "${{ steps.meta.outputs.clang_display }}" > "$STAGE/clang_display.txt"
 
-      - name: Cache build output for release job
+      - name: Cache build output for artifacts job
         uses: actions/cache/save@v6
         with:
           path: /tmp/release_stage_${{ matrix.rom }}
           key: nebula-build-${{ matrix.rom }}-${{ github.run_id }}
 
-  release:
+  artifacts:
     needs: build
     if: always()
     runs-on: ubuntu-latest
@@ -263,7 +261,7 @@ jobs:
           key: nebula-build-derpfest-${{ github.run_id }}
           fail-on-cache-miss: false
 
-      - name: Assemble combined release
+      - name: Assemble build info
         id: assemble
         run: |
           FOUND=0
@@ -271,7 +269,7 @@ jobs:
             [ -d "/tmp/release_stage_${rom}" ] && FOUND=1
           done
           if [ "$FOUND" -eq 0 ]; then
-            echo "Fatal: no ROM build succeeded, nothing to release"
+            echo "Fatal: no ROM build succeeded, nothing to upload"
             exit 1
           fi
 
@@ -296,7 +294,7 @@ jobs:
             fi
           done
 
-          cp /tmp/release_stage_*/*.zip . 2>/dev/null
+          TITLE_DATE=$(date +'%Y/%m/%d')
 
           echo "kernel_version=$KERNEL_VERSION" >> $GITHUB_OUTPUT
           echo "ksu_name=$KSU_NAME" >> $GITHUB_OUTPUT
@@ -304,89 +302,48 @@ jobs:
           echo "susfs_version=$SUSFS_VERSION" >> $GITHUB_OUTPUT
           echo "nomount_version=$NOMOUNT_VERSION" >> $GITHUB_OUTPUT
           echo "clang_display=$CLANG_DISPLAY" >> $GITHUB_OUTPUT
-          echo "title_date=$(date +'%Y/%m/%d')" >> $GITHUB_OUTPUT
+          echo "title_date=$TITLE_DATE" >> $GITHUB_OUTPUT
           {
             echo "rom_lines<<ROMLINESEOF"
             cat /tmp/rom_lines.txt
             echo "ROMLINESEOF"
           } >> $GITHUB_OUTPUT
 
-      - name: Create Release and Upload builds
-        uses: softprops/action-gh-release@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          {
+            echo "# Nebula test build - $TITLE_DATE"
+            echo
+            echo "**Kernel**: \`${KERNEL_VERSION}\`"
+            echo "**ReSukiSU**: \`${KSU_NAME}\` (code \`${KSU_CODE}\`)"
+            echo "**SusFS**: \`${SUSFS_VERSION}\`"
+            echo "**NoMount**: \`${NOMOUNT_VERSION}\`"
+            echo "**Built with**: \`${CLANG_DISPLAY}\`"
+            echo
+            cat /tmp/rom_lines.txt
+            echo
+            echo "[ReSukiSU manager](https://resukisu.github.io/guide/install.html#Get-manager)"
+            echo "[NoMount meta module](https://github.com/maxsteeel/nomount/releases)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload LineageOS artifact
+        uses: actions/upload-artifact@v7
         with:
-          tag_name: nebula-${{ github.run_id }}
-          name: Nebula ${{ steps.assemble.outputs.kernel_version }} - ${{ steps.assemble.outputs.title_date }}
-          draft: false
-          prerelease: false
-          body: |
-            **Kernel**: `${{ steps.assemble.outputs.kernel_version }}`
-            **ReSukiSU**: `${{ steps.assemble.outputs.ksu_name }}` (code `${{ steps.assemble.outputs.ksu_code }}`)
-            **SusFS**: `${{ steps.assemble.outputs.susfs_version }}`
-            **NoMount**: `${{ steps.assemble.outputs.nomount_version }}`
-            **Built with**: `${{ steps.assemble.outputs.clang_display }}`
+          name: Nebula-LineageOS-davinci-ReSukiSU
+          path: /tmp/release_stage_lineageos/Nebula-LineageOS-davinci-ReSukiSU-*.zip
+          retention-days: 7
+          if-no-files-found: warn
 
-            ${{ steps.assemble.outputs.rom_lines }}
+      - name: Upload PixelOS artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: Nebula-PixelOS-davinci-ReSukiSU
+          path: /tmp/release_stage_pixelos/Nebula-PixelOS-davinci-ReSukiSU-*.zip
+          retention-days: 7
+          if-no-files-found: warn
 
-            [ReSukiSU manager](https://resukisu.github.io/guide/install.html#Get-manager)
-            [NoMount meta module](https://github.com/maxsteeel/nomount/releases)
-          files: Nebula-*.zip
-          overwrite_files: true
-
-      - name: Notify Telegram
-        env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          TG_CHAT: ${{ secrets.TG_CHAT }}
-        run: |
-          if [ -z "$TG_TOKEN" ] || [ -z "$TG_CHAT" ]; then
-            echo "Telegram not configured, skipping"
-            exit 0
-          fi
-
-          DATE="${{ steps.assemble.outputs.title_date }}"
-          KV="${{ steps.assemble.outputs.kernel_version }}"
-          KN="${{ steps.assemble.outputs.ksu_name }}"
-          KC="${{ steps.assemble.outputs.ksu_code }}"
-          SV="${{ steps.assemble.outputs.susfs_version }}"
-          NV="${{ steps.assemble.outputs.nomount_version }}"
-          CD="${{ steps.assemble.outputs.clang_display }}"
-
-          ROM_LINES_HTML=""
-          for rom in lineageos pixelos derpfest; do
-            if [ -f "/tmp/release_stage_${rom}/rom_version.txt" ]; then
-              display=$(cat "/tmp/release_stage_${rom}/display.txt")
-              rom_version=$(cat "/tmp/release_stage_${rom}/rom_version.txt")
-              ROM_LINES_HTML="${ROM_LINES_HTML}<b>${display}</b>  <code>${rom_version}</code>
-          "
-            fi
-          done
-
-          MESSAGE="<b>New release - ${DATE}</b>
-
-          <b>Kernel</b>  <code>${KV}</code>
-          <b>ReSukiSU</b>  <code>${KN}</code> (code <code>${KC}</code>)
-          <b>SUSFS</b>  <code>${SV}</code>
-          <b>NoMount</b>  <code>${NV}</code>
-          <b>Built with</b>  <code>${CD}</code>
-
-          ${ROM_LINES_HTML}
-          <a href=\"https://t.me/ReSukiSU/4\">ReSukiSU Manager</a>
-          <a href=\"https://github.com/maxsteeel/nomount/releases\">NoMount meta module</a>"
-
-          curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
-            --form-string "chat_id=${TG_CHAT}" \
-            --form-string "text=${MESSAGE}" \
-            --form-string "parse_mode=HTML" \
-            --form-string 'link_preview_options={"is_disabled":true}' \
-            --max-time 30 -w "\nHTTP_STATUS:%{http_code}\n" || true
-
-          for rom in lineageos pixelos derpfest; do
-            zipfile=$(ls /tmp/release_stage_${rom}/*.zip 2>/dev/null | head -1)
-            if [ -n "$zipfile" ]; then
-              curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendDocument" \
-                --form-string "chat_id=${TG_CHAT}" \
-                -F "document=@${zipfile}" \
-                --max-time 120 -w "\nHTTP_STATUS:%{http_code}\n" 2>&1 || true
-            fi
-          done
+      - name: Upload Derpfest artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: Nebula-Derpfest-davinci-ReSukiSU
+          path: /tmp/release_stage_derpfest/Nebula-Derpfest-davinci-ReSukiSU-*.zip
+          retention-days: 7
+          if-no-files-found: warn
