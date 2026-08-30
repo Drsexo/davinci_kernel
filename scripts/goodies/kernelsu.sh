@@ -207,6 +207,17 @@ case "$KERNELSU_SELECTOR" in
             sed -i '/static struct tty_struct \*pts_unix98_lookup/,/}/ s/ksu_handle_devpts((struct inode \*)file->f_path.dentry->d_inode);/ksu_handle_devpts(pts_inode);/' drivers/tty/pty.c
         fi
 
+        # Kernel 4.9 specific fixes
+        if [[ "$KERNEL_VERSION" == "4.9" ]]; then
+            echo "-- Cleaning up broken KernelSU vfs_fstatat hook in fs/stat.c..."
+            sed -i '/struct path \*path, struct path \*root);/d' fs/stat.c
+            sed -i '/unsigned int lookup_flags = 0;/a \
+            \tstruct filename *fname;' fs/stat.c
+            sed -i 's/ksu_handle_stat(&dfd, &fname, &flags);/ksu_handle_stat(\&dfd, \&fname, \&flag);/g' fs/stat.c
+            sed -i '/error = filename_lookup(dfd, fname, lookup_flags, &path, NULL);/a \
+            \tif (likely(!IS_ERR(fname)))\n\t\tputname(fname);' fs/stat.c
+        fi
+
         # Export SELinux Symbols
         echo "-- Checking and exporting static SELinux symbols..."
         unstatic() {
