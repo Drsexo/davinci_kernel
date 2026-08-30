@@ -8,7 +8,7 @@ case "$KERNELSU_SELECTOR" in
         # Start of KernelSU integration
         echo "-- Setting up KernelSU integration: $KERNELSU_SELECTOR"
         KSU_SETUP_URI="https://github.com/ReSukiSU/ReSukiSU/raw/refs/heads/main/kernel/setup.sh"
-        KSU_SETUP_BRANCH="main"
+        KSU_SETUP_BRANCH="v4.2.0-rc1"
 
         # Check if susfs are used or not, and set the appropriate hook script URL
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
@@ -208,17 +208,6 @@ case "$KERNELSU_SELECTOR" in
             sed -i 's/ksu_handle_stat(&dfd, &fname, &flags);/ksu_handle_stat(\&dfd, \&fname, \&flag);/g' fs/stat.c
             sed -i '/error = filename_lookup(dfd, fname, lookup_flags, &path, NULL);/a \
             \tif (likely(!IS_ERR(fname)))\n\t\tputname(fname);' fs/stat.c
-        fi
-
-        # Try to fix ReSukiSU latest commits, this might gonna be nuked after jack fetched a new susfs patch
-        sed -i 's/#ifdef CONFIG_KSU_SUSFS/#if defined(CONFIG_KSU_SUSFS) \&\& defined(CONFIG_KSU_TRACEPOINT_HOOK)/g' drivers/kernelsu/feature/sucompat.h
-        sed -i 's/#ifdef CONFIG_KSU_SUSFS/#if defined(CONFIG_KSU_SUSFS) \&\& defined(CONFIG_KSU_TRACEPOINT_HOOK)/g' drivers/kernelsu/feature/sucompat.c
-        sed -i 's/if (is_zygote_next(current_cred()))/if (0)/g' drivers/kernelsu/hook/setuid_hook.c
-        if [[ "$KERNEL_VERSION" == "4.19" ]]; then
-            if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
-                sed -i 's/#define TIF_PROC_NO_SU 34/#define TIF_PROC_NO_SU 30/g' include/linux/susfs_def.h
-                sed -i 's/#define TIF_PROC_UMOUNTED_FOR_ZYGOTE_NEXT 35/#define TIF_PROC_UMOUNTED_FOR_ZYGOTE_NEXT 31/g' include/linux/susfs_def.h
-            fi
         fi
 
         # Export SELinux Symbols
