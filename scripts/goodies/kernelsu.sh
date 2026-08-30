@@ -210,6 +210,17 @@ case "$KERNELSU_SELECTOR" in
             \tif (likely(!IS_ERR(fname)))\n\t\tputname(fname);' fs/stat.c
         fi
 
+        # Try to fix ReSukiSU latest commits, this might gonna be nuked after jack fetched a new susfs patch
+        sed -i 's/#ifdef CONFIG_KSU_SUSFS/#if defined(CONFIG_KSU_SUSFS) \&\& defined(CONFIG_KSU_TRACEPOINT_HOOK)/g' drivers/kernelsu/feature/sucompat.h
+        sed -i 's/#ifdef CONFIG_KSU_SUSFS/#if defined(CONFIG_KSU_SUSFS) \&\& defined(CONFIG_KSU_TRACEPOINT_HOOK)/g' drivers/kernelsu/feature/sucompat.c
+        sed -i 's/if (is_zygote_next(current_cred()))/if (0)/g' drivers/kernelsu/hook/setuid_hook.c
+        if [[ "$KERNEL_VERSION" == "4.19" ]]; then
+            if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
+                sed -i 's/#define TIF_PROC_NO_SU 34/#define TIF_PROC_NO_SU 30/g' include/linux/susfs_def.h
+                sed -i 's/#define TIF_PROC_UMOUNTED_FOR_ZYGOTE_NEXT 35/#define TIF_PROC_UMOUNTED_FOR_ZYGOTE_NEXT 31/g' include/linux/susfs_def.h
+            fi
+        fi
+
         # Export SELinux Symbols
         echo "-- Checking and exporting static SELinux symbols..."
         unstatic() {
