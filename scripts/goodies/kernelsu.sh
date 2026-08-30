@@ -114,6 +114,7 @@ case "$KERNELSU_SELECTOR" in
             # kernel 4.9 device specific fixes for SUSFS
             if [[ "$KERNEL_VERSION" == "4.9" ]]; then
                 if [[ "$DEVICE_IMPORT" == "tissot-playground-nontreble" || "$DEVICE_IMPORT" == "tissot-playground-treble" ]]; then
+                    # fs/stat.c
                     echo "-- Fixing broken fs/stat.c patch on tissot..."
                     git checkout fs/stat.c
                     sed -i '/#include <asm\/unistd.h>/a \
@@ -136,6 +137,7 @@ case "$KERNELSU_SELECTOR" in
                     #else\
                     \t\treturn inode->i_op->getattr(path->mnt, path->dentry, stat);\
                     #endif' fs/stat.c
+                    # fs/proc/cmdline.c
                     echo "-- Fixing broken fs/proc/cmdline.c patch on tissot..."
                     git checkout fs/proc/cmdline.c
                     sed -i '/#include <asm\/setup.h>/a \
@@ -152,6 +154,45 @@ case "$KERNELSU_SELECTOR" in
                     \t\treturn 0;\
                     \t}\
                     #endif' fs/proc/cmdline.c
+                    # fs/proc/task_mmu.c
+                    echo "-- Fixing broken fs/proc/task_mmu.c patch on tissot..."
+                    sed -i '/show_map_vma(struct seq_file/i \
+                    #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT\
+                    extern void susfs_sus_kstat_spoof_show_map_vma(struct inode *inode, dev_t *out_dev, unsigned long *out_ino);\
+                    #endif\
+                    #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\
+                    extern struct srcu_struct susfs_srcu_open_redirect;\
+                    extern int susfs_open_redirect_spoof_show_map_vma_srcu(struct inode *inode, unsigned long *out_ino, dev_t *out_dev, char **out_spoofed_name);\
+                    #endif' fs/proc/task_mmu.c
+                    sed -i '/struct inode \*inode = file_inode(vma->vm_file);/a \
+                    #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\
+                    \t\tif (SUSFS_IS_INODE_OPEN_REDIRECT(inode)) {\
+                    \t\t\tchar *spoofed_redirected_name = NULL;\
+                    \t\t\tint srcu_idx = srcu_read_lock(&susfs_srcu_open_redirect);\
+                    \t\t\tint ret = susfs_open_redirect_spoof_show_map_vma_srcu(inode, &ino, &dev, &spoofed_redirected_name);\
+                    \t\t\tif (!ret) {\
+                    \t\t\t\tpgoff = ((loff_t)vma->vm_pgoff) << PAGE_SHIFT;\
+                    \t\t\t\tstart = vma->vm_start;\
+                    \t\t\t\tend = vma->vm_end;\
+                    \t\t\t\tshow_vma_header_prefix(m, start, end, flags, pgoff, dev, ino);\
+                    \t\t\t\tseq_pad(m, '\'' '\'');\
+                    \t\t\t\tif (spoofed_redirected_name)\
+                    \t\t\t\t\tseq_puts(m, spoofed_redirected_name);\
+                    \t\t\t\tseq_putc(m, '\''\\n'\'');\
+                    \t\t\t\tsrcu_read_unlock(&susfs_srcu_open_redirect, srcu_idx);\
+                    \t\t\t\treturn;\
+                    \t\t\t}\
+                    \t\t\tsrcu_read_unlock(&susfs_srcu_open_redirect, srcu_idx);\
+                    \t\t}\
+                    #endif\
+                    #ifdef CONFIG_KSU_SUSFS_SUS_MAP\
+                    \t\tif (SUSFS_IS_INODE_SUS_MAP(inode))\
+                    \t\t\treturn;\
+                    #endif' fs/proc/task_mmu.c
+                    sed -i '/pgoff = ((loff_t)vma->vm_pgoff) << PAGE_SHIFT;/a \
+                    #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT\
+                    \t\tsusfs_sus_kstat_spoof_show_map_vma(inode, &dev, &ino);\
+                    #endif' fs/proc/task_mmu.c
                 fi
             fi
         fi
