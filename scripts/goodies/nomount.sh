@@ -1,14 +1,38 @@
 #!/bin/bash
 
 # Default exports
-export NOMOUNT_SETUP_URI="https://github.com/maxsteeel/nomount/raw/refs/heads/dev/kernel/setup.sh"
-export NOMOUNT_SETUP_BRANCH="master"
+export NOMOUNT_SETUP_VER="2.0.0"
+export NOMOUNT_SETUP_ZIP="https://github.com/maxsteeel/nomount/archive/refs/tags/v{$NOMOUNT_SETUP_VER}.zip"
 
 case "$NOMOUNT_SELECTOR" in
     nomount)
+        # Download nomount
+        echo "-- Downloading nomount source code version: $NOMOUNT_SETUP_VER..."
+        wget $NOMOUNT_SETUP_ZIP || { echo "Fatal: Nomount source code failed to download!"; exit 1; }
+        
+        # Unzip nomount
+        echo "-- Unzipping nomoount source code..."
+        if [ -f "$PWD/v$NOMOUNT_SETUP_VER.zip" ]; then
+            echo "-- Unzipping nomount source code..."
+            unzip $PWD/v$NOMOUNT_SETUP_VER.zip -d $PWD/
+        else
+            echo "-- Cant find nomount zipped source code!"
+            ls -alhZ $PWD/
+            exit 1
+        fi
+
         # Setup nomount
-        echo "-- Running nomount setup script..."
-        curl -LSs --fail --retry 3 "$NOMOUNT_SETUP_URI" | bash -s "$NOMOUNT_SETUP_BRANCH" &> /dev/null || { echo "Fatal: Nomount setup script failed to download/run!"; exit 1; }
+        if [ -d "$PWD/nomount-v$NOMOUNT_SETUP_VER" ]; then
+            echo "-- Setting up nomount..."
+            sed -i '/^endmenu/i source "fs/nomount/Kconfig"' fs/Kconfig
+            sed -i '$ a\obj-$(CONFIG_NOMOUNT) += nomount/' fs/Makefile
+            mkdir -p $PWD/fs/nomount
+            cp -r $PWD/nomount-$NOMOUNT_SETUP_VER/kernel/src/* $PWD/fs/nomount
+        else
+            echo "-- Can't find unzipped nomount source code!"
+            ls -alhZ $PWD/
+            exit 1
+        fi
 
         # Enable the necessary Nomount configs
         echo "CONFIG_NOMOUNT=y" >> $MAIN_DEFCONFIG
