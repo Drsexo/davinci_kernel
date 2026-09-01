@@ -2,7 +2,7 @@
 
 # Default exports
 export NOMOUNT_SETUP_VER="2.0.0"
-export NOMOUNT_SETUP_ZIP="https://github.com/maxsteeel/nomount/archive/refs/tags/v{$NOMOUNT_SETUP_VER}.zip"
+export NOMOUNT_SETUP_ZIP="https://github.com/maxsteeel/nomount/archive/refs/tags/v$NOMOUNT_SETUP_VER.zip"
 
 case "$NOMOUNT_SELECTOR" in
     nomount)
