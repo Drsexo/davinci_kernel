@@ -22,7 +22,7 @@ case "$NOMOUNT_SELECTOR" in
         fi
 
         # Setup nomount
-        if [ -d "$PWD/nomount-v$NOMOUNT_SETUP_VER" ]; then
+        if [ -d "$PWD/nomount-$NOMOUNT_SETUP_VER" ]; then
             echo "-- Setting up nomount..."
             sed -i '/^endmenu/i source "fs/nomount/Kconfig"' fs/Kconfig
             sed -i '$ a\obj-$(CONFIG_NOMOUNT) += nomount/' fs/Makefile
