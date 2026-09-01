@@ -57,7 +57,6 @@ jobs:
       CCACHE_MAXSIZE: 3G
     strategy:
       fail-fast: false
-      max-parallel: 1
       matrix:
         include: ${{ fromJson(needs.determine_roms.outputs.roms) }}
 
