@@ -8,7 +8,8 @@ case "$KERNELSU_SELECTOR" in
         # Start of KernelSU integration
         echo "-- Setting up KernelSU integration: $KERNELSU_SELECTOR"
         KSU_SETUP_URI="https://github.com/ReSukiSU/ReSukiSU/raw/refs/heads/main/kernel/setup.sh"
-        KSU_SETUP_BRANCH="v4.2.0-rc1"
+        # KSU_SETUP_BRANCH="v4.2.0-rc1"
+        KSU_SETUP_BRANCH="main"
 
         # Check if susfs are used or not, and set the appropriate hook script URL
         if [[ "$KERNELSU_SELECTOR" == "zako-susfs" ]]; then
