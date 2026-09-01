@@ -8,13 +8,13 @@ case "$NOMOUNT_SELECTOR" in
     nomount)
         # Download nomount
         echo "-- Downloading nomount source code version: $NOMOUNT_SETUP_VER..."
-        wget $NOMOUNT_SETUP_ZIP || { echo "Fatal: Nomount source code failed to download!"; exit 1; }
+        wget $NOMOUNT_SETUP_ZIP -O v$NOMOUNT_SETUP_VER.zip &> /dev/null || { echo "Fatal: Nomount source code failed to download!"; exit 1; }
         
         # Unzip nomount
         echo "-- Unzipping nomoount source code..."
         if [ -f "$PWD/v$NOMOUNT_SETUP_VER.zip" ]; then
             echo "-- Unzipping nomount source code..."
-            unzip $PWD/v$NOMOUNT_SETUP_VER.zip -d $PWD/
+            unzip $PWD/v$NOMOUNT_SETUP_VER.zip -d $PWD/ &> /dev/null
         else
             echo "-- Cant find nomount zipped source code!"
             ls -alhZ $PWD/
