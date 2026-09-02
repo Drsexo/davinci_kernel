@@ -5,7 +5,11 @@ echo "- Applying device specific patches for $DEVICE_IMPORT..."
 apply_patches() {
     for patch_url in "$@"; do
         echo "-- Applying patch: $(basename "$patch_url")"
-        curl -sL --fail --retry 3 "$patch_url" -o /tmp/temp_patch.patch
+        if [[ "$patch_url" == http://* || "$patch_url" == https://* ]]; then
+            curl -sL --fail --retry 3 "$patch_url" -o /tmp/temp_patch.patch
+        else
+            cp "$patch_url" /tmp/temp_patch.patch
+        fi
         if [ -s /tmp/temp_patch.patch ]; then
             if patch --dry-run -R -p1 --fuzz=5 < /tmp/temp_patch.patch > /dev/null 2>&1; then
                 echo "-- Already applied upstream, skipping: $(basename "$patch_url")"
@@ -13,7 +17,7 @@ apply_patches() {
             fi
             patch -s -p1 --fuzz=5 < /tmp/temp_patch.patch || { echo "Fatal: Failed to apply patch!"; exit 1; }
         else
-            echo "Fatal: Failed to download patch from $patch_url"
+            echo "Fatal: Failed to fetch patch from $patch_url"
             exit 1
         fi
     done
@@ -30,6 +34,16 @@ apply_patches "$LTO_PATCH"
 echo "-- Applying KPATCH patches..."
 apply_patches "$KPATCH_PATCH"
 
+# BBR2 congestion control for 4.14
+echo "-- Applying BBR2 patches..."
+BBR2_DIR="scripts/goodies/patches/bbr2"
+if [ "$ROM_IMPORT" = "pixelos" ]; then
+    BBR2_PATCH="$BBR2_DIR/pixelos.patch"
+else
+    BBR2_PATCH="$BBR2_DIR/lineageos.patch"
+fi
+apply_patches "$BBR2_PATCH"
+
 # Common configs for 4.14
 echo "-- Tuning default configs..."
 echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
@@ -43,6 +57,12 @@ echo "CONFIG_F2FS_FS_COMPRESSION=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_F2FS_FS_LZ4=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_F2FS_FS_LZO=y" >> $MAIN_DEFCONFIG
 echo "CONFIG_F2FS_FS_ZSTD=y" >> $MAIN_DEFCONFIG
+
+# Congestion control
+echo "CONFIG_TCP_CONG_ADVANCED=y" >> $MAIN_DEFCONFIG
+echo "CONFIG_TCP_CONG_BBR=y" >> $MAIN_DEFCONFIG
+echo "CONFIG_TCP_CONG_BBR2=y" >> $MAIN_DEFCONFIG
+echo "CONFIG_DEFAULT_BBR2=y" >> $MAIN_DEFCONFIG
 
 # Checkpoint/restore
 echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG

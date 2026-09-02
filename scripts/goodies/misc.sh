@@ -10,14 +10,14 @@ if [ -f lib/lz4/lz4.c ]; then
 else
     echo "-- Upgrading LZ4 to v1.10.0..."
 
-    LZ4_RAW="https://raw.githubusercontent.com/Drsexo/davinci_kernel/lz4-1.10"
+    LZ4_SRC="scripts/goodies/patches/lz4"
 
     rm -f lib/lz4/lz4_compress.c lib/lz4/lz4_decompress.c lib/lz4/lz4defs.h lib/lz4/lz4hc_compress.c
     rm -rf lib/lz4/lz4armv8
 
     for f in lz4.c lz4.h lz4hc.c lz4hc.h; do
-        curl -fsSL "$LZ4_RAW/$f" -o "lib/lz4/$f" \
-            || { echo "Fatal: Failed to download lib/lz4/$f"; exit 1; }
+        cp "$LZ4_SRC/$f" "lib/lz4/$f" \
+            || { echo "Fatal: Failed to copy lib/lz4/$f"; exit 1; }
     done
 
     cat > lib/lz4/Makefile << 'EOF'
@@ -29,8 +29,8 @@ obj-$(CONFIG_LZ4_DECOMPRESS) += lz4.o
 obj-$(CONFIG_LZ4HC_COMPRESS) += lz4hc.o
 EOF
 
-    curl -fsSL "$LZ4_RAW/lz4_wrapper.h" -o include/linux/lz4.h \
-        || { echo "Fatal: Failed to download include/linux/lz4.h"; exit 1; }
+    cp "$LZ4_SRC/lz4_wrapper.h" include/linux/lz4.h \
+        || { echo "Fatal: Failed to copy include/linux/lz4.h"; exit 1; }
 
     sed -i '/#include "lz4armv8\/lz4accel.h"/d' lib/lz4/lz4.h
 
