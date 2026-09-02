@@ -40,7 +40,7 @@ jobs:
           ROMS="[]"
           [ "$BUILD_LINEAGEOS" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"lineageos","repo":"LineageOS/android_kernel_xiaomi_sm6150","display":"LineageOS"}]')
           [ "$BUILD_PIXELOS" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"pixelos","repo":"PixelOS-Devices/android_kernel_xiaomi_sm6150","display":"PixelOS"}]')
-          [ "$BUILD_DERPFEST" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"derpfest","repo":"DerpFest-Devices/kernel_xiaomi_sm6150","display":"DerpFest"}]')
+          [ "$BUILD_DERPFEST" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"derpfest","repo":"DerpFest-Devices/kernel_xiaomi_sm6150","display":"Derpfest"}]')
 
           if [ "$ROMS" = "[]" ]; then
             echo "Fatal: no ROM selected"
