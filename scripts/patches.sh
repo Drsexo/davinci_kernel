@@ -321,6 +321,10 @@ case "$DEVICE_IMPORT" in
     ;;
     # Titan Kernel
     a9y18qlte-titan-aosp)
+        echo "-- Nuking pre-built KSU..."
+        sed -i '/kernelsu/d' drivers/Kconfig
+        sed -i '/kernelsu/d' drivers/Makefile
+        rm -rf drivers/kernelsu
         OPENSSL_DIR="$(pwd)/.openssl1.1"
         echo "-- Installing openssl 1.1 at: '$OPENSSL_DIR'"
         if [[ "$OPENSSL_DIR" != /* ]]; then
