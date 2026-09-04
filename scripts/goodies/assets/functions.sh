@@ -155,7 +155,11 @@ ksu_common_configs() {
 }
 ksu_setup_susfs() {
     echo "-- KernelSU: Applying SUSFS patch..."
+    echo " "
+    echo "==================================================================="
     wget -qO- $SUSFS_PATCH | patch -p1 --fuzz=5
+    echo "==================================================================="
+    echo " "
     echo "-- KernelSU: Enabling SUSFS configs..."
     echo "CONFIG_KSU_SUSFS=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> $MAIN_DEFCONFIG
@@ -310,6 +314,6 @@ nomount_setup() {
 rekernel_setup() {
     echo "-- ReKernel: Applying patches..."
     curl -LSs --fail --retry 3 "$REKERNEL_PATCH" | bash || { echo "-- Fatal: Failed to apply rekernel patch!"; exit 1; }
-    wget -qO- $REKERNEL_EXTRA | patch -p1 --fuzz=5 || { echo "-- Fatal: Failed to apply rekernel extra patch!"; exit 1; }
+    wget -qO- $REKERNEL_EXTRA | patch -s -p1 --fuzz=5 || { echo "-- Fatal: Failed to apply rekernel extra patch!"; exit 1; }
     echo "CONFIG_REKERNEL=y" >> $MAIN_DEFCONFIG
 }
