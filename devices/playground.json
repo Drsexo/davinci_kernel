@@ -127,5 +127,35 @@
     "sources": [
       { "repo": "https://github.com/schr-0dinger/android_kernel_samsung_a9y18qlte", "branch": "CAF", "path": "." }
     ]
+  },
+  "sweet-crdroid-droidspaces": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-17",
+    "device_names": ["sweet", "sweetin"],
+    "banner": "sweet (sm6150)",
+    "zip_prefix": "droidspaces-neon-sweet-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/vendor/sdmsteppe-perf_defconfig",
+      "actual_main_defconfig": "vendor/sdmsteppe-perf_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "vendor/sweet.config",
+      "feature_defconfig": "",
+      "kernel_name": "-crdroid-droidspaces-neon",
+      "kernel_version": "4.14",
+      "clang_strat": "0"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "droidspaces",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150", "branch": "16.0", "path": "." }
+    ]
   }
 }
