@@ -26,6 +26,13 @@ case "$BBG_SELECTOR" in
             echo "-- Removing duplicate task_security_struct definition..."
             sed -i '/static inline struct task_security_struct \*selinux_cred/,/[[:space:]]*}/d' security/baseband-guard/tracing/tracing.c
         fi
+
+        # Check if kernel is 4.4
+        if [[ "$KERNEL_VERSION" == "4.4" ]]; then
+            echo "-- Fixing broken kernel_compat.h on 4.4..."
+            sed -i '/objsec\.h/ { H; d }' security/baseband-guard/kernel_compat.h
+            sed -i '$ G' security/baseband-guard/kernel_compat.h
+        fi
         ;;
 
     none|"")
