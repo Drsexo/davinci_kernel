@@ -321,6 +321,30 @@ case "$DEVICE_IMPORT" in
     ;;
     # Titan Kernel
     a9y18qlte-titan-aosp)
+        echo "-- Installing openssl 1.1.1w..."
+        local OPENSSL_DIR="$HOME/.openssl1.1"
+        if [ ! -d "$OPENSSL_DIR" ]; then
+            wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz
+            tar -xf openssl-1.1.1w.tar.gz
+            cd openssl-1.1.1w
+            ./config --prefix="$OPENSSL_DIR" --openssldir="$OPENSSL_DIR"
+            make -s -j$(nproc)
+            make -s install
+            cd ..
+            rm -rf openssl-1.1.1w*
+        fi
+        export HOSTCFLAGS="-I$OPENSSL_DIR/include"
+        export HOSTLDFLAGS="-L$OPENSSL_DIR/lib -Wl,-rpath,$OPENSSL_DIR/lib"
+        export LD_LIBRARY_PATH="$OPENSSL_DIR/lib:$LD_LIBRARY_PATH"
+        export MY_OPENSSL_DIR="$OPENSSL_DIR"
+        echo "-- Overriding MAKE_ARGS..."
+        export MAKE_ARGS=(
+            ARCH=arm64 CC=aarch64-linux-android-gcc LD=aarch64-linux-android-ld.bfd
+            AR=aarch64-linux-android-ar AS=aarch64-linux-android-as NM=aarch64-linux-android-nm
+            OBJCOPY=aarch64-linux-android-objcopy OBJDUMP=aarch64-linux-android-objdump
+            STRIP=aarch64-linux-android-strip CROSS_COMPILE=aarch64-linux-android- 
+            HOSTCFLAGS="$HOSTCFLAGS" HOSTLDFLAGS="$HOSTLDFLAGS" OPENSSL="$MY_OPENSSL_DIR/bin/openssl"
+        )
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
     ;;
