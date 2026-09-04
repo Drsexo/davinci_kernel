@@ -96,6 +96,13 @@ case "$DEVICE_IMPORT" in
             sed -i 's/struct i2c_client \*getClient()/struct i2c_client \*getClient(void)/g' drivers/input/touchscreen/fts_521/fts_lib/ftsIO.c
             echo "ccflags-y += -Wno-strict-prototypes" >> drivers/input/touchscreen/fts_521/Makefile
         fi
+        echo "-- Completely disabling LTO..."
+        sed -i \
+            -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
+            -e 's/^CONFIG_THINLTO=y/# CONFIG_THINLTO is not set/' \
+            -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
+            -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
+            $MAIN_DEFCONFIG
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
     ;;
