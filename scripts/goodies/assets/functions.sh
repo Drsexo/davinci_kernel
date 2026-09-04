@@ -155,7 +155,7 @@ ksu_common_configs() {
 }
 ksu_setup_susfs() {
     echo "-- KernelSU: Applying SUSFS patch..."
-    patch -s -p1 --fuzz=5 < "$SUSFS_PATCH"
+    wget -qO- $SUSFS_PATCH | patch -p1 --fuzz=5
     echo "-- KernelSU: Enabling SUSFS configs..."
     echo "CONFIG_KSU_SUSFS=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> $MAIN_DEFCONFIG
@@ -237,7 +237,7 @@ ksu_apply_hooks() {
         sed -i '/fs\/stat\.c)/a \        [[ "$KERNEL_VERSION" == "4.4" ]] && { echo "Skipping fs/stat.c on 4.4"; continue; }' "$KSU_HOOK"
     fi
     echo "-- KernelSU: Applying hooks..."
-    bash "$KSU_HOOK" &> /dev/null || { echo "Fatal: KSU hook script failed to download/run!"; exit 1; }
+    curl -LSs --fail --retry 3 "$KSU_HOOK" | bash &> /dev/null || { echo "Fatal: KSU setup script failed to download/run!"; exit 1; }
     if [[ "$KERNEL_VERSION" == "4.4" ]]; then
         echo "-- KernelSU: Tuning drivers/tty/pty.c under 4.4..."
         sed -i '/static struct tty_struct \*pts_unix98_lookup/,/}/ s/ksu_handle_devpts((struct inode \*)file->f_path.dentry->d_inode);/ksu_handle_devpts(pts_inode);/' drivers/tty/pty.c
@@ -310,6 +310,6 @@ nomount_setup() {
 rekernel_setup() {
     echo "-- ReKernel: Applying patches..."
     bash "$REKERNEL_PATCH" || { echo "-- Fatal: Failed to apply rekernel patch!"; exit 1; }
-    patch -s -p1 --fuzz=5 < "$REKERNEL_EXTRA" || { echo "-- Fatal: Failed to apply rekernel extra patch!"; exit 1; }
+    wget -qO- $REKERNEL_EXTRA | patch -p1 --fuzz=5 || { echo "-- Fatal: Failed to apply rekernel extra patch!"; exit 1; }
     echo "CONFIG_REKERNEL=y" >> $MAIN_DEFCONFIG
 }
