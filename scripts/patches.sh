@@ -130,6 +130,31 @@ case "$DEVICE_IMPORT" in
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
     ;;
+    sweet-crdroid-droidspaces)
+        echo "-- Reverting hard to commits before KSU is being added..."
+        git reset --hard 78088ffb401b570b8de9408662c8fc931e9cf1a5 &> /dev/null
+        if [[ "$DEVICE_IMPORT" == "tucana-crdroid" ]]; then
+            echo "-- Fixing goodix driver..."
+            sed -i 's/static void gtp_set_edge_filter_normal()/static void gtp_set_edge_filter_normal(void)/g' drivers/input/touchscreen/f4_goodix_driver_gt9886/goodix_ts_core.c
+            sed -i 's/static int gtp_send_cur_cmd()/static int gtp_send_cur_cmd(void)/g' drivers/input/touchscreen/f4_goodix_driver_gt9886/goodix_ts_core.c
+            echo "-- Fixing fts driver..."
+            sed -i 's/"%100s %d %d"/"%99s %d %d"/g' drivers/input/touchscreen/fts_521/fts.c
+            sed -i 's/"%100s"/"%99s"/g' drivers/input/touchscreen/fts_521/fts_proc.c
+            sed -i 's/struct device \*getDev()/struct device \*getDev(void)/g' drivers/input/touchscreen/fts_521/fts_lib/ftsIO.c
+            sed -i 's/struct i2c_client \*getClient()/struct i2c_client \*getClient(void)/g' drivers/input/touchscreen/fts_521/fts_lib/ftsIO.c
+            echo "ccflags-y += -Wno-strict-prototypes" >> drivers/input/touchscreen/fts_521/Makefile
+        fi
+        echo "-- Completely disabling LTO..."
+        sed -i \
+            -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
+            -e 's/^CONFIG_THINLTO=y/# CONFIG_THINLTO is not set/' \
+            -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
+            -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
+            $MAIN_DEFCONFIG
+        echo "-- Tuning default configs..."
+        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
+    ;;
     # PixelOS
     sweet-pixelos|davinci-pixelos|toco-pixelos)
         if [[ $DEVICE_IMPORT == "sweet-pixelos" ]]; then
