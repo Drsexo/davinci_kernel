@@ -355,6 +355,8 @@ case "$DEVICE_IMPORT" in
         )
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        sed -i 's/CONFIG_SYSTEM_TRUSTED_KEYS=.*/CONFIG_SYSTEM_TRUSTED_KEYS=""/g' $MAIN_DEFCONFIG
+        sed -i 's/CONFIG_SYSTEM_REVOCATION_KEYS=.*/CONFIG_SYSTEM_REVOCATION_KEYS=""/g' $MAIN_DEFCONFIG
     ;;
     *)
         echo "No specific patches to apply for $DEVICE_IMPORT."
