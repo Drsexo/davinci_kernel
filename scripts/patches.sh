@@ -325,6 +325,7 @@ case "$DEVICE_IMPORT" in
         sed -i '/kernelsu/d' drivers/Kconfig
         sed -i '/kernelsu/d' drivers/Makefile
         rm -rf drivers/kernelsu
+        rm -rf KernelSU
         OPENSSL_DIR="$(pwd)/.openssl1.1"
         echo "-- Installing openssl 1.1 at: '$OPENSSL_DIR'"
         if [[ "$OPENSSL_DIR" != /* ]]; then
