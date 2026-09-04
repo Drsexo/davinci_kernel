@@ -198,12 +198,23 @@ case "$KERNELSU_SELECTOR" in
         if [[ "$KERNEL_VERSION" == "4.4" ]]; then
             echo "-- Re-tuning ksu_handle_devpts under 4.4..."
             sed -i '/static struct tty_struct \*pts_unix98_lookup/,/}/ s/ksu_handle_devpts((struct inode \*)file->f_path.dentry->d_inode);/ksu_handle_devpts(pts_inode);/' drivers/tty/pty.c
-            echo "-- Fixing broken vfs_fstatat..."
-            sed -i '/struct path \*path, struct path \*root);/d' fs/stat.c
-            sed -i '/extern int filename_lookup/d' fs/stat.c
-            sed -i '/fname = getname_flags/d' fs/stat.c
-            sed -i '/ksu_handle_stat/d' fs/stat.c
-            sed -i 's/error = filename_lookup(dfd, fname, lookup_flags, &path, NULL);/error = user_path_at(dfd, filename, lookup_flags, \&path);/g' fs/stat.c
+            echo "-- Applying clean manual stat hooks for Kernel 4.4..."
+            git checkout fs/stat.c
+            sed -i '/SYSCALL_DEFINE4(newfstatat/i \
+            #ifdef CONFIG_KSU_MANUAL_HOOK\n\
+                __attribute__((hot))\n\
+                extern int ksu_handle_stat(int *dfd, const char __user **filename_user, int *flags);\n\
+                extern void ksu_handle_newfstat_ret(unsigned int *fd, struct stat __user **statbuf_ptr);\n\
+                #if defined(__ARCH_WANT_STAT64) || defined(__ARCH_WANT_COMPAT_STAT64)\n\
+                    extern void ksu_handle_fstat64_ret(unsigned long *fd, struct stat64 __user **statbuf_ptr);\n\
+                #endif\n\
+            #endif\n' fs/stat.c
+            sed -i '/error = vfs_fstatat(dfd, filename, &stat, flag);/i \
+            #ifdef CONFIG_KSU_MANUAL_HOOK\n\
+                \tksu_handle_stat(&dfd, &filename, &flag);\n\
+            #endif' fs/stat.c
+            sed -i '/SYSCALL_DEFINE2(newfstat,/,/^}/ s/return error;/#ifdef CONFIG_KSU_MANUAL_HOOK\n\tksu_handle_newfstat_ret(\&fd, \&statbuf);\n#endif\n\treturn error;/' fs/stat.c
+            sed -i '/SYSCALL_DEFINE2(fstat64,/,/^}/ s/return error;/#ifdef CONFIG_KSU_MANUAL_HOOK\n\tksu_handle_fstat64_ret(\&fd, \&statbuf);\n#endif\n\treturn error;/' fs/stat.c
         fi
 
         # Kernel 4.9 specific fixes
