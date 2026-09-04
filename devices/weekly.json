@@ -360,5 +360,89 @@
     "sources": [
       { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_surya", "branch": "16.0", "path": "." }
     ]
+  },
+  "sweet-pixelos": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-17",
+    "device_names": ["sweet", "sweetin"],
+    "banner": "sweet (sm6150)",
+    "zip_prefix": "pixelos-sweet-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/sweet_defconfig",
+      "actual_main_defconfig": "sweet_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "",
+      "kernel_name": "-pixelos-neon",
+      "clang_strat": "0"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "none",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150.git", "branch": "sixteen-qpr2", "path": "." }
+    ]
+  },
+  "davinci-pixelos": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-17",
+    "device_names": ["davinci", "davinciin"],
+    "banner": "davinci (sm6150)",
+    "zip_prefix": "pixelos-davinci-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/davinci_defconfig",
+      "actual_main_defconfig": "davinci_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "",
+      "kernel_name": "-pixelos-neon",
+      "clang_strat": "0"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "none",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150.git", "branch": "sixteen-qpr2", "path": "." }
+    ]
+  },
+  "toco-pixelos": {
+    "dir": "android_kernel_xiaomi_sm6150",
+    "image": "Image.gz",
+    "dtb": "",
+    "dtbo": "dtbo.img",
+    "supported_versions": "13-17",
+    "device_names": ["toco", "tocoin"],
+    "banner": "toco (sm6150)",
+    "zip_prefix": "pixelos-toco-weekly",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/toco_defconfig",
+      "actual_main_defconfig": "toco_defconfig",
+      "common_defconfig": "vendor/debugfs.config",
+      "device_defconfig": "",
+      "kernel_name": "-pixelos-neon",
+      "clang_strat": "0"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "none",
+      "rekernel_type": "rekernel"
+    },
+    "sources": [
+      { "repo": "https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150.git", "branch": "sixteen-qpr2", "path": "." }
+    ]
   }
 }
