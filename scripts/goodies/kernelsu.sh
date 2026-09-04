@@ -193,7 +193,7 @@ case "$KERNELSU_SELECTOR" in
         # Pre-Kernel 4.4 specific fixes
         if [[ "$KERNEL_VERSION" == "4.4" && -f "$KSU_HOOK" ]]; then
             echo "-- Stripping fs/stat.c from inline hooks for Kernel 4.4 compatibility..."
-            sed -i '/fs\/stat\.c/d' "$KSU_HOOK"
+            sed -i '/fs\/stat\.c)/a \        [[ "$KERNEL_VERSION" == "4.4" ]] && { echo "Skipping fs/stat.c on 4.4"; continue; }' "$KSU_HOOK"
         fi
 
         # Apply KSU Hooks
