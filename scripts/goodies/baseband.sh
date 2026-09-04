@@ -32,6 +32,8 @@ case "$BBG_SELECTOR" in
             echo "-- Fixing broken kernel_compat.h on 4.4..."
             sed -i '/objsec\.h/ { H; d }' security/baseband-guard/kernel_compat.h
             sed -i '$ G' security/baseband-guard/kernel_compat.h
+            sed -i '/objsec\.h/ { H; d }' security/baseband-guard/tracing/kernel_compat.h
+            sed -i '$ G' security/baseband-guard/tracing/kernel_compat.h
         fi
         ;;
 
