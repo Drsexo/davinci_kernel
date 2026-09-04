@@ -324,7 +324,7 @@
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
       "bbg_type": "bbg",
-      "nomount_type": "nomount",
+      "nomount_type": "none",
       "droidspaces_type": "none",
       "rekernel_type": "none"
     },
