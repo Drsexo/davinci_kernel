@@ -44,12 +44,12 @@ DTC_PATCHES=(
     "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/ae58bbd8f7af4c3c290e63ddcd4112559c5fc240.patch"
 )
 LN8K_COMMON=(
-    "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/b2098690243086601ca394b4bcd5fb4e94ce68ec.patch"
-    "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/33214bb2481d3279764f14fbb4b84d329be95410.patch"
-    "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/c6b5c9eff5fc9e07580ed8d75bd52caf396021aa.patch"
-    "https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/95d285024e700545e0d44d5683615b7285063f25.patch"
+    "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/05d8eac3722dcf920b716908d910ee704a77950e.patch"
+    "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/eb3509401751b1e90a9b42e2f51326f2ef943af3.patch"
+    "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/785c8f7976798acfc5cf300a320a43b3f39bcb13.patch"
+    "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/e26ba40f3fac0238e410f8a29fa72aac012d75d2.patch"
+    "https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/6e50130d7bc99d1cc64196541af7a1780a703253.patch"
 )
-LN8K_EXTRA="https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/9e8d4be7a3e2868491486ac86c9e5aa52a5a0c53.patch"
 
 # Patcher - 1.5
 echo "- Patching kernel source for $DEVICE_IMPORT..."
@@ -180,6 +180,16 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
+    # PixelOS
+    sweet-pixelos|davinci-pixelos|toco-pixelos)
+        if [[ $DEVICE_IMPORT == "sweet-pixelos" ]]; then
+            echo "-- Applying LN8K patches..."
+            apply_patches "${LN8K_COMMON[@]}"
+            echo "CONFIG_CHARGER_LN8000=y" >> $MAIN_DEFCONFIG
+        fi
+        echo "-- Tuning default configs..."
+        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+    ;;
     # VoltageOS
     violet-voltage)
         if [[ $CLANG_STRAT == "1" ]]; then
@@ -196,15 +206,6 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
-    ;;
-    # PixelOS
-    sweet-playground)
-        echo "-- Applying LN8K patches..."
-        apply_patches "${LN8K_COMMON[@]}"
-        wget -qO- "$LN8K_EXTRA" | filterdiff -x a/drivers/power/supply/qcom/smb5-lib.c | patch -s -p1
-        echo "CONFIG_CHARGER_LN8000=y" >> $MAIN_DEFCONFIG
-        echo "-- Tuning default configs..."
-        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
     ;;
     # Mi-Thorium
     mi89x7-playground)
@@ -245,29 +246,6 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-    ;;
-    # Other devices
-    umi|cmi)
-        if [[ $CLANG_STRAT == "1" ]]; then
-            echo "-- Tuning CPU flags..."
-            sed -i '/export KBUILD_CFLAGS/i \
-            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a77' Makefile
-        fi
-        echo "-- Tuning default configs..."
-        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
-    ;;
-    # Another Kernels
-    tissot-playground-treble|tissot-playground-nontreble)
-        echo "-- Removing hardcoded kernel build user and host..."
-        sed -i '/LINUX_COMPILE_BY="romi"/d' scripts/mkcompile_h
-        sed -i '/LINUX_COMPILE_HOST="build"/d' scripts/mkcompile_h
-        echo "-- Tuning default configs..."
-        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
     ;;
     # Titanium
     mi8953-titanium-playground)
