@@ -105,6 +105,7 @@ case "$DEVICE_IMPORT" in
             $MAIN_DEFCONFIG
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_FRAME_WARN=4096" >> $MAIN_DEFCONFIG
     ;;
     surya-crdroid)
         echo "-- Reverting SUSFS commits..."
@@ -153,6 +154,7 @@ case "$DEVICE_IMPORT" in
             $MAIN_DEFCONFIG
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_FRAME_WARN=4096" >> $MAIN_DEFCONFIG
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     # PixelOS
