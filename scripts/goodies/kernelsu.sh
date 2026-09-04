@@ -198,6 +198,12 @@ case "$KERNELSU_SELECTOR" in
         if [[ "$KERNEL_VERSION" == "4.4" ]]; then
             echo "-- Re-tuning ksu_handle_devpts under 4.4..."
             sed -i '/static struct tty_struct \*pts_unix98_lookup/,/}/ s/ksu_handle_devpts((struct inode \*)file->f_path.dentry->d_inode);/ksu_handle_devpts(pts_inode);/' drivers/tty/pty.c
+            echo "-- Fixing broken vfs_fstatat..."
+            sed -i '/struct path \*path, struct path \*root);/d' fs/stat.c
+            sed -i '/extern int filename_lookup/d' fs/stat.c
+            sed -i '/fname = getname_flags/d' fs/stat.c
+            sed -i '/ksu_handle_stat/d' fs/stat.c
+            sed -i 's/error = filename_lookup(dfd, fname, lookup_flags, &path, NULL);/error = user_path_at(dfd, filename, lookup_flags, \&path);/g' fs/stat.c
         fi
 
         # Kernel 4.9 specific fixes
