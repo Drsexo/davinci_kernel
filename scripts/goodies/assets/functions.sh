@@ -10,8 +10,8 @@ export KSU_SETUP_URI="https://github.com/ReSukiSU/ReSukiSU/raw/refs/heads/main/k
 export KSU_SETUP_BRANCH="main"
 export NOMOUNT_SETUP_VER="2.0.0"
 export NOMOUNT_SETUP_ZIP="https://github.com/maxsteeel/nomount/archive/refs/tags/v$NOMOUNT_SETUP_VER.zip"
-export REKERNEL_PATCH="scripts/goodies/assets/Patches/Rekernel/rekernel_patches.sh"
-export REKERNEL_EXTRA="scripts/goodies/assets/Patches/Rekernel/rekernel_extra.patch"
+export REKERNEL_PATCH="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/Rekernel/rekernel_patches.sh"
+export REKERNEL_EXTRA="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/Rekernel/rekernel_extra.patch"
 
 # Baseband Guard
 bbg_setup() {
