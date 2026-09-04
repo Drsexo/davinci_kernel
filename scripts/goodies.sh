@@ -1,13 +1,9 @@
 #!/bin/bash
 echo "- Setting up additional goodies..."
 
-# Clone goodies repository
-git clone https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd.git scripts/goodies/assets &> /dev/null
-# Reset goodies repository to a specific commit
-# Latest commit have iissues so we need to revert it back the janky way.
-# cd scripts/goodies/assets
-# git reset --hard c25917a4f1c8c1475a8ba7c6f32e9f2bb2e31767 &> /dev/null
-# cd ../../../
+# Goodies functions
+chmod +x scripts/goodies/assets/functions.sh
+source scripts/goodies/assets/functions.sh
 
 # KernelSU
 chmod +x scripts/goodies/kernelsu.sh
