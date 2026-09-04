@@ -333,10 +333,12 @@ case "$DEVICE_IMPORT" in
             wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz -O openssl-1.1.1w.tar.gz &> /dev/null || { echo "Fatal: openssl source code failed to download!"; exit 1; }
             tar -xf openssl-1.1.1w.tar.gz &> /dev/null
             cd openssl-1.1.1w
+            ls -alhZ
             ./config --prefix="$OPENSSL_DIR" --openssldir="$OPENSSL_DIR" &> /dev/null
             make -s -j$(nproc) &> /dev/null
             make -s install &> /dev/null
             cd ..
+            ls -alhZ
             rm -rf openssl-1.1.1w*
         fi
         export HOSTCFLAGS="-I$OPENSSL_DIR/include"
