@@ -325,6 +325,8 @@ case "$DEVICE_IMPORT" in
         echo "DEBUG: OPENSSL_DIR resolves to: '$OPENSSL_DIR'"
         if [[ "$OPENSSL_DIR" != /* ]]; then
             echo "FATAL: OPENSSL_DIR is empty or not absolute! Check your shell environment."
+            ls -alhZ $OPENSSL_DIR
+            ls -alhZ $OPENSSL_DIR/../
             exit 1
         fi
         if [ ! -d "$OPENSSL_DIR" ]; then
