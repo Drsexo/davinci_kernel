@@ -319,6 +319,11 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
+    # Titan Kernel
+    a9y18qlte-titan-aosp)
+        echo "-- Tuning default configs..."
+        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+    ;;
     *)
         echo "No specific patches to apply for $DEVICE_IMPORT."
     ;;

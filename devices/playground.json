@@ -301,5 +301,35 @@
     "sources": [
       { "repo": "https://github.com/VoltageOS-Devices/kernel_xiaomi_sm6150", "branch": "17", "path": "." }
     ]
+  },
+  "a9y18qlte-titan-aosp": {
+    "dir": "android_kernel_samsung_a9y18qlte",
+    "image": "Image.gz-dtb",
+    "dtb": "",
+    "dtbo": "",
+    "supported_versions": "10-12",
+    "device_names": ["a9y18qlte", "a9y18qltexx"],
+    "banner": "a9y18qlte (sdm660)",
+    "zip_prefix": "titan-aosp-a9y18qlte-playground",
+    "env": {
+      "main_defconfig": "arch/arm64/configs/a9y18qlte_defconfig",
+      "actual_main_defconfig": "a9y18qlte_defconfig",
+      "common_defconfig": "",
+      "device_defconfig": "",
+      "feature_defconfig": "",
+      "kernel_name": "-titan-neon",
+      "kernel_version": "4.4",
+      "clang_strat": "0"
+    },
+    "build_flags": {
+      "ksu_type": ["zako-susfs", "none"], 
+      "bbg_type": "bbg",
+      "nomount_type": "nomount",
+      "droidspaces_type": "none",
+      "rekernel_type": "none"
+    },
+    "sources": [
+      { "repo": "https://github.com/schr-0dinger/android_kernel_samsung_a9y18qlte", "branch": "CAF", "path": "." }
+    ]
   }
 }
