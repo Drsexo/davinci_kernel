@@ -199,12 +199,11 @@ case "$KERNELSU_SELECTOR" in
             echo "-- Re-tuning ksu_handle_devpts under 4.4..."
             sed -i '/static struct tty_struct \*pts_unix98_lookup/,/}/ s/ksu_handle_devpts((struct inode \*)file->f_path.dentry->d_inode);/ksu_handle_devpts(pts_inode);/' drivers/tty/pty.c
             echo "-- Applying clean manual stat hooks for Kernel 4.4..."
-            sed -i '/struct path \*path, struct path \*root);/d' fs/stat.c
-            sed -i '/extern int filename_lookup/d' fs/stat.c
-            sed -i '/fname = getname_flags/d' fs/stat.c
-            sed -i '/ksu_handle_stat/d' fs/stat.c
-            sed -i 's/error = filename_lookup(dfd, fname, lookup_flags, &path, NULL);/error = user_path_at(dfd, filename, lookup_flags, \&path);/g' fs/stat.c
-            if ! grep -q "ksu_handle_newfstat_ret" fs/stat.c; then
+            sed -i '/#ifdef CONFIG_KSU_MANUAL_HOOK/,/#endif/ {
+                /ksu_handle_stat/d
+                /ksu_handle_newfstat_ret/d
+            }' fs/stat.c
+            if ! grep -q "ksu_handle_stat" fs/stat.c; then
                 sed -i '/SYSCALL_DEFINE4(newfstatat/i \
                 #ifdef CONFIG_KSU_MANUAL_HOOK\n\
                     __attribute__((hot))\n\
@@ -215,12 +214,14 @@ case "$KERNELSU_SELECTOR" in
                     #endif\n\
                 #endif\n' fs/stat.c
             fi
-            if ! grep -q "ksu_handle_stat(&dfd" fs/stat.c; then
-                sed -i '/error = vfs_fstatat(dfd, filename, &stat, flag);/i \
-                #ifdef CONFIG_KSU_MANUAL_HOOK\n\
-                    \tksu_handle_stat(&dfd, &filename, &flag);\n\
-                #endif' fs/stat.c
-            fi
+            sed -i '/SYSCALL_DEFINE4(newfstatat,/,/struct kstat stat;/ {
+                /struct kstat stat;/a \
+                \n#ifdef CONFIG_KSU_MANUAL_HOOK\n\tksu_handle_stat(&dfd, &filename, &flag);\n#endif
+            }' fs/stat.c
+            sed -i '/SYSCALL_DEFINE4(fstatat64,/,/struct kstat stat;/ {
+                /struct kstat stat;/a \
+                \n#ifdef CONFIG_KSU_MANUAL_HOOK\n\tksu_handle_stat(&dfd, &filename, &flag);\n#endif
+            }' fs/stat.c
             sed -i '/SYSCALL_DEFINE2(newfstat,/,/^}/ s/return error;/#ifdef CONFIG_KSU_MANUAL_HOOK\n\tksu_handle_newfstat_ret(\&fd, \&statbuf);\n#endif\n\treturn error;/' fs/stat.c
             sed -i '/SYSCALL_DEFINE2(fstat64,/,/^}/ s/return error;/#ifdef CONFIG_KSU_MANUAL_HOOK\n\tksu_handle_fstat64_ret(\&fd, \&statbuf);\n#endif\n\treturn error;/' fs/stat.c
         fi
