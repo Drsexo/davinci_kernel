@@ -237,11 +237,16 @@ ksu_fix_susfs_fouronenine() {
 }
 ksu_apply_hooks() {
     if [[ "$KERNEL_VERSION" == "4.4" ]]; then
+        echo "-- KernelSU: Downloading hook script..."
+        curl -LSs --fail --retry 3 "$KSU_HOOK" -o ksu-hooks.sh
         echo "-- KernelSU: Skipping patch for fs/stat.c on 4.4..."
-        sed -i '/fs\/stat\.c)/a \        [[ "$KERNEL_VERSION" == "4.4" ]] && { echo "Skipping fs/stat.c on 4.4"; continue; }' "$KSU_HOOK"
+        sed -i '/fs\/stat\.c)/a \        [[ "$KERNEL_VERSION" == "4.4" ]] && { echo "Skipping fs/stat.c on 4.4"; continue; }' ksu-hooks.sh
+        echo "-- KernelSU: Applying hooks..."
+        bash ksu-hooks.sh &> /dev/null || { echo "Fatal: KSU setup script failed to download/run!"; exit 1; }
+    else
+        echo "-- KernelSU: Applying hooks..."
+        curl -LSs --fail --retry 3 "$KSU_HOOK" | bash &> /dev/null || { echo "Fatal: KSU setup script failed to download/run!"; exit 1; }
     fi
-    echo "-- KernelSU: Applying hooks..."
-    curl -LSs --fail --retry 3 "$KSU_HOOK" | bash &> /dev/null || { echo "Fatal: KSU setup script failed to download/run!"; exit 1; }
     if [[ "$KERNEL_VERSION" == "4.4" ]]; then
         echo "-- KernelSU: Tuning drivers/tty/pty.c under 4.4..."
         sed -i '/static struct tty_struct \*pts_unix98_lookup/,/}/ s/ksu_handle_devpts((struct inode \*)file->f_path.dentry->d_inode);/ksu_handle_devpts(pts_inode);/' drivers/tty/pty.c
