@@ -56,51 +56,19 @@ echo "- Patching kernel source for $DEVICE_IMPORT..."
 case "$DEVICE_IMPORT" in
     # LineageOS
     sweet-lineage|davinci-lineage|tucana-lineage|violet-lineage|toco-lineage)
-        if [[ $CLANG_STRAT == "1" ]]; then
-            echo "-- Tuning CPU flags..."
-            sed -i '/export KBUILD_CFLAGS/i \
-            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
-        fi
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
-        echo "-- Applying LTO patches..."
-        apply_patches "$LTO_PATCH"
-        echo "-- Applying KPATCH patches..."
-        apply_patches "$KPATCH_PATCH"
-        echo "-- Tuning default configs..."
-        echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     ginkgo-lineage|laurel_sprout-lineage)
-        if [[ $CLANG_STRAT == "1" ]]; then
-            echo "-- Tuning CPU flags..."
-            sed -i '/export KBUILD_CFLAGS/i \
-            KBUILD_CFLAGS += -march=armv8-a+crypto+crc -mcpu=cortex-a73' Makefile
-        fi
         echo "-- Applying DTC patches..."
         apply_patches "${DTC_PATCHES[@]}"
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
-        echo "-- Applying KPATCH patches..."
-        apply_patches "$KPATCH_PATCH"
         echo "-- Tuning default configs..."
-        echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     gta4l-lineage)
-        if [[ $CLANG_STRAT == "1" ]]; then
-            echo "-- Tuning CPU flags..."
-            sed -i '/export KBUILD_CFLAGS/i \
-            KBUILD_CFLAGS += -march=armv8-a+crypto+crc -mcpu=cortex-a73' Makefile
-        fi
         echo "-- Fixing scripts/dtc/livetree.c..."
         sed -i '/assert(generate_fixups);/d' scripts/dtc/livetree.c
         echo "-- Setting up extra drivers as built-in for gta4l..."
@@ -112,11 +80,6 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_SENSORS_SSC=y" >> $MAIN_DEFCONFIG
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     # CrDroid
     sweet-crdroid|davinci-crdroid|tucana-crdroid)
@@ -133,17 +96,8 @@ case "$DEVICE_IMPORT" in
             sed -i 's/struct i2c_client \*getClient()/struct i2c_client \*getClient(void)/g' drivers/input/touchscreen/fts_521/fts_lib/ftsIO.c
             echo "ccflags-y += -Wno-strict-prototypes" >> drivers/input/touchscreen/fts_521/Makefile
         fi
-        if [[ $CLANG_STRAT == "1" ]]; then
-            echo "-- Tuning CPU flags..."
-            sed -i '/export KBUILD_CFLAGS/i \
-            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
-        fi
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     surya-crdroid)
         echo "-- Reverting SUSFS commits..."
@@ -166,19 +120,8 @@ case "$DEVICE_IMPORT" in
         revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/340e3b3a4662d51dd743b087d440a2538534d576.patch"
         revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/80652cb8b40fd63da65ea046f39ecb86de5dc648.patch"
         revert_commit "https://github.com/crdroidandroid/android_kernel_xiaomi_surya/commit/3c8c1cd917d6b986bdbe88d66571b91a804d8add.patch"
-        if [[ $CLANG_STRAT == "1" ]]; then
-            echo "-- Tuning CPU flags..."
-            sed -i '/export KBUILD_CFLAGS/i \
-            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
-        fi
-        echo "-- Applying LTO patches..."
-        apply_patches "$LTO_PATCH"
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     # PixelOS
     sweet-pixelos|davinci-pixelos|toco-pixelos)
@@ -189,23 +132,6 @@ case "$DEVICE_IMPORT" in
         fi
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-    ;;
-    # VoltageOS
-    violet-voltage)
-        if [[ $CLANG_STRAT == "1" ]]; then
-            echo "-- Tuning CPU flags..."
-            sed -i '/export KBUILD_CFLAGS/i \
-            KBUILD_CFLAGS += -march=armv8.2-a+crypto+fp16+dotprod -mcpu=cortex-a76' Makefile
-        fi
-        echo "-- Applying KPATCH patches..."
-        apply_patches "$KPATCH_PATCH"
-        echo "-- Tuning default configs..."
-        echo "CONFIG_EROFS_FS=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     # Mi-Thorium
     mi89x7-playground)
@@ -247,24 +173,6 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
     ;;
-    # Titanium
-    mi8953-titanium-playground)
-        echo "-- Fixing msm clk broken redifinition..."
-        sed -i 's/static inline void clk_debug_print_hw.*/void clk_debug_print_hw(struct clk *clk, struct seq_file *f);/' include/linux/clk/msm-clk-provider.h
-        sed -i '/static inline int clock_debug_register/,/}/c\int clock_debug_register(struct clk *clk);' drivers/clk/msm/clock.h
-        sed -i '/static inline void clock_debug_print_enabled.*/c\void clock_debug_print_enabled(bool print_parent);' drivers/clk/msm/clock.h
-        if [[ $CLANG_STRAT == "1" ]]; then
-            echo "-- Tuning CPU flags..."
-            sed -i '/export KBUILD_CFLAGS/i \
-            KBUILD_CFLAGS += -march=armv8-a+crypto+crc -mcpu=cortex-a53' Makefile
-        fi
-        echo "-- Tuning default configs..."
-        echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-    ;;
     # Spiteful MIUI Buildout
     spiteful-sweet-miui-buildout)
         echo "-- Reverting hard to commits before KSU is being added..."
@@ -278,8 +186,6 @@ case "$DEVICE_IMPORT" in
             $MAIN_DEFCONFIG
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     # Spiteful AOSP Buildout
     spiteful-sweet-aosp-buildout)
@@ -294,8 +200,6 @@ case "$DEVICE_IMPORT" in
             $MAIN_DEFCONFIG
         echo "-- Tuning default configs..."
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_KALLSYMS_ALL=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CHECKPOINT_RESTORE=y" >> $MAIN_DEFCONFIG
     ;;
     # Titan Kernel
     a9y18qlte-titan-aosp)
@@ -361,4 +265,10 @@ if [[ "$CLANG_STRAT" == "1" ]]; then
         sed -i '/export KBUILD_CFLAGS/i \
         KBUILD_CFLAGS += -mllvm -polly -mllvm -enable-gvn-hoist -Wno-unused-command-line-argument' Makefile
     fi
+fi
+
+if [[ "$CLANG_STRAT" == "0" ]]; then
+    echo "- Variable clang_strat is set to 0! applying extra patches..."
+    echo "-- Setting up -O3 flags..."
+    sed -i 's/KBUILD_CFLAGS.*+= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
 fi

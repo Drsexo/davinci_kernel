@@ -16,7 +16,7 @@
       "feature_defconfig": "",
       "kernel_name": "-lineage-neon",
       "kernel_version": "4.14",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -46,7 +46,7 @@
       "feature_defconfig": "",
       "kernel_name": "-lineage-neon",
       "kernel_version": "4.14",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -76,7 +76,7 @@
       "feature_defconfig": "",
       "kernel_name": "-lineage-neon",
       "kernel_version": "4.14",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -106,7 +106,7 @@
       "feature_defconfig": "",
       "kernel_name": "-lineage-neon",
       "kernel_version": "4.14",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -136,7 +136,7 @@
       "feature_defconfig": "",
       "kernel_name": "-lineage-neon",
       "kernel_version": "4.14",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -167,7 +167,7 @@
       "kernel_name": "-lineage-neon",
       "kernel_version": "4.14",
       "kbuild_build_user": "hiyorun-compile",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -198,7 +198,7 @@
       "kernel_name": "-lineage-neon",
       "kernel_version": "4.14",
       "kbuild_build_user": "hiyorun-compile",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -228,7 +228,7 @@
       "kernel_name": "-lineage-neon",
       "kernel_version": "4.19",
       "kbuild_build_user": "hassansody-compile",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -258,7 +258,7 @@
       "feature_defconfig": "",
       "kernel_name": "-crdroid-neon",
       "kernel_version": "4.14",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -288,7 +288,7 @@
       "feature_defconfig": "",
       "kernel_name": "-crdroid-neon",
       "kernel_version": "4.14",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -318,7 +318,7 @@
       "feature_defconfig": "",
       "kernel_name": "-crdroid-neon",
       "kernel_version": "4.14",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
@@ -348,7 +348,7 @@
       "feature_defconfig": "",
       "kernel_name": "-crdroid-neon",
       "kernel_version": "4.14",
-      "clang_strat": "1"
+      "clang_strat": "0"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 

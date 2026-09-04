@@ -38,36 +38,6 @@
       { "repo": "https://github.com/Mi-Thorium/vendor_qcom_opensource_wlan_prima", "branch": "wlan/LA.UM.9.6.4/mithorium/master", "path": "drivers/staging/prima" }
     ]
   },
-  "mi8953-titanium-playground": {
-    "dir": "android_kernel_xiaomi_msm8953",
-    "image": "Image.gz-dtb",
-    "dtb": "",
-    "dtbo": "",
-    "supported_versions": "11-16",
-    "device_names": ["mi8953", "ysl", "mi5x", "vince", "mido"],
-    "banner": "mi8953 (msm8953)",
-    "zip_prefix": "titanium-mi8953-playground",
-    "env": {
-      "main_defconfig": "arch/arm64/configs/vendor/msm8953-perf_defconfig",
-      "actual_main_defconfig": "vendor/msm8953-perf_defconfig",
-      "common_defconfig": "vendor/debugfs.config",
-      "device_defconfig": "vendor/mi8953.config",
-      "feature_defconfig": "",
-      "kernel_name": "-titanium-neon",
-      "kernel_version": "4.19",
-      "clang_strat": "1"
-    },
-    "build_flags": {
-      "ksu_type": ["zako-susfs", "none"], 
-      "bbg_type": "bbg",
-      "nomount_type": "nomount",
-      "droidspaces_type": "none",
-      "rekernel_type": "rekernel"
-    },
-    "sources": [
-      { "repo": "https://github.com/imren0x/msm-4.19", "branch": "mi8953/latest", "path": "." }
-    ]
-  },
   "spiteful-sweet-miui-buildout": {
     "dir": "android_kernel_xiaomi_sm6150",
     "image": "Image.gz",
@@ -126,36 +96,6 @@
     },
     "sources": [
       { "repo": "https://github.com/tbyool/android_kernel_xiaomi_sm6150", "branch": "AOSP-buildout", "path": "." }
-    ]
-  },
-  "violet-voltage": {
-    "dir": "android_kernel_xiaomi_sm6150",
-    "image": "Image.gz",
-    "dtb": "",
-    "dtbo": "dtbo.img",
-    "supported_versions": "13-17",
-    "device_names": ["violet", "violetin"],
-    "banner": "violet (sm6150)",
-    "zip_prefix": "voltage-neon-violet-weekly",
-    "env": {
-      "main_defconfig": "arch/arm64/configs/vendor/sdmsteppe-perf_defconfig",
-      "actual_main_defconfig": "vendor/sdmsteppe-perf_defconfig",
-      "common_defconfig": "vendor/debugfs.config",
-      "device_defconfig": "vendor/violet.config",
-      "feature_defconfig": "",
-      "kernel_name": "-voltage-neon",
-      "kernel_version": "4.14",
-      "clang_strat": "1"
-    },
-    "build_flags": {
-      "ksu_type": ["zako-susfs", "none"], 
-      "bbg_type": "bbg",
-      "nomount_type": "nomount",
-      "droidspaces_type": "droidspaces",
-      "rekernel_type": "rekernel"
-    },
-    "sources": [
-      { "repo": "https://github.com/VoltageOS-Devices/kernel_xiaomi_sm6150", "branch": "17", "path": "." }
     ]
   },
   "a9y18qlte-titan-aosp": {
