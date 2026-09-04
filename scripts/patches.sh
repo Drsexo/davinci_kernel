@@ -322,7 +322,7 @@ case "$DEVICE_IMPORT" in
     # Titan Kernel
     a9y18qlte-titan-aosp)
         echo "-- Installing openssl 1.1.1w..."
-        local OPENSSL_DIR="${pwd}/.openssl1.1"
+        local OPENSSL_DIR="$(pwd)/.openssl1.1"
         if [ ! -d "$OPENSSL_DIR" ]; then
             wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz
             tar -xf openssl-1.1.1w.tar.gz
