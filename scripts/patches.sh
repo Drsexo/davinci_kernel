@@ -322,20 +322,20 @@ case "$DEVICE_IMPORT" in
     # Titan Kernel
     a9y18qlte-titan-aosp)
         OPENSSL_DIR="$(pwd)/.openssl1.1"
-        echo "DEBUG: OPENSSL_DIR resolves to: '$OPENSSL_DIR'"
+        echo "-- Installing openssl 1.1 at: '$OPENSSL_DIR'"
         if [[ "$OPENSSL_DIR" != /* ]]; then
-            echo "FATAL: OPENSSL_DIR is empty or not absolute! Check your shell environment."
+            echo "--  OPENSSL_DIR is empty or not absolute! Check your shell environment."
             ls -alhZ $OPENSSL_DIR
             ls -alhZ $OPENSSL_DIR/../
             exit 1
         fi
         if [ ! -d "$OPENSSL_DIR" ]; then
-            wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz
-            tar -xf openssl-1.1.1w.tar.gz
+            wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz -O openssl-1.1.1w.tar.gz &> /dev/null || { echo "Fatal: openssl source code failed to download!"; exit 1; }
+            tar -xf openssl-1.1.1w.tar.gz &> /dev/null
             cd openssl-1.1.1w
-            ./config --prefix="$OPENSSL_DIR" --openssldir="$OPENSSL_DIR"
-            make -s -j$(nproc)
-            make -s install
+            ./config --prefix="$OPENSSL_DIR" --openssldir="$OPENSSL_DIR" &> /dev/null
+            make -s -j$(nproc) &> /dev/null
+            make -s install &> /dev/null
             cd ..
             rm -rf openssl-1.1.1w*
         fi
