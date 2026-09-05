@@ -72,6 +72,51 @@ if ! grep -q "susfs_is_uname_spoof_buffer_set" kernel/sys.c; then
     sed -i 's/memcpy(&tmp, utsname(), sizeof(tmp));/&\n#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\n\tif (static_branch_likely(\&susfs_is_uname_spoof_buffer_set))\n\t\tsusfs_spoof_uname(\&tmp);\n#endif/' kernel/sys.c
 fi
 
+# Check for a SusFS block misplaced by patch fuzz in fs/namespace.c
+echo "-- Checking for patch fuzzing in fs/namespace.c..."
+ALLOC_LINE=$(awk '/^static int mnt_alloc_group_id/{print NR; exit}' fs/namespace.c)
+if [ -n "$ALLOC_LINE" ]; then
+    if awk "NR > $ALLOC_LINE && NR < $ALLOC_LINE + 25 && /^[[:space:]]*return;/" fs/namespace.c | grep -q "return;"; then
+        echo "-- Detected misplaced SusFS patch in mnt_alloc_group_id. Fixing..."
+        START_LINE=$(awk "NR > $ALLOC_LINE && /#ifdef CONFIG_KSU_SUSFS/ {print NR; exit}" fs/namespace.c)
+        END_LINE=$(awk "NR > $START_LINE && /#endif/ {print NR; exit}" fs/namespace.c)
+        if [ -n "$START_LINE" ] && [ -n "$END_LINE" ]; then
+            sed -n "${START_LINE},${END_LINE}p" fs/namespace.c > /tmp/susfs_misplaced_block.c
+            sed -i "${START_LINE},${END_LINE}d" fs/namespace.c
+            FREE_LINE=$(awk '/^static void mnt_free_id/{print NR; exit}' fs/namespace.c)
+            WORK_LINE=$(awk "NR > $FREE_LINE && /(ida_remove|ida_free|spin_lock)/ {print NR; exit}" fs/namespace.c)
+            if [ -n "$WORK_LINE" ]; then
+                sed -i "$((WORK_LINE - 1))r /tmp/susfs_misplaced_block.c" fs/namespace.c
+                echo "-- Successfully moved the SusFS block back to mnt_free_id."
+            else
+                echo "-- Failed to find injection point in mnt_free_id."
+            fi
+        else
+            echo "-- Could not determine the boundaries of the misplaced block."
+        fi
+    else
+        echo "-- fs/namespace.c is clean, no fix needed."
+    fi
+fi
+
+# Normalize return statements in SusFS SUS_MAP blocks in fs/proc/task_mmu.c
+echo "-- Checking for patch fuzzing in fs/proc/task_mmu.c..."
+awk '
+/^[a-zA-Z_][a-zA-Z0-9_*[:space:]]+[[:space:]]+[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]*\(/ {
+    func_name = $0
+}
+in_sus_map && /return/ {
+    if (func_name ~ /show_smap/) {
+        sub(/return[^;]*;/, "return 0;")
+    } else {
+        sub(/return[^;]*;/, "return;")
+    }
+}
+/#ifdef CONFIG_KSU_SUSFS_SUS_MAP/ { in_sus_map = 1 }
+/#endif/ { in_sus_map = 0 }
+{ print }
+' fs/proc/task_mmu.c > fs/proc/task_mmu.c.tmp && mv fs/proc/task_mmu.c.tmp fs/proc/task_mmu.c
+
 # Apply KSU Hooks
 echo "-- Applying KernelSU hooks..."
 curl -LSs --fail --retry 3 "$KSU_HOOK" | bash &> /dev/null || { echo "Fatal: KSU hook script failed to download/run!"; exit 1; }

@@ -40,4 +40,9 @@ if [ -d "out/arch/arm64/boot" ]; then
     echo "==============================================="
 else
     echo "- Build process either failed during pre-compile or during compile."
+    echo "==============================================="
+    ls -alhZ out/arch/arm64/boot/
+    echo "==============================================="
+    ls -alhZ drivers/
+    echo "==============================================="
 fi
