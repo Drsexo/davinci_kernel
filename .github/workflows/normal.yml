@@ -178,10 +178,24 @@ jobs:
 
           NOMOUNT_VERSION="${NOMOUNT_RESOLVED_TAG:-unknown}"
 
-          SUSFS_VERSION=$(curl -fsSL \
-            "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/.github/workflows/patch-susfs/action.yml" \
-            | grep -oP 'SUSFS_VERSION="\K[^"]+')
-          SUSFS_VERSION="${SUSFS_VERSION:-unknown}"
+          SUSFS_VERSION="${SUSFS_RESOLVED_VERSION:-}"
+          if [ -z "$SUSFS_VERSION" ]; then
+            SUSFS_VERSION=$(grep -h -m1 -oE '#define[[:space:]]+SUSFS_VERSION[[:space:]]+"[^"]*"' \
+              include/linux/susfs.h include/linux/susfs_def.h fs/susfs.c 2>/dev/null \
+              | head -n1 | sed -nE 's/.*"([^"]*)".*/\1/p')
+          fi
+          if [ -z "$SUSFS_VERSION" ]; then
+            for pf in /tmp/susfs_patch_to_*.patch; do
+              [ -f "$pf" ] || continue
+              SUSFS_VERSION=$(grep -h -m1 -oE '#define[[:space:]]+SUSFS_VERSION[[:space:]]+"[^"]*"' "$pf" \
+                | head -n1 | sed -nE 's/.*"([^"]*)".*/\1/p')
+              [ -n "$SUSFS_VERSION" ] && break
+            done
+          fi
+          if [ -z "$SUSFS_VERSION" ]; then
+            echo "Warning: SusFS version could not be resolved from build outputs."
+            SUSFS_VERSION="unknown"
+          fi
 
           echo "kernel_version=$KERNEL_VERSION" >> $GITHUB_OUTPUT
           echo "rom_version=$ROM_VERSION" >> $GITHUB_OUTPUT
