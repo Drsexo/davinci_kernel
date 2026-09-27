@@ -339,20 +339,9 @@ case "$DEVICE_IMPORT" in
         default_config_fouronefour
     ;;
     # CrDroid
-    sweet-crdroid|davinci-crdroid|tucana-crdroid)
+    sweet-crdroid|davinci-crdroid)
         echo "-- Reverting hard to commits before KSU is being added..."
         git reset --hard 92255bf2fae58c5ca0c932ced8fe8c2e5443312a &> /dev/null
-        if [[ "$DEVICE_IMPORT" == "tucana-crdroid" ]]; then
-            echo "-- Fixing goodix driver..."
-            sed -i 's/static void gtp_set_edge_filter_normal()/static void gtp_set_edge_filter_normal(void)/g' drivers/input/touchscreen/f4_goodix_driver_gt9886/goodix_ts_core.c
-            sed -i 's/static int gtp_send_cur_cmd()/static int gtp_send_cur_cmd(void)/g' drivers/input/touchscreen/f4_goodix_driver_gt9886/goodix_ts_core.c
-            echo "-- Fixing fts driver..."
-            sed -i 's/"%100s %d %d"/"%99s %d %d"/g' drivers/input/touchscreen/fts_521/fts.c
-            sed -i 's/"%100s"/"%99s"/g' drivers/input/touchscreen/fts_521/fts_proc.c
-            sed -i 's/struct device \*getDev()/struct device \*getDev(void)/g' drivers/input/touchscreen/fts_521/fts_lib/ftsIO.c
-            sed -i 's/struct i2c_client \*getClient()/struct i2c_client \*getClient(void)/g' drivers/input/touchscreen/fts_521/fts_lib/ftsIO.c
-            echo "ccflags-y += -Wno-strict-prototypes" >> drivers/input/touchscreen/fts_521/Makefile
-        fi
         disable_modversions
         enable_erofs
         default_config_fouronefour
