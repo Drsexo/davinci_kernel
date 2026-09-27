@@ -290,7 +290,7 @@ ksu_apply_hooks() {
     fi
 }
 ksu_fix_hooks_fouronefour() {
-    if [[ "$KERNEL_VERSION" == "4.4" ]]; then
+    if [[ "$KERNEL_VERSION" == "4.14" ]]; then
         echo "-- KernelSU: Fixing typos on fs/stat.c hooks..."
         sed -i 's/ksu_handle_stat(&dfd, &fname, &flag);/ksu_handle_stat(\&dfd, \&fname, \&flags);/g' fs/stat.c
     fi
