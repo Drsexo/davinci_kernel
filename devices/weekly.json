@@ -7,7 +7,7 @@
     "supported_versions": "13-17",
     "device_names": ["sweet", "sweetin"],
     "banner": "sweet (sm6150)",
-    "zip_prefix": "pixelos-sweet-weekly",
+    "zip_prefix": "pixelos-neon-sweet-weekly",
     "env": {
       "main_defconfig": "arch/arm64/configs/sweet_defconfig",
       "actual_main_defconfig": "sweet_defconfig",
@@ -35,7 +35,7 @@
     "supported_versions": "13-17",
     "device_names": ["davinci", "davinciin"],
     "banner": "davinci (sm6150)",
-    "zip_prefix": "pixelos-davinci-weekly",
+    "zip_prefix": "pixelos-neon-davinci-weekly",
     "env": {
       "main_defconfig": "arch/arm64/configs/davinci_defconfig",
       "actual_main_defconfig": "davinci_defconfig",
@@ -63,7 +63,7 @@
     "supported_versions": "13-17",
     "device_names": ["toco", "tocoin"],
     "banner": "toco (sm6150)",
-    "zip_prefix": "pixelos-toco-weekly",
+    "zip_prefix": "pixelos-neon-toco-weekly",
     "env": {
       "main_defconfig": "arch/arm64/configs/toco_defconfig",
       "actual_main_defconfig": "toco_defconfig",

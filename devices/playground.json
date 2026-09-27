@@ -7,7 +7,7 @@
     "supported_versions": "13-17",
     "device_names": ["sweet", "sweetin"],
     "banner": "sweet (sm6150)",
-    "zip_prefix": "pixelos-nomount-bleeding-edge-sweet-playground",
+    "zip_prefix": "pixelos-neon-nomount-bleeding-edge-sweet-playground",
     "env": {
       "main_defconfig": "arch/arm64/configs/sweet_defconfig",
       "actual_main_defconfig": "sweet_defconfig",
