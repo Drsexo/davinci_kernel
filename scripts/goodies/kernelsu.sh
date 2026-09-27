@@ -38,6 +38,9 @@ case "$KERNELSU_SELECTOR" in
         # Apply KSU Hooks
         ksu_apply_hooks
 
+        # Duct tape fixes for Hooks
+        ksu_fix_hooks_fouronefour
+
         # Export SELinux Symbols
         ksu_export_selinux_symbols
         ;;

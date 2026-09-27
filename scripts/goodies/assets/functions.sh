@@ -289,6 +289,12 @@ ksu_apply_hooks() {
         sed -i '/SYSCALL_DEFINE2(fstat64,/,/^}/ s/return error;/#ifdef CONFIG_KSU_MANUAL_HOOK\n\tksu_handle_fstat64_ret(\&fd, \&statbuf);\n#endif\n\treturn error;/' fs/stat.c
     fi
 }
+ksu_fix_hooks_fouronefour() {
+    if [[ "$KERNEL_VERSION" == "4.4" ]]; then
+        echo "-- KernelSU: Fixing typos on fs/stat.c hooks..."
+        sed -i 's/ksu_handle_stat(&dfd, &fname, &flag);/ksu_handle_stat(\&dfd, \&fname, \&flags);/g' fs/stat.c
+    fi
+}
 ksu_export_selinux_symbols() {
     echo "-- KernelSU: Checking and exporting static SELinux symbols..."
     unstatic() {
