@@ -295,6 +295,12 @@ ksu_fix_hooks_fouronefour() {
         sed -i 's/ksu_handle_stat(&dfd, &fname, &flag);/ksu_handle_stat(\&dfd, \&fname, \&flags);/g' fs/stat.c
     fi
 }
+ksu_fix_hooks_fouronenine() {
+    if [[ "$KERNEL_VERSION" == "4.19" ]]; then
+        echo "-- KernelSU: Fixing typos on fs/stat.c hooks..."
+        sed -i 's/ksu_handle_stat(&dfd, &fname, &flag);/ksu_handle_stat(\&dfd, \&fname, \&flags);/g' fs/stat.c
+    fi
+}
 ksu_export_selinux_symbols() {
     echo "-- KernelSU: Checking and exporting static SELinux symbols..."
     unstatic() {
