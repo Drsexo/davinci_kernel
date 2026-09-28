@@ -13,14 +13,14 @@
       "actual_main_defconfig": "sweet_defconfig",
       "common_defconfig": "vendor/debugfs.config",
       "device_defconfig": "",
-      "kernel_name": "-pixelos-nomount-edge-neon",
-      "clang_strat": "3"
+      "kernel_name": "-VantomKernel-NEON",
+      "clang_strat": "1"
     },
     "build_flags": {
       "ksu_type": ["zako-susfs", "none"], 
       "bbg_type": "bbg",
       "nomount_type": "nomount-edge",
-      "droidspaces_type": "none",
+      "droidspaces_type": "droidspaces",
       "rekernel_type": "rekernel"
     },
     "sources": [
