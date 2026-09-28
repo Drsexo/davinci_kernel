@@ -172,7 +172,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-23.2", "path": "." }
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-24.0", "path": "." }
     ]
   },
   "davinci-lineage": {
@@ -202,7 +202,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-23.2", "path": "." }
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-24.0", "path": "." }
     ]
   },
   "tucana-lineage": {
@@ -232,7 +232,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-23.2", "path": "." }
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-24.0", "path": "." }
     ]
   },
   "violet-lineage": {
@@ -262,7 +262,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-23.2", "path": "." }
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-24.0", "path": "." }
     ]
   },
   "toco-lineage": {
@@ -292,7 +292,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-23.2", "path": "." }
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-24.0", "path": "." }
     ]
   },
   "ginkgo-lineage": {
@@ -323,7 +323,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6125", "branch": "lineage-23.2", "path": "." }
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6125", "branch": "lineage-24.0", "path": "." }
     ]
   },
   "laurel_sprout-lineage": {
@@ -354,7 +354,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6125", "branch": "lineage-23.2", "path": "." }
+      { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6125", "branch": "lineage-24.0", "path": "." }
     ]
   },
   "gta4l-lineage": {
@@ -384,7 +384,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/LineageOS/android_kernel_samsung_sm6115", "branch": "lineage-23.2", "path": "." }
+      { "repo": "https://github.com/LineageOS/android_kernel_samsung_sm6115", "branch": "lineage-24.0", "path": "." }
     ]
   },
   "sweet-crdroid": {
