@@ -414,7 +414,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150", "branch": "16.0", "path": "." }
+      { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150", "branch": "17.0", "path": "." }
     ]
   },
   "davinci-crdroid": {
@@ -444,7 +444,7 @@
       "rekernel_type": "rekernel"
     },
     "sources": [
-      { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150", "branch": "16.0", "path": "." }
+      { "repo": "https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150", "branch": "17.0", "path": "." }
     ]
   }
 }

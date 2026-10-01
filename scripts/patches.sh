@@ -341,7 +341,7 @@ case "$DEVICE_IMPORT" in
     # CrDroid
     sweet-crdroid|davinci-crdroid)
         echo "-- Reverting hard to commits before KSU is being added..."
-        git reset --hard 92255bf2fae58c5ca0c932ced8fe8c2e5443312a &> /dev/null
+        git reset --hard 487a0cab725c29cb83076afc21758f6dbf857367 &> /dev/null
         disable_modversions
         enable_erofs
         default_config_fouronefour
