@@ -1,32 +1,4 @@
 {
-  "sweet-pixelos-nomountedge": {
-    "dir": "android_kernel_xiaomi_sm6150",
-    "image": "Image.gz",
-    "dtb": "",
-    "dtbo": "dtbo.img",
-    "supported_versions": "13-17",
-    "device_names": ["sweet", "sweetin"],
-    "banner": "sweet (sm6150)",
-    "zip_prefix": "pixelos-neon-nomount-bleeding-edge-sweet-playground",
-    "env": {
-      "main_defconfig": "arch/arm64/configs/sweet_defconfig",
-      "actual_main_defconfig": "sweet_defconfig",
-      "common_defconfig": "vendor/debugfs.config",
-      "device_defconfig": "",
-      "kernel_name": "-VantomKernel-NEON",
-      "clang_strat": "1"
-    },
-    "build_flags": {
-      "ksu_type": ["zako-susfs", "none"], 
-      "bbg_type": "bbg",
-      "nomount_type": "nomount-edge",
-      "droidspaces_type": "none",
-      "rekernel_type": "rekernel"
-    },
-    "sources": [
-      { "repo": "https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150.git", "branch": "seventeen", "path": "." }
-    ]
-  },
   "lavender-southwest-ng": {
     "dir": "android_kernel_xiaomi_sdm660",
     "image": "Image.gz-dtb",
@@ -42,7 +14,7 @@
       "common_defconfig": "vendor/debugfs.config",
       "device_defconfig": "vendor/xiaomi/lavender.config",
       "feature_defconfig": "",
-      "kernel_name": "-southwest-ng-mainbranch-neon",
+      "kernel_name": "-Southwest-NG-NEON",
       "kernel_version": "4.19",
       "clang_strat": "1"
     },
@@ -72,7 +44,7 @@
       "common_defconfig": "vendor/debugfs.config",
       "device_defconfig": "vendor/sweet.config",
       "feature_defconfig": "",
-      "kernel_name": "-lineage-nethunter-neon",
+      "kernel_name": "-NetHunter-NEON",
       "kernel_version": "4.14",
       "clang_strat": "1"
     },
@@ -102,7 +74,7 @@
       "common_defconfig": "vendor/debugfs.config vendor/xiaomi-trinket.config",
       "device_defconfig": "vendor/ginkgo.config",
       "feature_defconfig": "",
-      "kernel_name": "-lineage-nethunter-neon",
+      "kernel_name": "-NetHunter-NEON",
       "kernel_version": "4.14",
       "kbuild_build_user": "hiyorun-compile",
       "clang_strat": "1"
@@ -133,7 +105,7 @@
       "common_defconfig": "vendor/msm8937-legacy.config vendor/common.config",
       "device_defconfig": "vendor/xiaomi/msm8937/common.config vendor/xiaomi/msm8937/mi8937.config",
       "feature_defconfig": "vendor/feature/android-12.config vendor/feature/compat-vdso.config vendor/feature/erofs.config vendor/feature/exfat.config vendor/feature/kprobes.config vendor/feature/lmkd.config vendor/feature/ntfs.config vendor/feature/wireguard.config",
-      "kernel_name": "-mithorium-neon",
+      "kernel_name": "-Mi89X7v2-NEON",
       "kernel_version": "4.19",
       "clang_strat": "1"
     },
@@ -172,7 +144,7 @@
       "common_defconfig": "vendor/debugfs.config",
       "device_defconfig": "",
       "feature_defconfig": "",
-      "kernel_name": "-spiteful-miuibuildout-neon",
+      "kernel_name": "-OldSpiteful-MIUI-NEON",
       "kernel_version": "4.14",
       "clang_strat": "2"
     },
@@ -202,7 +174,7 @@
       "common_defconfig": "vendor/debugfs.config",
       "device_defconfig": "",
       "feature_defconfig": "",
-      "kernel_name": "-spiteful-aospbuildout-neon",
+      "kernel_name": "-OldSpiteful-AOSP-NEON",
       "kernel_version": "4.14",
       "clang_strat": "2"
     },
@@ -232,7 +204,7 @@
       "common_defconfig": "",
       "device_defconfig": "",
       "feature_defconfig": "",
-      "kernel_name": "-titan-neon",
+      "kernel_name": "-TitanKernel-NEON",
       "kernel_version": "4.4",
       "clang_strat": "0"
     },
