@@ -121,6 +121,8 @@ in_sus_map && /return/ {
 echo "-- Applying KernelSU hooks..."
 curl -LSs --fail --retry 3 "$KSU_HOOK" | bash &> /dev/null || { echo "Fatal: KSU hook script failed to download/run!"; exit 1; }
 
+sed -i 's/ksu_handle_stat(&dfd, &fname, &flag);/ksu_handle_stat(\&dfd, \&fname, \&flags);/g' fs/stat.c
+
 # Export SELinux Symbols
 echo "-- Checking and exporting static SELinux symbols..."
 unstatic() {
