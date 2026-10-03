@@ -445,8 +445,6 @@ case "$DEVICE_IMPORT" in
     sweet-miui)
         echo "-- Applying LTO patch..."
         apply_patches "$LTO_PATCH"
-        echo "-- Applying DTB patches..."
-        apply_patches "${DTBO_PATCHES[@]}"
         disable_modversions
         enable_erofs
         default_config_fouronefour
