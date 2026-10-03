@@ -443,8 +443,6 @@ case "$DEVICE_IMPORT" in
     ;;
     # MIUI
     sweet-miui)
-        echo "-- Applying LTO patch..."
-        apply_patches "$LTO_PATCH"
         disable_modversions
         enable_erofs
         default_config_fouronefour
