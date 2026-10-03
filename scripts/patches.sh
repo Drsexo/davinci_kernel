@@ -286,6 +286,10 @@ disable_modversions() {
     echo "-- Disabling modversions..."
     sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $MAIN_DEFCONFIG
 }
+disable_selinux() {
+    echo "-- Making SELinux Permissive..."
+    sed -i '/static inline bool enforcing_enabled/,/}/ s/return.*/return false;/' security/selinux/include/security.h
+}
 
 # Patcher - 1.5
 echo "- Patching kernel source for $DEVICE_IMPORT..."
@@ -443,6 +447,12 @@ case "$DEVICE_IMPORT" in
     ;;
     # MIUI
     sweet-miui)
+        disable_modversions
+        enable_erofs
+        default_config_fouronefour
+    ;;
+    sweet-miui-permissive)
+        disable_selinux
         disable_modversions
         enable_erofs
         default_config_fouronefour
