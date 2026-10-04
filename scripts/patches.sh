@@ -476,8 +476,6 @@ case "$DEVICE_IMPORT" in
         git reset --hard 1c950660849776c0105ae268270acb590d1df308 &> /dev/null
         echo "-- Patching Goodix touchscreen driver to prevent firmware downgrade..."
         find drivers/input/touchscreen/ -type f -name "*update*.c" -exec sed -i 's/else if (ret > 0) {/else if (ret > 0) { ts_info("FW on IC is newer, skip update"); return 0; } else if (0) {/g' {} +
-        generate_config
-        hard_code_configgz
         remove_ikheaders
         disable_modversions
         enable_erofs
@@ -489,8 +487,6 @@ case "$DEVICE_IMPORT" in
         git reset --hard 1b133f3054948bee6c59332c83699ff2b95d7978 &> /dev/null
         echo "-- Patching Goodix touchscreen driver to prevent firmware downgrade..."
         find drivers/input/touchscreen/ -type f -name "*update*.c" -exec sed -i 's/else if (ret > 0) {/else if (ret > 0) { ts_info("FW on IC is newer, skip update"); return 0; } else if (0) {/g' {} +
-        generate_config
-        hard_code_configgz
         remove_ikheaders
         disable_modversions
         enable_erofs
