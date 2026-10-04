@@ -61,31 +61,43 @@ droidspaces_quirks() {
     fi
 }
 droidspaces_configs() {
+        # IPC mechanisms
         echo "CONFIG_SYSCTL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SYSVIPC=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_POSIX_MQUEUE=y" >> $MAIN_DEFCONFIG
+        # Core namespace support
         echo "CONFIG_NAMESPACES=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_PID_NS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_UTS_NS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_IPC_NS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_USER_NS=y" >> $MAIN_DEFCONFIG
+        # Seccomp support
         echo "CONFIG_SECCOMP=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_SECCOMP_FILTER=y" >> $MAIN_DEFCONFIG
+        # Control groups support
         echo "CONFIG_CGROUPS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CGROUP_DEVICE=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_CGROUP_PIDS=y" >> $MAIN_DEFCONFIG
-        echo "CONFIG_MEMCG=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CGROUP_SCHED=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_FAIR_GROUP_SCHED=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CGROUP_FREEZER=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_CGROUP_NET_PRIO=y" >> $MAIN_DEFCONFIG
+        # Resource limits
+        echo "CONFIG_MEMCG=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CFS_BANDWIDTH=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CGROUP_PIDS=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_CGROUP_CPUACCT=y" >> $MAIN_DEFCONFIG
+        # Device filesystem support
         echo "CONFIG_DEVTMPFS=y" >> $MAIN_DEFCONFIG
+        # Overlay filesystem support
         echo "CONFIG_OVERLAY_FS=y" >> $MAIN_DEFCONFIG
+        # Enable xattr, posix acl support on tmpfs
         echo "CONFIG_TMPFS_POSIX_ACL=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_TMPFS_XATTR=y" >> $MAIN_DEFCONFIG
+        # Firmware loading support
         echo "CONFIG_FW_LOADER=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_FW_LOADER_USER_HELPER=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_FW_LOADER_COMPRESS=y" >> $MAIN_DEFCONFIG
+        # Droidspaces Network Isolation Support - NAT/none modes
         echo "CONFIG_NET_NS=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_VETH=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_BRIDGE=y" >> $MAIN_DEFCONFIG
@@ -105,10 +117,26 @@ droidspaces_configs() {
         echo "CONFIG_NF_NAT_REDIRECT=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_IP_ADVANCED_ROUTER=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_IP_MULTIPLE_TABLES=y" >> $MAIN_DEFCONFIG
+        # legacy compat
         echo "CONFIG_NF_CONNTRACK_IPV4=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_NF_NAT_IPV4=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_IP_NF_NAT=y" >> $MAIN_DEFCONFIG
+        # IPv6 in NAT mode (NAT66).
+        echo "CONFIG_IPV6=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_IPV6_MULTIPLE_TABLES=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_IP6_NF_IPTABLES=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_IP6_NF_FILTER=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_IP6_NF_MANGLE=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_IP6_NF_NAT=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_IP6_NF_TARGET_MASQUERADE=y" >> $MAIN_DEFCONFIG
+        # legacy compat
+        echo "CONFIG_NF_CONNTRACK_IPV6=y" >> $MAIN_DEFCONFIG
+        echo "CONFIG_NF_NAT_IPV6=y" >> $MAIN_DEFCONFIG
+        # Disable this on older kernels to make internet work
         echo "CONFIG_ANDROID_PARANOID_NETWORK=n" >> $MAIN_DEFCONFIG
+        # Fix for docker unsafe procfs error
+        echo "CONFIG_USER_NS=y" >> $MAIN_DEFCONFIG
+        # UFW & FAIL2BAN CORE
         echo "CONFIG_NETFILTER_XT_MATCH_COMMENT=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_NETFILTER_XT_MATCH_STATE=y" >> $MAIN_DEFCONFIG
         echo "CONFIG_NETFILTER_XT_MATCH_CONNTRACK=y" >> $MAIN_DEFCONFIG
