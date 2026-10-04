@@ -327,6 +327,8 @@ case "$DEVICE_IMPORT" in
         find techpack/audio -name "Makefile*" -exec sed -i 's/obj-m/obj-y/g' {} +
         find techpack/audio -name "Kbuild*" -exec sed -i 's/obj-m/obj-y/g' {} +
         echo "CONFIG_SENSORS_SSC=y" >> $MAIN_DEFCONFIG
+        echo "-- Forcing kernel to pack stock defconfig for config.gz..."
+        sed -i 's|\$(KCONFIG_CONFIG)|'"$MAIN_DEFCONFIG"'|g' kernel/Makefile
         enable_erofs
         default_config_fouronenine
     ;;
@@ -405,6 +407,8 @@ case "$DEVICE_IMPORT" in
             }\
             ts_data->key_state = 0;\
         }' techpack/xiaomi-msm8937/touchscreen/focaltech_touch/focaltech_point_report_check.c
+        echo "-- Forcing kernel to pack stock defconfig for config.gz..."
+        sed -i 's|\$(KCONFIG_CONFIG)|'"$MAIN_DEFCONFIG"'|g' kernel/Makefile
         enable_erofs
         default_config_fouronenine
     ;;
