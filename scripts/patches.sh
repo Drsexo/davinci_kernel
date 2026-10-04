@@ -329,6 +329,7 @@ case "$DEVICE_IMPORT" in
         echo "CONFIG_SENSORS_SSC=y" >> $MAIN_DEFCONFIG
         echo "-- Forcing kernel to pack stock defconfig for config.gz..."
         sed -i 's|\$(KCONFIG_CONFIG)|'"$MAIN_DEFCONFIG"'|g' kernel/Makefile
+        remove_ikheaders
         enable_erofs
         default_config_fouronenine
     ;;
@@ -409,6 +410,7 @@ case "$DEVICE_IMPORT" in
         }' techpack/xiaomi-msm8937/touchscreen/focaltech_touch/focaltech_point_report_check.c
         echo "-- Forcing kernel to pack stock defconfig for config.gz..."
         sed -i 's|\$(KCONFIG_CONFIG)|'"$MAIN_DEFCONFIG"'|g' kernel/Makefile
+        remove_ikheaders
         enable_erofs
         default_config_fouronenine
     ;;
@@ -431,6 +433,7 @@ case "$DEVICE_IMPORT" in
         sed -i '130s/u8 id/unsigned int id/' drivers/net/can/usb/peak_usb/pcan_usb_pro.c
         echo "-- Forcing kernel to pack stock defconfig for config.gz..."
         sed -i 's|\$(KCONFIG_CONFIG)|'"$MAIN_DEFCONFIG"'|g' kernel/Makefile
+        remove_ikheaders
         enable_erofs
         default_config_fouronenine
     ;;
