@@ -429,6 +429,8 @@ case "$DEVICE_IMPORT" in
             drivers/input/touchscreen/synaptics_dsx_force/synaptics_dsx_spi.c
         echo "-- Fixing CAN usb..."
         sed -i '130s/u8 id/unsigned int id/' drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+        echo "-- Forcing kernel to pack stock defconfig for config.gz..."
+        sed -i 's|\$(KCONFIG_CONFIG)|'"$MAIN_DEFCONFIG"'|g' kernel/Makefile
         enable_erofs
         default_config_fouronenine
     ;;
