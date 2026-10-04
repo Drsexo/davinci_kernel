@@ -32,7 +32,7 @@ This kernel follows weekly builds of LineageOS, you will get a new kernel build 
 
 # Features
 Standard features:   
-- KernelSU support (ReSukiSU) & SUSFS support   
+- KernelSU support (BakaSU, formerly named ReSukiSU) & SUSFS support   
 - Baseband Guard support   
 - NoMount Meta Module support   
 - ReKernel tombstones support  
@@ -47,7 +47,7 @@ File namings:
 - neon: Label indicator telling the user this kernel is built on Perf Neon Builder.
 - DeviceName: Codename of the device.
 - BuildTypes: Build types of the kernel. Either Weekly or Playground.
-- KsuTypes: Configuration of KernelSU inside the kernel. Either `zako`, `zako-susfs`, or `none`. The term `zako` is referenced to ReSukiSU and this [YouTube video](https://www.youtube.com/watch?v=kqj7b59D85Y).
+- KsuTypes: Configuration of KernelSU inside the kernel. Either `zako`, `zako-susfs`, or `none`. The term `zako` is referenced to BakaSU and this [YouTube video](https://www.youtube.com/watch?v=kqj7b59D85Y).
 - BuildDate: When was the kernel compiled on.
 
 Current status:
@@ -55,6 +55,7 @@ Current status:
 - ```crdroid-neon```: Standard + Neutron Clang   
 - ```pixelos-neon```: Standard + Playground TC   
 - ```mithorium```: Standard + Neutron Clang   
+- ```miui-neon```: Standard + Neutron Clang   
 - ```spiteful```: Standard + AOSP Clang + Eva GCC   
 - ```titan```: KSU & SUSFS + Android GCC 4.9   
 
@@ -83,6 +84,7 @@ Externally compiled kernels
 - Redmi 4A/5A/Note 5A Lite/Y1 Lite ([mi8917](https://download.lineageos.org/devices/Mi8917/builds)) from Mi-Thorium   
 - Redmi 3/3S/4/4X/Note 5A Prime/Y1 Prime ([mi8937](https://download.lineageos.org/devices/Mi8937/builds)) from Mi-Thorium    
 - Redmi Note 10 Pro/Pro Max ([sweet](https://github.com/tbyool/android_kernel_xiaomi_sm6150)) from Spiteful Kernel   
+- Redmi Note 10 Pro/Pro Max ([sweet](https://github.com/riarumoda/android_kernel_xiaomi_sm6150)) from Riaru Kernel   
 - Samsung Galaxy A9 (2018) ([a9y18qlte](https://github.com/schr-0dinger/android_kernel_samsung_a9y18qlte)) from Titan Kernel
 
 Android Version Constraints
@@ -90,6 +92,7 @@ Android Version Constraints
 - ```crdroid-neon```: Android 13 to Android 17.   
 - ```pixelos-neon```: Android 13 to Android 17.   
 - ```mithorium```: Android 11 to Android 17.   
+- ```miui-neon```: Android 11 to Android 16.   
 - ```spiteful```: Android 11 to Android 15.   
 - ```titan```: Android 10 to Android 11.
 
@@ -106,8 +109,8 @@ On Recovery
 - Install lastest KernelSU Manager from [here](https://github.com/ReSukiSU/ReSukiSU/releases). (Optional)
 - Profit.   
 
-On ReSukiSU Manager   
-- On ReSukiSU Manager, click the "Working" card on the ReSukiSU Manager Home Screen.   
+On BakaSU Manager   
+- On BakaSU Manager, click the "Working" card on the Manager Home Screen.   
 - You'll see flash AnyKernel3, click it, and select the flashable zip.   
 - Click next and the flashable will be installed. If you see KPM option, just choose follow kernel.   
 - Reboot.   
@@ -122,7 +125,7 @@ Restore to default kernel
 - Profit.   
 
 Notes   
-You can install different KernelSU Manager with ReSukiSU kernel drivers. This is currently supported KernelSU Managers:   
+You can install different KernelSU Manager with BakaSU kernel drivers. This is currently supported KernelSU Managers:   
 - [Original KernelSU](github.com/tiann/KernelSU) (tiann)   
 - [Rissu's KernelSU](github.com/rsuntk/KernelSU) (rsuntk)   
 - [SukiSU-Ultra Manager](github.com/SukiSU-Ultra/SukiSU-Ultra) (shirkneko)   
