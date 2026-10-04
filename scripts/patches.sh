@@ -292,6 +292,29 @@ remove_ikheaders() {
     sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $MAIN_DEFCONFIG
     sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $MAIN_DEFCONFIG
 }
+generate_config() {
+    echo "-- Generating generic kernel config..."
+    mkdir -p out &> /dev/null
+    MAKE_CMD=(make O=out "${MAKE_ARGS[@]}")
+    "${MAKE_CMD[@]}" "$ACTUAL_MAIN_DEFCONFIG" &> /dev/null
+    echo "-- Appending fragments to .config..."
+    for fragment in $COMMON_DEFCONFIG $DEVICE_DEFCONFIG $FEATURE_DEFCONFIG; do
+        if [ -f "arch/arm64/configs/$fragment" ]; then
+            echo "   -> Merging $fragment..."
+            cat "arch/arm64/configs/$fragment" >> out/.config
+        else
+            echo "   -> Warning: Fragment arch/arm64/configs/$fragment not found!"
+        fi
+    done
+    echo "-- Copying merged config to defconfig directory..."
+    cp out/.config arch/arm64/configs/${DEVICE_IMPORT}_defconfig
+    echo "-- Cleaning up..."
+    rm -rf out &> /dev/null
+}
+hard_code_configgz() {
+    echo "-- Hard coding config.gz into kernel..."
+    sed -i 's|\$(KCONFIG_CONFIG)|arch/arm64/configs/'"${DEVICE_IMPORT}"'_defconfig|g' kernel/Makefile
+}
 
 # Patcher - 1.5
 echo "- Patching kernel source for $DEVICE_IMPORT..."
@@ -302,6 +325,8 @@ case "$DEVICE_IMPORT" in
         apply_patches "$LTO_PATCH"
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
+        generate_config
+        hard_code_configgz
         remove_ikheaders
         disable_modversions
         enable_erofs
@@ -312,6 +337,8 @@ case "$DEVICE_IMPORT" in
         apply_patches "${DTC_PATCHES[@]}"
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
+        generate_config
+        hard_code_configgz
         remove_ikheaders
         disable_modversions
         enable_erofs
@@ -327,8 +354,8 @@ case "$DEVICE_IMPORT" in
         find techpack/audio -name "Makefile*" -exec sed -i 's/obj-m/obj-y/g' {} +
         find techpack/audio -name "Kbuild*" -exec sed -i 's/obj-m/obj-y/g' {} +
         echo "CONFIG_SENSORS_SSC=y" >> $MAIN_DEFCONFIG
-        echo "-- Forcing kernel to pack stock defconfig for config.gz..."
-        sed -i 's|\$(KCONFIG_CONFIG)|'"$MAIN_DEFCONFIG"'|g' kernel/Makefile
+        generate_config
+        hard_code_configgz
         remove_ikheaders
         enable_erofs
         default_config_fouronenine
@@ -344,6 +371,8 @@ case "$DEVICE_IMPORT" in
         fi
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
+        generate_config
+        hard_code_configgz
         nethunter_fouronefour_configs
         nethunter_fouronefour_patches
         remove_ikheaders
@@ -354,6 +383,8 @@ case "$DEVICE_IMPORT" in
     sweet-crdroid|davinci-crdroid)
         echo "-- Reverting hard to commits before KSU is being added..."
         git reset --hard 487a0cab725c29cb83076afc21758f6dbf857367 &> /dev/null
+        generate_config
+        hard_code_configgz
         remove_ikheaders
         disable_modversions
         enable_erofs
@@ -369,6 +400,8 @@ case "$DEVICE_IMPORT" in
         apply_patches "${DTC_PATCHES[@]}"
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
+        generate_config
+        hard_code_configgz
         remove_ikheaders
         disable_modversions
         enable_erofs
@@ -408,8 +441,8 @@ case "$DEVICE_IMPORT" in
             }\
             ts_data->key_state = 0;\
         }' techpack/xiaomi-msm8937/touchscreen/focaltech_touch/focaltech_point_report_check.c
-        echo "-- Forcing kernel to pack stock defconfig for config.gz..."
-        sed -i 's|\$(KCONFIG_CONFIG)|'"$MAIN_DEFCONFIG"'|g' kernel/Makefile
+        generate_config
+        hard_code_configgz
         remove_ikheaders
         enable_erofs
         default_config_fouronenine
@@ -431,8 +464,8 @@ case "$DEVICE_IMPORT" in
             drivers/input/touchscreen/synaptics_dsx_force/synaptics_dsx_spi.c
         echo "-- Fixing CAN usb..."
         sed -i '130s/u8 id/unsigned int id/' drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-        echo "-- Forcing kernel to pack stock defconfig for config.gz..."
-        sed -i 's|\$(KCONFIG_CONFIG)|'"$MAIN_DEFCONFIG"'|g' kernel/Makefile
+        generate_config
+        hard_code_configgz
         remove_ikheaders
         enable_erofs
         default_config_fouronenine
@@ -443,6 +476,8 @@ case "$DEVICE_IMPORT" in
         git reset --hard 1c950660849776c0105ae268270acb590d1df308 &> /dev/null
         echo "-- Patching Goodix touchscreen driver to prevent firmware downgrade..."
         find drivers/input/touchscreen/ -type f -name "*update*.c" -exec sed -i 's/else if (ret > 0) {/else if (ret > 0) { ts_info("FW on IC is newer, skip update"); return 0; } else if (0) {/g' {} +
+        generate_config
+        hard_code_configgz
         remove_ikheaders
         disable_modversions
         enable_erofs
@@ -454,6 +489,8 @@ case "$DEVICE_IMPORT" in
         git reset --hard 1b133f3054948bee6c59332c83699ff2b95d7978 &> /dev/null
         echo "-- Patching Goodix touchscreen driver to prevent firmware downgrade..."
         find drivers/input/touchscreen/ -type f -name "*update*.c" -exec sed -i 's/else if (ret > 0) {/else if (ret > 0) { ts_info("FW on IC is newer, skip update"); return 0; } else if (0) {/g' {} +
+        generate_config
+        hard_code_configgz
         remove_ikheaders
         disable_modversions
         enable_erofs
