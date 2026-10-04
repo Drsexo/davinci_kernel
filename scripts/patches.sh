@@ -252,8 +252,6 @@ enable_erofs() {
 }
 default_config_fouronefour() {
     echo "-- Tuning default configs..."
-    sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $MAIN_DEFCONFIG
-    sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $MAIN_DEFCONFIG
     echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_MODULE_REL_CRCS=y" >> $MAIN_DEFCONFIG
@@ -268,8 +266,6 @@ default_config_fouronefour() {
 }
 default_config_fouronenine() {
     echo "-- Tuning default configs..."
-    sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $MAIN_DEFCONFIG
-    sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $MAIN_DEFCONFIG
     echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_MODULE_REL_CRCS=y" >> $MAIN_DEFCONFIG
@@ -291,6 +287,11 @@ disable_selinux() {
     echo "-- Making SELinux Permissive..."
     sed -i '/static inline bool enforcing_enabled/,/}/ s/return.*/return false;/' security/selinux/include/security.h
 }
+remove_ikheaders() {
+    echo "-- Removing IKHeaders..."
+    sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $MAIN_DEFCONFIG
+    sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $MAIN_DEFCONFIG
+}
 
 # Patcher - 1.5
 echo "- Patching kernel source for $DEVICE_IMPORT..."
@@ -301,6 +302,7 @@ case "$DEVICE_IMPORT" in
         apply_patches "$LTO_PATCH"
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
+        remove_ikheaders
         disable_modversions
         enable_erofs
         default_config_fouronefour
@@ -310,6 +312,7 @@ case "$DEVICE_IMPORT" in
         apply_patches "${DTC_PATCHES[@]}"
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
+        remove_ikheaders
         disable_modversions
         enable_erofs
         default_config_fouronefour
@@ -340,6 +343,7 @@ case "$DEVICE_IMPORT" in
         apply_patches "${DTBO_PATCHES[@]}"
         nethunter_fouronefour_configs
         nethunter_fouronefour_patches
+        remove_ikheaders
         enable_erofs
         default_config_fouronefour
     ;;
@@ -347,6 +351,7 @@ case "$DEVICE_IMPORT" in
     sweet-crdroid|davinci-crdroid)
         echo "-- Reverting hard to commits before KSU is being added..."
         git reset --hard 487a0cab725c29cb83076afc21758f6dbf857367 &> /dev/null
+        remove_ikheaders
         disable_modversions
         enable_erofs
         default_config_fouronefour
@@ -361,12 +366,9 @@ case "$DEVICE_IMPORT" in
         apply_patches "${DTC_PATCHES[@]}"
         echo "-- Applying DTB patches..."
         apply_patches "${DTBO_PATCHES[@]}"
+        remove_ikheaders
         disable_modversions
         enable_erofs
-        default_config_fouronefour
-    ;;
-    sweet-pixelos-nomountedge)
-        disable_modversions
         default_config_fouronefour
     ;;
     # Mi-Thorium
@@ -432,6 +434,7 @@ case "$DEVICE_IMPORT" in
         git reset --hard 1c950660849776c0105ae268270acb590d1df308 &> /dev/null
         echo "-- Patching Goodix touchscreen driver to prevent firmware downgrade..."
         find drivers/input/touchscreen/ -type f -name "*update*.c" -exec sed -i 's/else if (ret > 0) {/else if (ret > 0) { ts_info("FW on IC is newer, skip update"); return 0; } else if (0) {/g' {} +
+        remove_ikheaders
         disable_modversions
         enable_erofs
         default_config_fouronefour
@@ -442,17 +445,20 @@ case "$DEVICE_IMPORT" in
         git reset --hard 1b133f3054948bee6c59332c83699ff2b95d7978 &> /dev/null
         echo "-- Patching Goodix touchscreen driver to prevent firmware downgrade..."
         find drivers/input/touchscreen/ -type f -name "*update*.c" -exec sed -i 's/else if (ret > 0) {/else if (ret > 0) { ts_info("FW on IC is newer, skip update"); return 0; } else if (0) {/g' {} +
+        remove_ikheaders
         disable_modversions
         enable_erofs
         default_config_fouronefour
     ;;
     # MIUI
     sweet-miui)
+        remove_ikheaders
         disable_modversions
         enable_erofs
         default_config_fouronefour
     ;;
     sweet-miui-permissive)
+        remove_ikheaders
         disable_selinux
         disable_modversions
         enable_erofs
