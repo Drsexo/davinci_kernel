@@ -202,12 +202,9 @@ nethunter_fouronefour_configs() {
     echo "CONFIG_CAN_ISOTP=y" >> $MAIN_DEFCONFIG
 }
 nethunter_fouronefour_patches() {
-    # QCACLD_INJECT="https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel-builder/-/raw/main/patches/4.14/add-qcacld-3.0-injection-4.14.patch"
     RTL88XXAU_DRIVER="https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel-builder/-/raw/main/patches/4.14/add-rtl88xxau-5.6.4.2-drivers.patch"
     RTW88_DRIVER="https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel-builder/-/raw/main/patches/4.14/add-rtw88-drivers-4.14.patch"
     UB500_PATCH="https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel-builder/-/raw/main/patches/4.04/add-ub500-to-btusb.patch"
-    # echo "-- Patching qcacld-3.0..."
-    # apply_patches "$QCACLD_INJECT"
     echo "-- Patching rtl88xxau..."
     apply_patches "$RTL88XXAU_DRIVER"
     sed -i 's/__attribute__ ((fallthrough));/fallthrough;/g' drivers/net/wireless/realtek/rtl8812au/core/rtw_mlme_ext.c
@@ -255,6 +252,8 @@ enable_erofs() {
 }
 default_config_fouronefour() {
     echo "-- Tuning default configs..."
+    sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $MAIN_DEFCONFIG
+    sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $MAIN_DEFCONFIG
     echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_MODULE_REL_CRCS=y" >> $MAIN_DEFCONFIG
@@ -269,6 +268,8 @@ default_config_fouronefour() {
 }
 default_config_fouronenine() {
     echo "-- Tuning default configs..."
+    sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $MAIN_DEFCONFIG
+    sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $MAIN_DEFCONFIG
     echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_THINLTO=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_MODULE_REL_CRCS=y" >> $MAIN_DEFCONFIG
