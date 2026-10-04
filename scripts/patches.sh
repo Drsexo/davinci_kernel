@@ -306,6 +306,9 @@ generate_config() {
             echo "   -> Warning: Fragment arch/arm64/configs/$fragment not found!"
         fi
     done
+    echo "-- Executing olddefconfig and syncconfig..."
+    { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" olddefconfig &> /dev/null
+    { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" syncconfig &> /dev/null
     echo "-- Copying merged config to defconfig directory..."
     cp out/.config arch/arm64/configs/${DEVICE_IMPORT}_defconfig
     echo "-- Cleaning up..."
