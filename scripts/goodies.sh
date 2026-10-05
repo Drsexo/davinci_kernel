@@ -21,6 +21,10 @@ source scripts/goodies/nomount.sh
 chmod +x scripts/goodies/droidspaces.sh
 source scripts/goodies/droidspaces.sh
 
+# NetHunter
+chmod +x scripts/goodies/nethunter.sh
+source scripts/goodies/nethunter.sh
+
 # ReKernel
 chmod +x scripts/goodies/rekernel.sh
 source scripts/goodies/rekernel.sh

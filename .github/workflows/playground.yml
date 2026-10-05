@@ -107,16 +107,10 @@ jobs:
           KSU_TYPE="${{ matrix.ksu_type }}"
           CONFIG_FILE="devices/playground.json"
           DIR=$(jq -r --arg target "$BUILD_TYPE" '.[$target].dir' "$CONFIG_FILE")
-          
-          # Pull the rest of the standard build flags from JSON
-          BBG=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.bbg_type // empty' "$CONFIG_FILE")
-          NOMOUNT=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.nomount_type // empty' "$CONFIG_FILE")
-          DROIDSPACES=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.droidspaces_type // empty' "$CONFIG_FILE")
-          REKERNEL=$(jq -r --arg target "$BUILD_TYPE" '.[$target].build_flags.rekernel_type // empty' "$CONFIG_FILE")
 
           echo "Starting compile in $DIR for $BUILD_TYPE with KSU: $KSU_TYPE..."
           cd "$DIR"
-          ./build.sh $BUILD_TYPE $KSU_TYPE $BBG $NOMOUNT $DROIDSPACES $REKERNEL 2>&1 | tee build.log
+          ./build.sh "$BUILD_TYPE" "$KSU_TYPE" 2>&1 | tee build.log
           KSU_NAME=$(grep -m 1 -e "-- ReSukiSU version name:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
           KSU_CODE=$(grep -m 1 -e "-- ReSukiSU version code:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
           SUSFS_VER=$(grep -m 1 -e "-- SUSFS_VERSION:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')

@@ -15,10 +15,12 @@ echo " "
 
 # Validate input arguments
 echo "- Validating input arguments..."
-if [ $# -ne 6 ]; then
+if [ $# -lt 2 ] || [ $# -gt 7 ]; then
     echo ""
-    echo "-- Usage: $0 [device] [kernelsu_options] [bbg_options] [nomount_options] [droidspaces_options] [rekernel_options]"
-    echo "-- Example: $0 sweet zako bbg nomount droidspaces rekernel"
+    echo "-- Usage: $0 [device] [kernelsu_options] [bbg_options] [nomount_options] [droidspaces_options] [rekernel_options] [nethunter_options]"
+    echo "-- Feature selectors default to the device JSON; optional arguments override them."
+    echo "-- Example: $0 sweet zako-susfs"
+    echo "-- Override example: $0 sweet zako-susfs bbg nomount droidspaces rekernel"
     echo ""
     exit 1
 fi
@@ -27,10 +29,11 @@ fi
 echo "- Exporting input arguments..."
 export DEVICE_IMPORT="$1"
 export KERNELSU_SELECTOR="$2"
-export BBG_SELECTOR="$3"
-export NOMOUNT_SELECTOR="$4"
-export DROIDSPACES_SELECTOR="$5"
-export REKERNEL_SELECTOR="$6"
+if [ $# -ge 3 ]; then export BBG_SELECTOR="$3"; fi
+if [ $# -ge 4 ]; then export NOMOUNT_SELECTOR="$4"; fi
+if [ $# -ge 5 ]; then export DROIDSPACES_SELECTOR="$5"; fi
+if [ $# -ge 6 ]; then export REKERNEL_SELECTOR="$6"; fi
+if [ $# -ge 7 ]; then export NETHUNTER_SELECTOR="$7"; fi
 
 # Setup Environment
 chmod +x scripts/env.sh

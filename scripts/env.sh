@@ -27,6 +27,23 @@ export DEVICE_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.device_defco
 export FEATURE_DEFCONFIG=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.feature_defconfig // ""' "$JSON_FILE")
 export CLANG_STRAT=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].env.clang_strat // "1"' "$JSON_FILE")
 
+# Feature selectors default to the device config; positional builder arguments override them.
+if [[ ! ${BBG_SELECTOR+x} ]]; then
+    export BBG_SELECTOR=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].build_flags.bbg_type // "none"' "$JSON_FILE")
+fi
+if [[ ! ${NOMOUNT_SELECTOR+x} ]]; then
+    export NOMOUNT_SELECTOR=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].build_flags.nomount_type // "none"' "$JSON_FILE")
+fi
+if [[ ! ${DROIDSPACES_SELECTOR+x} ]]; then
+    export DROIDSPACES_SELECTOR=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].build_flags.droidspaces_type // "none"' "$JSON_FILE")
+fi
+if [[ ! ${REKERNEL_SELECTOR+x} ]]; then
+    export REKERNEL_SELECTOR=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].build_flags.rekernel_type // "none"' "$JSON_FILE")
+fi
+if [[ ! ${NETHUNTER_SELECTOR+x} ]]; then
+    export NETHUNTER_SELECTOR=$(jq -r --arg t "$DEVICE_IMPORT" '.[$t].build_flags.nethunter_type // "none"' "$JSON_FILE")
+fi
+
 # Toolchain Settings
 echo "-- Exporting toolchain settings..."
 if [[ "$CLANG_STRAT" == "1" ]]; then

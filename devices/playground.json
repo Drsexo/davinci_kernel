@@ -113,7 +113,8 @@
       "bbg_type": "bbg",
       "nomount_type": "nomount-edge",
       "droidspaces_type": "droidspaces",
-      "rekernel_type": "rekernel"
+      "rekernel_type": "rekernel",
+      "nethunter_type": "nethunter"
     },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6150", "branch": "lineage-23.2", "path": "." }
@@ -144,7 +145,8 @@
       "bbg_type": "bbg",
       "nomount_type": "nomount-edge",
       "droidspaces_type": "droidspaces",
-      "rekernel_type": "rekernel"
+      "rekernel_type": "rekernel",
+      "nethunter_type": "nethunter"
     },
     "sources": [
       { "repo": "https://github.com/LineageOS/android_kernel_xiaomi_sm6125", "branch": "lineage-23.2", "path": "." }
