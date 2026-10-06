@@ -209,7 +209,7 @@ jobs:
           echo "Kernel: $KERNEL_VERSION"
           echo "${{ matrix.display }}: $ROM_VERSION ($ROM_BRANCH)"
           echo "Clang: $CLANG_DISPLAY"
-          echo "ReSukiSU: $KSU_NAME (code $KSU_CODE)"
+          echo "BakaSU: $KSU_NAME (code $KSU_CODE)"
           echo "SusFS: $SUSFS_VERSION"
           echo "NoMount: $NOMOUNT_VERSION"
 
@@ -224,7 +224,7 @@ jobs:
 
       - name: Pack kernel with AnyKernel3
         run: |
-          ZIPNAME="Nebula-${{ matrix.display }}-davinci-ReSukiSU-${{ steps.ts.outputs.DATE }}.zip"
+          ZIPNAME="Nebula-${{ matrix.display }}-davinci-BakaSU-${{ steps.ts.outputs.DATE }}.zip"
           cd AnyKernel3
           zip -rq9 "../$ZIPNAME" ./*
           cd ..
@@ -335,14 +335,14 @@ jobs:
           prerelease: false
           body: |
             **Kernel**: `${{ steps.assemble.outputs.kernel_version }}`
-            **ReSukiSU**: `${{ steps.assemble.outputs.ksu_name }}` (code `${{ steps.assemble.outputs.ksu_code }}`)
+            **BakaSU**: `${{ steps.assemble.outputs.ksu_name }}` (code `${{ steps.assemble.outputs.ksu_code }}`)
             **SusFS**: `${{ steps.assemble.outputs.susfs_version }}`
             **NoMount**: `${{ steps.assemble.outputs.nomount_version }}`
             **Built with**: `${{ steps.assemble.outputs.clang_display }}`
 
             ${{ steps.assemble.outputs.rom_lines }}
 
-            [ReSukiSU manager](https://resukisu.github.io/guide/install.html#Get-manager)
+            [BakaSU manager](https://resukisu.github.io/guide/install.html#Get-manager)
             [NoMount meta module](https://github.com/maxsteeel/nomount/releases)
           files: Nebula-*.zip
           overwrite_files: true
@@ -378,13 +378,13 @@ jobs:
           MESSAGE="<b>New release - ${DATE}</b>
 
           <b>Kernel</b>  <code>${KV}</code>
-          <b>ReSukiSU</b>  <code>${KN}</code> (code <code>${KC}</code>)
+          <b>BakaSU</b>  <code>${KN}</code> (code <code>${KC}</code>)
           <b>SUSFS</b>  <code>${SV}</code>
           <b>NoMount</b>  <code>${NV}</code>
           <b>Built with</b>  <code>${CD}</code>
 
           ${ROM_LINES_HTML}
-          <a href=\"https://t.me/ReSukiSU/4\">ReSukiSU Manager</a>
+          <a href=\"https://t.me/BakaSU_Grp/4\">BakaSU Manager</a>
           <a href=\"https://github.com/maxsteeel/nomount/releases\">NoMount meta module</a>"
 
           curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \

@@ -20,18 +20,18 @@
 # Nebula
 
 Nebula is a weekly-built custom kernel for the Xiaomi Mi 9T (davinci), built for LineageOS, PixelOS, and Derpfest on the 4.14 kernel source.  
-It ships with ReSukiSU (with SUSFS), Baseband Guard, NoMount, Droidspaces, and ReKernel integrated, compiled with the Neutron Clang toolchain using LTO and -O3.
+It ships with BakaSU (previously ReSukiSU) with SUSFS, Baseband Guard, NoMount, Droidspaces, and ReKernel integrated, compiled with the Neutron Clang toolchain using LTO and -O3.
 
 # Requirements
 - Xiaomi Mi 9T / Redmi K20 (davinci), running latest LineageOS, PixelOS, or Derpfest
 - Custom recovery or ADB access for sideloading
-- [ReSukiSU Manager](https://resukisu.github.io/guide/install.html#Get-manager) installed, to actually use root/SUSFS after flashing
+- [BakaSU Manager](https://resukisu.github.io/guide/install.html#Get-manager) installed, to actually use root/SUSFS after flashing
 
 # Release schedules
 New builds are published every Sunday, announced on the [Telegram channel](https://t.me/Nebula_Kernel_Davinci) and the [GitHub releases page](https://github.com/Drsexo/davinci_kernel/releases).
 
 # Features
-- **ReSukiSU & SUSFS support**: KernelSU fork with SUSFS integration for non-GKI 4.14 devices
+- **BakaSU & SUSFS support**: KernelSU fork with SUSFS integration for non-GKI 4.14 devices
 - **Baseband Guard**: Linux Security Module (LSM) that blocks unauthorized writes to critical partitions and device nodes (baseband, boot chain) at the kernel level. Prevents user-space bypass of partition protection.
 - **NoMount**: Meta module operating at the VFS layer. Avoids mount `--bind` so injections don't appear in `/proc/mounts` or `mountinfo`, making them invisible to detection methods.
 - **Droidspaces**: Container runtime using Linux kernel namespaces to run full Linux distributions on Android with proper process isolation (PID, MNT, UTS, IPC, cgroup). 
@@ -65,11 +65,11 @@ Restore to default kernel:
 Patches & buildscript:
 - [riarumoda](https://github.com/riarumoda) for the original perf_neon buildscripts & kernel patches that this fork is based on.
 - [TBYOOL](https://github.com/tbyool) for the buildscripts & kernel patches.
-- [JackA1ltMan](https://github.com/JackA1ltman) for ReSukiSU hook scripts, ReKernel scripts & SUSFS patches.
+- [JackA1ltMan](https://github.com/JackA1ltman) for BakaSU hook scripts, ReKernel scripts & SUSFS patches.
 - [TheSillyOk](https://github.com/TheSillyOk) for LTO & kpatch fixup for 4.14 devices.
 
 Projects:
-- [ReSukiSU](https://github.com/ReSukiSU/ReSukiSU) for ReSukiSU.
+- [BakaSU](https://github.com/Baka-SU/BakaSU) for BakaSU (previously ReSukiSU).
 - [vc-teahouse](https://github.com/vc-teahouse/Baseband-guard) for Baseband Guard.
 - [maxsteeel](https://github.com/maxsteeel/nomount) for NoMount.
 - [ravindu644](https://github.com/ravindu644/Droidspaces-OSS) for Droidspaces.

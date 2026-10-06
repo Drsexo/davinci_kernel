@@ -3,20 +3,20 @@
 # Default exports
 export SUSFS_PATCH="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/Patch/susfs_patch_to_${KERNEL_VERSION}.patch"
 
-echo "-- Setting up KernelSU integration: ReSukiSU SusFS"
+echo "-- Setting up KernelSU integration: BakaSU SusFS"
 
-KSU_SETUP_URI="https://github.com/ReSukiSU/ReSukiSU/raw/refs/heads/main/kernel/setup.sh"
+KSU_SETUP_URI="https://raw.githubusercontent.com/Baka-SU/BakaSU/main/kernel/setup.sh"
 KSU_SETUP_BRANCH="main"
 KSU_HOOK="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/susfs_inline_hook_patches.sh"
 
-# Resolve ReSukiSU's version same moment setup.sh below fetches it.
+# Resolve BakaSU's version same moment setup.sh below fetches it.
 AUTH_HEADER=()
 [ -n "$GH_TOKEN" ] && AUTH_HEADER=(-H "Authorization: token $GH_TOKEN")
-KSU_SHA=$(curl -fsSL "${AUTH_HEADER[@]}" "https://api.github.com/repos/ReSukiSU/ReSukiSU/commits/${KSU_SETUP_BRANCH}" | jq -r '.sha // empty' | cut -c1-8)
-KSU_TAG=$(curl -fsSL "${AUTH_HEADER[@]}" "https://api.github.com/repos/ReSukiSU/ReSukiSU/tags?per_page=1" | jq -r '.[0].name // "unknown"')
+KSU_SHA=$(curl -fsSL "${AUTH_HEADER[@]}" "https://api.github.com/repos/Baka-SU/BakaSU/commits/${KSU_SETUP_BRANCH}" | jq -r '.sha // empty' | cut -c1-8)
+KSU_TAG=$(curl -fsSL "${AUTH_HEADER[@]}" "https://api.github.com/repos/Baka-SU/BakaSU/tags?per_page=1" | jq -r '.[0].name // "unknown"')
 rm -rf /tmp/ksu_src
 KSU_CODE="unknown"
-if git clone --filter=blob:none --depth=1 "https://github.com/ReSukiSU/ReSukiSU.git" /tmp/ksu_src 2>/dev/null; then
+if git clone --filter=blob:none --depth=1 "https://github.com/Baka-SU/BakaSU.git" /tmp/ksu_src 2>/dev/null; then
     git -C /tmp/ksu_src fetch --unshallow --filter=blob:none 2>/dev/null \
       || git -C /tmp/ksu_src fetch --filter=blob:none 2>/dev/null || true
     COUNT=$(git -C /tmp/ksu_src rev-list --count HEAD 2>/dev/null)

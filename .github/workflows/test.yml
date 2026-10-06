@@ -207,7 +207,7 @@ jobs:
           echo "Kernel: $KERNEL_VERSION"
           echo "${{ matrix.display }}: $ROM_VERSION ($ROM_BRANCH)"
           echo "Clang: $CLANG_DISPLAY"
-          echo "ReSukiSU: $KSU_NAME (code $KSU_CODE)"
+          echo "BakaSU: $KSU_NAME (code $KSU_CODE)"
           echo "SusFS: $SUSFS_VERSION"
           echo "NoMount: $NOMOUNT_VERSION"
 
@@ -222,7 +222,7 @@ jobs:
 
       - name: Pack kernel with AnyKernel3
         run: |
-          ZIPNAME="Nebula-${{ matrix.display }}-davinci-ReSukiSU-${{ steps.ts.outputs.DATE }}.zip"
+          ZIPNAME="Nebula-${{ matrix.display }}-davinci-BakaSU-${{ steps.ts.outputs.DATE }}.zip"
           cd AnyKernel3
           zip -rq9 "../$ZIPNAME" ./*
           cd ..
@@ -326,37 +326,37 @@ jobs:
             echo "# Nebula test build - $TITLE_DATE"
             echo
             echo "**Kernel**: \`${KERNEL_VERSION}\`"
-            echo "**ReSukiSU**: \`${KSU_NAME}\` (code \`${KSU_CODE}\`)"
+            echo "**BakaSU**: \`${KSU_NAME}\` (code \`${KSU_CODE}\`)"
             echo "**SusFS**: \`${SUSFS_VERSION}\`"
             echo "**NoMount**: \`${NOMOUNT_VERSION}\`"
             echo "**Built with**: \`${CLANG_DISPLAY}\`"
             echo
             cat /tmp/rom_lines.txt
             echo
-            echo "[ReSukiSU manager](https://resukisu.github.io/guide/install.html#Get-manager)"
+            echo "[BakaSU manager](https://resukisu.github.io/guide/install.html#Get-manager)"
             echo "[NoMount meta module](https://github.com/maxsteeel/nomount/releases)"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload LineageOS artifact
         uses: actions/upload-artifact@v7
         with:
-          name: Nebula-LineageOS-davinci-ReSukiSU
-          path: /tmp/release_stage_lineageos/Nebula-LineageOS-davinci-ReSukiSU-*.zip
+          name: Nebula-LineageOS-davinci-BakaSU
+          path: /tmp/release_stage_lineageos/Nebula-LineageOS-davinci-BakaSU-*.zip
           retention-days: 7
           if-no-files-found: warn
 
       - name: Upload PixelOS artifact
         uses: actions/upload-artifact@v7
         with:
-          name: Nebula-PixelOS-davinci-ReSukiSU
-          path: /tmp/release_stage_pixelos/Nebula-PixelOS-davinci-ReSukiSU-*.zip
+          name: Nebula-PixelOS-davinci-BakaSU
+          path: /tmp/release_stage_pixelos/Nebula-PixelOS-davinci-BakaSU-*.zip
           retention-days: 7
           if-no-files-found: warn
 
       - name: Upload Derpfest artifact
         uses: actions/upload-artifact@v7
         with:
-          name: Nebula-Derpfest-davinci-ReSukiSU
-          path: /tmp/release_stage_derpfest/Nebula-Derpfest-davinci-ReSukiSU-*.zip
+          name: Nebula-Derpfest-davinci-BakaSU
+          path: /tmp/release_stage_derpfest/Nebula-Derpfest-davinci-BakaSU-*.zip
           retention-days: 7
           if-no-files-found: warn
