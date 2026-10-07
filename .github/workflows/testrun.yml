@@ -1,0 +1,20 @@
+name: Test Run
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      build_date: ${{ steps.ts.outputs.DATE }}
+    steps:
+      - id: ts
+        run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+
+  build-sweet:
+    needs: setup
+    uses: ./.github/workflows/devices/sweet.yml
+    with:
+      build_date: ${{ needs.setup.outputs.build_date }}
+    secrets: inherit

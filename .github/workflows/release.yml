@@ -1,0 +1,87 @@
+name: Build & Release
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '5 3 * * 0'
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      build_date: ${{ steps.ts.outputs.DATE }}
+      timestamp: ${{ steps.ts.outputs.TIME }}
+      fancy_date: ${{ steps.ts.outputs.FANCYDATE }}
+    steps:
+      - id: ts
+        run: |
+          echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+          echo "TIME=$(date +'%s')" >> $GITHUB_OUTPUT
+          echo "FANCYDATE=$(date +'%Y/%m/%d')" >> $GITHUB_OUTPUT
+  
+  # device workflow imports
+  build-sweet:
+    needs: setup
+    uses: ./.github/workflows/devices/sweet.yml
+    with:
+      build_date: ${{ needs.setup.outputs.build_date }}
+    secrets: inherit
+
+  release:
+    # gotta add these later
+    needs: [setup, build-sweet]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: List downloaded zips
+        run: ls -lah artifacts
+
+      - name: Extract Release Info
+        id: info
+        run: |
+          INFO_FILE=$(find ./artifacts -path "*zako*" -name "release_info.txt" | head -n 1)
+          if [ -z "$INFO_FILE" ]; then
+            INFO_FILE=$(find ./artifacts -name "release_info.txt" | head -n 1)
+          fi
+          if [ -n "$INFO_FILE" ] && [ -f "$INFO_FILE" ]; then
+            cat "$INFO_FILE" >> $GITHUB_OUTPUT
+            echo "Loaded versions from $INFO_FILE!"
+          else
+            echo "KSU_NAME=Unknown" >> $GITHUB_OUTPUT
+            echo "KSU_CODE=Unknown" >> $GITHUB_OUTPUT
+            echo "SUSFS_VER=Unknown" >> $GITHUB_OUTPUT
+            echo "BBG_VER=Unknown" >> $GITHUB_OUTPUT
+            echo "NOMOUNT_VER=Unknown" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release and Upload builds
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: kernel-weekly-${{ needs.setup.outputs.timestamp }}
+          name: Weekly - ${{ needs.setup.outputs.fancy_date }}
+          draft: false
+          prerelease: false
+          body: |
+            > [!NOTE]   
+            > - KSU Version: ${{ steps.info.outputs.KSU_NAME }} (${{ steps.info.outputs.KSU_CODE }})   
+            > - SuSFS Version: ${{ steps.info.outputs.SUSFS_VER }}   
+            > - Baseband Guard Version: ${{ steps.info.outputs.BBG_VER }}   
+            > - Nomount Version: ${{ steps.info.outputs.NOMOUNT_VER }}   
+               
+            > [!IMPORTANT]
+            > - The feature set can be seen in [here](https://github.com/riarumoda/perf_neon-builder#features).   
+            > - The compatibility list can be seen in [here](https://github.com/riarumoda/perf_neon-builder#compatibility).   
+            > - The installation steps can be seen in [here](https://github.com/riarumoda/perf_neon-builder#installation).   
+
+            > [!CAUTION]   
+            > - Always backup your boot and dtbo image first before proceeding!   
+          files: artifacts/**/*.zip
+          overwrite_files: true
