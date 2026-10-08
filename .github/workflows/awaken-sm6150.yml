@@ -229,7 +229,7 @@ jobs:
       - name: Pack kernel with AnyKernel3
         run: |
             echo "-- Exporting zip settings..."
-            export ZIP_PREFIX="neon-pixelos-${{ matrix.devices }}-sm6150"
+            export ZIP_PREFIX="neon-awaken-${{ matrix.devices }}-sm6150"
             export ZIPNAME="${ZIP_PREFIX}-${{ inputs.build_date }}.zip"
 
             cd AnyKernel3
@@ -239,7 +239,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: pixelos-${{ matrix.devices }}
+          name: awaken-${{ matrix.devices }}
           path: |
             *.zip
             release_info.txt
