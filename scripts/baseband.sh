@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "-- Baseband Guard: loading functions..."
 chmod +x scripts/functions/baseband.sh
 source scripts/functions/baseband.sh
 

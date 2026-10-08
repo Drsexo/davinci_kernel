@@ -1,7 +1,8 @@
 #!/bin/bash
 
-chmod +x scripts/droidspaces.sh
-source scripts/droidspaces.sh
+echo "-- Droidspaces: loading functions..."
+chmod +x scripts/functions/droidspaces.sh
+source scripts/functions/droidspaces.sh
 
 case "$DROIDSPACES_SELECTOR" in
     droidspaces)

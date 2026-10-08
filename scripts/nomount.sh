@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "-- NoMount: loading functions..."
 chmod +x scripts/functions/nomount.sh
 source scripts/functions/nomount.sh
 

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "-- KernelSU: loading functions..."
 chmod +x scripts/functions/kernelsu.sh
 source scripts/functions/kernelsu.sh
 
