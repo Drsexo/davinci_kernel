@@ -6,6 +6,9 @@ on:
       build_date:
         required: true
         type: string
+      build_type:
+        required: true
+        type: string
 
 jobs:
   build:
@@ -262,7 +265,7 @@ jobs:
             fi
 
             echo "-- Updating kernel build type..."
-            sed -i 's/KERNEL_BUILD_TYPE="Weekly"/KERNEL_BUILD_TYPE="$KERNEL_BUILD_TYPE"/' AnyKernel3/anykernel.sh
+            sed -i 's/KERNEL_BUILD_TYPE="Weekly"/KERNEL_BUILD_TYPE="${{ inputs.build_type }}"/' AnyKernel3/anykernel.sh
 
       - name: Pack kernel with AnyKernel3
         run: |

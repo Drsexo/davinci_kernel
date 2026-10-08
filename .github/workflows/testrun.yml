@@ -8,11 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       build_date: ${{ steps.ts.outputs.DATE }}
+      build_type: ${{ steps.ts.outputs.KERNEL_BUILD_TYPE }}
     steps:
       - id: ts
         run: |
           echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
-          echo "KERNEL_BUILD_TYPE=Release" >> $GITHUB_ENV
+          echo "KERNEL_BUILD_TYPE=Release" >> $GITHUB_OUTPUT
 
 
   build-lineage-sm6150:
@@ -20,4 +21,5 @@ jobs:
     uses: ./.github/workflows/lineage-sm6150.yml
     with:
       build_date: ${{ needs.setup.outputs.build_date }}
+      build_type: ${{ needs.setup.outputs.build_type }}
     secrets: inherit

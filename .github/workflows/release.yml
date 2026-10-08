@@ -12,13 +12,14 @@ jobs:
       build_date: ${{ steps.ts.outputs.DATE }}
       timestamp: ${{ steps.ts.outputs.TIME }}
       fancy_date: ${{ steps.ts.outputs.FANCYDATE }}
+      build_type: ${{ steps.ts.outputs.KERNEL_BUILD_TYPE }}
     steps:
       - id: ts
         run: |
           echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "TIME=$(date +'%s')" >> $GITHUB_OUTPUT
           echo "FANCYDATE=$(date +'%Y/%m/%d')" >> $GITHUB_OUTPUT
-          echo "KERNEL_BUILD_TYPE=Release" >> $GITHUB_ENV
+          echo "KERNEL_BUILD_TYPE=Release" >> $GITHUB_OUTPUT
   
   # device workflow imports
   build-lineage-sm6150:
@@ -26,6 +27,7 @@ jobs:
     uses: ./.github/workflows/lineage-sm6150.yml
     with:
       build_date: ${{ needs.setup.outputs.build_date }}
+      build_type: ${{ needs.setup.outputs.build_type }}
     secrets: inherit
 
   release:
