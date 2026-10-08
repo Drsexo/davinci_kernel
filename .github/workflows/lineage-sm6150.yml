@@ -106,6 +106,7 @@ jobs:
             echo "-- Exporting finalized kernel config..."
             export FINAL_DEFCONFIG="arch/arm64/configs/${{ matrix.devices }}_defconfig"
             echo "FINAL_DEFCONFIG=$FINAL_DEFCONFIG" >> $GITHUB_ENV
+            echo "COMPILE_DEFCONFIG=${{ matrix.devices }}_defconfig" >> $GITHUB_ENV
 
             echo "-- Hard code config.gz into kernel..."
             sed -i 's|\$(KCONFIG_CONFIG)|arch/arm64/configs/'"${DEVICE_IMPORT}"'_stock_defconfig|g' kernel/Makefile
@@ -191,7 +192,7 @@ jobs:
             mkdir -p out &> /dev/null
 
             echo "-- Parsing final defconfig..."
-            make O=out $MAKE_ARGS $FINAL_DEFCONFIG
+            make O=out $MAKE_ARGS $COMPILE_DEFCONFIG &> /dev/null
 
             echo "-- Executing olddefconfig and silentoldconfig..."
             { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
