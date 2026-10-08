@@ -191,7 +191,7 @@ jobs:
             mkdir -p out &> /dev/null
 
             echo "-- Parsing final defconfig..."
-            make O=out $MAKE_ARGS $FINAL_DEFCONFIG &> /dev/null
+            make O=out $MAKE_ARGS $FINAL_DEFCONFIG
 
             echo "-- Executing olddefconfig and silentoldconfig..."
             { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
