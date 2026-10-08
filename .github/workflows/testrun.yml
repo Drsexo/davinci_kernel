@@ -10,11 +10,14 @@ jobs:
       build_date: ${{ steps.ts.outputs.DATE }}
     steps:
       - id: ts
-        run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+        run: |
+          echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+          echo "KERNEL_BUILD_TYPE=Release" >> $GITHUB_ENV
 
-  build-sweet:
+
+  build-lineage-sm6150:
     needs: setup
-    uses: ./.github/workflows/devices/sweet.yml
+    uses: ./.github/workflows/lineage-sm6150.yml
     with:
       build_date: ${{ needs.setup.outputs.build_date }}
     secrets: inherit

@@ -18,18 +18,19 @@ jobs:
           echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "TIME=$(date +'%s')" >> $GITHUB_OUTPUT
           echo "FANCYDATE=$(date +'%Y/%m/%d')" >> $GITHUB_OUTPUT
+          echo "KERNEL_BUILD_TYPE=Release" >> $GITHUB_ENV
   
   # device workflow imports
-  build-sweet:
+  build-lineage-sm6150:
     needs: setup
-    uses: ./.github/workflows/devices/sweet.yml
+    uses: ./.github/workflows/lineage-sm6150.yml
     with:
       build_date: ${{ needs.setup.outputs.build_date }}
     secrets: inherit
 
   release:
     # gotta add these later
-    needs: [setup, build-sweet]
+    needs: [setup, build-lineage-sm6150]
     runs-on: ubuntu-latest
     permissions:
       contents: write
