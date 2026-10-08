@@ -92,9 +92,10 @@ jobs:
                 fi
             done
 
-            echo "-- Executing olddefconfig and syncconfig..."
+            echo "-- Executing olddefconfig and silentoldconfig..."
             { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS silentoldconfig &> /dev/null
+
             echo "-- Copying merged config to defconfig directory..."
             cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_stock_defconfig
             cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_defconfig
@@ -184,83 +185,83 @@ jobs:
 
       - name: Compile the kernel
         run: |
-          echo "-- Prepping build environment..."
-          cd "$KERNEL_DIR"
-          mkdir -p out &> /dev/null
+            echo "-- Prepping build environment..."
+            cd "$KERNEL_DIR"
+            mkdir -p out &> /dev/null
 
-          echo "-- Parsing final defconfig..."
-          make O=out $MAKE_ARGS $ACTUAL_MAIN_DEFCONFIG &> /dev/null
+            echo "-- Parsing final defconfig..."
+            make O=out $MAKE_ARGS $ACTUAL_MAIN_DEFCONFIG &> /dev/null
 
-          echo "-- Executing olddefconfig and syncconfig..."
-          { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
-          { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
+            echo "-- Executing olddefconfig and silentoldconfig..."
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS silentoldconfig &> /dev/null
 
-          echo "-- Compiling the kernel..."
-          make -j$(nproc --all) O=out $MAKE_ARGS 2>&1 | tee build.log
+            echo "-- Compiling the kernel..."
+            make -j$(nproc --all) O=out $MAKE_ARGS 2>&1 | tee build.log
 
-          echo "-- Exporting build versions..."
-          export KSU_NAME=$(grep -m 1 -e "-- BakaSU version name:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
-          export KSU_CODE=$(grep -m 1 -e "-- BakaSU version code:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
-          export SUSFS_VER=$(grep -m 1 -e "-- SUSFS_VERSION:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
-          export BBG_VER=$(grep -m 1 -e "-- BBG version:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
-          export NOMOUNT_VER=$(grep -m 1 "NOMOUNT_VERSION" fs/nomount/nomount.h 2>/dev/null | awk -F'"' '{print $2}' | tr -d '[:space:]')
-          cp build.log ../build.log
-          cd ..
-          
-          echo "-- Writing release info.txt..."
-          echo "KSU_NAME=${KSU_NAME:-N/A}" >> release_info.txt
-          echo "KSU_CODE=${KSU_CODE:-N/A}" >> release_info.txt
-          echo "SUSFS_VER=${SUSFS_VER:-N/A}" >> release_info.txt
-          echo "BBG_VER=${BBG_VER:-N/A}" >> release_info.txt
-          echo "NOMOUNT_VER=${NOMOUNT_VER:-N/A}" >> release_info.txt
+            echo "-- Exporting build versions..."
+            export KSU_NAME=$(grep -m 1 -e "-- BakaSU version name:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+            export KSU_CODE=$(grep -m 1 -e "-- BakaSU version code:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+            export SUSFS_VER=$(grep -m 1 -e "-- SUSFS_VERSION:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+            export BBG_VER=$(grep -m 1 -e "-- BBG version:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
+            export NOMOUNT_VER=$(grep -m 1 "NOMOUNT_VERSION" fs/nomount/nomount.h 2>/dev/null | awk -F'"' '{print $2}' | tr -d '[:space:]')
+            cp build.log ../build.log
+            cd ..
+
+            echo "-- Writing release info.txt..."
+            echo "KSU_NAME=${KSU_NAME:-N/A}" >> release_info.txt
+            echo "KSU_CODE=${KSU_CODE:-N/A}" >> release_info.txt
+            echo "SUSFS_VER=${SUSFS_VER:-N/A}" >> release_info.txt
+            echo "BBG_VER=${BBG_VER:-N/A}" >> release_info.txt
+            echo "NOMOUNT_VER=${NOMOUNT_VER:-N/A}" >> release_info.txt
 
       - name: Preparing AnyKernel3 sources
         run: |
-          echo "-- Exporting AnyKernel3 settings..."
-          export IMAGE="Image.gz-dtb"
-          export DTB=""
-          export DTBO="dtbo.img"
-          export VERSIONS="13-17"
-          export BANNER=" ${{ matrix.devices }} (SM6150)"
-          export DEVICE_LIST="${{ matrix.devices }}"
+            echo "-- Exporting AnyKernel3 settings..."
+            export IMAGE="Image.gz-dtb"
+            export DTB=""
+            export DTBO="dtbo.img"
+            export VERSIONS="13-17"
+            export BANNER=" ${{ matrix.devices }} (SM6150)"
+            export DEVICE_LIST="${{ matrix.devices }}"
 
-          echo "-- Cloning AnyKernel3 repository..."
-          rm -rf AnyKernel3
-          git clone https://github.com/riarumoda/AnyKernel3 AnyKernel3 --depth=1
-          
-          echo "-- Copying kernel image and dtb/dtbo to AnyKernel3..."
-          cp "$DIR/out/arch/arm64/boot/$IMAGE" AnyKernel3/
-          if [ -n "$DTB" ] && [ -f "$DIR/out/arch/arm64/boot/$DTB" ]; then cp "$DIR/out/arch/arm64/boot/$DTB" AnyKernel3/; fi
-          if [ -n "$DTBO" ] && [ -f "$DIR/out/arch/arm64/boot/$DTBO" ]; then cp "$DIR/out/arch/arm64/boot/$DTBO" AnyKernel3/; fi
-          
-          echo "-- Updating AnyKernel3 settings..."
-          sed -i "s/supported.versions=11-16/supported.versions=$VERSIONS/" AnyKernel3/anykernel.sh
-          sed -i "s/sweet (sm6150)/$BANNER/g" AnyKernel3/banner
+            echo "-- Cloning AnyKernel3 repository..."
+            rm -rf AnyKernel3
+            git clone https://github.com/riarumoda/AnyKernel3 AnyKernel3 --depth=1
 
-          echo "-- Updating AnyKernel3 device name..."
-          if [[ "$DEVICE_LIST" == "sweet" ]]; then
-              sed -i 's/device.name1=sweet/device.name1=sweet/g' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=sweetin/g' AnyKernel3/anykernel.sh
-          elif [[ "$DEVICE_LIST" == "violet" ]]; then
-              sed -i 's/device.name1=violet/device.name1=violet/g' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=violetin/g' AnyKernel3/anykernel.sh
-          elif [[ "$DEVICE_LIST" == "toco" ]]; then
-              sed -i 's/device.name1=toco/device.name1=toco/g' AnyKernel3/anykernel.sh
-              sed -i 's/device.name2=sweetin/device.name2=tocoin/g' AnyKernel3/anykernel.sh
-          fi
+            echo "-- Copying kernel image and dtb/dtbo to AnyKernel3..."
+            cp "$DIR/out/arch/arm64/boot/$IMAGE" AnyKernel3/
+            if [ -n "$DTB" ] && [ -f "$DIR/out/arch/arm64/boot/$DTB" ]; then cp "$DIR/out/arch/arm64/boot/$DTB" AnyKernel3/; fi
+            if [ -n "$DTBO" ] && [ -f "$DIR/out/arch/arm64/boot/$DTBO" ]; then cp "$DIR/out/arch/arm64/boot/$DTBO" AnyKernel3/; fi
 
-          echo "-- Updating kernel build type..."
-          sed -i 's/KERNEL_BUILD_TYPE="Weekly"/KERNEL_BUILD_TYPE="$KERNEL_BUILD_TYPE"/' AnyKernel3/anykernel.sh
+            echo "-- Updating AnyKernel3 settings..."
+            sed -i "s/supported.versions=11-16/supported.versions=$VERSIONS/" AnyKernel3/anykernel.sh
+            sed -i "s/sweet (sm6150)/$BANNER/g" AnyKernel3/banner
+
+            echo "-- Updating AnyKernel3 device name..."
+            if [[ "$DEVICE_LIST" == "sweet" ]]; then
+                sed -i 's/device.name1=sweet/device.name1=sweet/g' AnyKernel3/anykernel.sh
+                sed -i 's/device.name2=sweetin/device.name2=sweetin/g' AnyKernel3/anykernel.sh
+            elif [[ "$DEVICE_LIST" == "violet" ]]; then
+                sed -i 's/device.name1=violet/device.name1=violet/g' AnyKernel3/anykernel.sh
+                sed -i 's/device.name2=sweetin/device.name2=violetin/g' AnyKernel3/anykernel.sh
+            elif [[ "$DEVICE_LIST" == "toco" ]]; then
+                sed -i 's/device.name1=toco/device.name1=toco/g' AnyKernel3/anykernel.sh
+                sed -i 's/device.name2=sweetin/device.name2=tocoin/g' AnyKernel3/anykernel.sh
+            fi
+
+            echo "-- Updating kernel build type..."
+            sed -i 's/KERNEL_BUILD_TYPE="Weekly"/KERNEL_BUILD_TYPE="$KERNEL_BUILD_TYPE"/' AnyKernel3/anykernel.sh
 
       - name: Pack kernel with AnyKernel3
         run: |
-          echo "-- Exporting zip settings..."
-          export ZIP_PREFIX="neon-lineage-${{ matrix.devices }}-sm6150"
-          export ZIPNAME="${ZIP_PREFIX}-${{ inputs.build_date }}.zip"
+            echo "-- Exporting zip settings..."
+            export ZIP_PREFIX="neon-lineage-${{ matrix.devices }}-sm6150"
+            export ZIPNAME="${ZIP_PREFIX}-${{ inputs.build_date }}.zip"
 
-          cd AnyKernel3
-          zip -rq9 "../$ZIPNAME" ./*
-          cd ..
+            cd AnyKernel3
+            zip -rq9 "../$ZIPNAME" ./*
+            cd ..
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
