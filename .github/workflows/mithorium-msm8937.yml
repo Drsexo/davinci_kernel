@@ -1,4 +1,4 @@
-name: Device Build - SM6150 (PixelOS)
+name: Device Build - MSM8937 (Mi-Thorium)
 
 on:
   workflow_call:
@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        devices: [sweet, toco]
+        devices: [mi89x7]
     
     steps:
       - uses: actions/checkout@v6
@@ -35,23 +35,73 @@ jobs:
         id: vars
         run: |
             echo "-- Exporting kernel settings..."
-            export KERNEL_REPO="https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150.git"
-            export KERNEL_BRANCH="seventeen"
-            export KERNEL_DIR="android_kernel_xiaomi_sm6150"
+            export KERNEL_REPO="https://github.com/Mi-Thorium/kernel_msm-4.19.git"
+            export KERNEL_BRANCH="mithorium/a13/master"
+            export KERNEL_DIR="android_kernel_xiaomi_msm8937"
             
+            echo "-- Exporting extra repositories..."
+            export KERNEL_DT_COMMON_REPO="https://github.com/Mi-Thorium/kernel_devicetree_msm-4.19.git"
+            export KERNEL_DT_COMMON_BRANCH="dts/master"
+            export KERNEL_DT_COMMON_DIR="arch/arm64/boot/dts/vendor-legacy"
+
+            export KERNEL_DT_MI89X7_REPO="https://github.com/Mi-Thorium/kernel_devicetree_xiaomi-msm8937.git"
+            export KERNEL_DT_MI89X7_BRANCH="dts/mi8937/4.19/master"
+            export KERNEL_DT_MI89X7_DIR="arch/arm64/boot/dts/xiaomi-msm8937"
+
+            export KERNEL_DT_MI439_REPO="https://github.com/Mi-Thorium/kernel_devicetree_xiaomi-sdm439.git"
+            export KERNEL_DT_MI439_BRANCH="dts/mi439/4.19/master"
+            export KERNEL_DT_MI439_DIR="arch/arm64/boot/dts/xiaomi-sdm439"
+
+            export KERNEL_TP_MI89X7_REPO="https://github.com/Mi-Thorium/kernel_techpack_xiaomi-msm8937.git"
+            export KERNEL_TP_MI89X7_BRANCH="techpack/mi8937/4.19/master"
+            export KERNEL_TP_MI89X7_DIR="techpack/xiaomi-msm8937"
+
+            export KERNEL_TP_MI439_REPO="https://github.com/Mi-Thorium/kernel_techpack_xiaomi-sdm439.git"
+            export KERNEL_TP_MI439_BRANCH="techpack/mi439/4.19/master"
+            export KERNEL_TP_MI439_DIR="techpack/xiaomi-sdm439"
+
+            export KERNEL_TP_AUDIO_REPO="https://github.com/Mi-Thorium/kernel_techpack_audio-legacy.git"
+            export KERNEL_TP_AUDIO_BRANCH="audio/4.19/mithorium/master"
+            export KERNEL_TP_AUDIO_DIR="techpack/audio-legacy"
+
+            export KERNEL_TP_CAMERAN_REPO="https://github.com/Mi-Thorium/kernel_techpack_camera-legacy.git"
+            export KERNEL_TP_CAMERAN_BRANCH="camera/LA.UM.8.6.r1-05300-89xx.0/4.19/mithorium"
+            export KERNEL_TP_CAMERAN_DIR="techpack/camera-legacy"
+
+            export KERNEL_TP_CAMERAM_REPO="https://github.com/Mi-Thorium/kernel_techpack_camera-legacy.git"
+            export KERNEL_TP_CAMERAM_BRANCH="camera/LA.UM.5.3-10610-89xx.0/4.19/mithorium"
+            export KERNEL_TP_CAMERAM_DIR="techpack/camera-legacy-m"
+
+            export KERNEL_WLAN_PRIMA_REPO="https://github.com/Mi-Thorium/vendor_qcom_opensource_wlan_prima.git"
+            export KERNEL_WLAN_PRIMA_BRANCH="wlan/LA.UM.9.6.4/mithorium/master"
+            export KERNEL_WLAN_PRIMA_DIR="drivers/staging/prima"
+
             echo "-- Exporting variables into GITHUB_ENV..."
             echo "KERNEL_DIR=$KERNEL_DIR" >> $GITHUB_ENV
             echo "MAKE_ARGS=ARCH=arm64 LLVM=1 LLVM_IAS=1 LD=ld.lld CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- CROSS_COMPILE_ARM32=arm-linux-gnueabi-" >> $GITHUB_ENV
             echo "KBUILD_BUILD_USER="riarumoda"" >> $GITHUB_ENV
             echo "KBUILD_BUILD_HOST="flexgroups"" >> $GITHUB_ENV
             echo "DEVICE_NAME="${{ matrix.devices }}"" >> $GITHUB_ENV
-            echo "KERNEL_VERSION="4.14"" >> $GITHUB_ENV
+            echo "KERNEL_VERSION="4.19"" >> $GITHUB_ENV
 
             echo "-- Exporting toolchain settings..."
             export TC_URLS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/Neutron-Toolchains/clang-build-catalogue/releases/latest | grep "browser_download_url" | head -n 1 | cut -d '"' -f 4) 
             
             echo "-- Cloning kernel repository..."
             git clone --depth=1 --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR" &> /dev/null
+
+            echo "-- Cloning extra repositories..."
+            cd "$KERNEL_DIR"
+            git clone --depth=1 --branch "$KERNEL_DT_COMMON_BRANCH" "$KERNEL_DT_COMMON_REPO" "$KERNEL_DT_COMMON_DIR" &> /dev/null
+            git clone --depth=1 --branch "$KERNEL_DT_MI89X7_BRANCH" "$KERNEL_DT_MI89X7_REPO" "$KERNEL_DT_MI89X7_DIR" &> /dev/null
+            git clone --depth=1 --branch "$KERNEL_DT_MI439_BRANCH" "$KERNEL_DT_MI439_REPO" "$KERNEL_DT_MI439_DIR" &> /dev/null
+            git clone --depth=1 --branch "$KERNEL_TP_MI89X7_BRANCH" "$KERNEL_TP_MI89X7_REPO" "$KERNEL_TP_MI89X7_DIR" &> /dev/null
+            git clone --depth=1 --branch "$KERNEL_TP_MI439_BRANCH" "$KERNEL_TP_MI439_REPO" "$KERNEL_TP_MI439_DIR" &> /dev/null
+            git clone --depth=1 --branch "$KERNEL_TP_AUDIO_BRANCH" "$KERNEL_TP_AUDIO_REPO" "$KERNEL_TP_AUDIO_DIR" &> /dev/null
+            git clone --depth=1 --branch "$KERNEL_TP_CAMERAN_BRANCH" "$KERNEL_TP_CAMERAN_REPO" "$KERNEL_TP_CAMERAN_DIR" &> /dev/null
+            git clone --depth=1 --branch "$KERNEL_TP_CAMERAM_BRANCH" "$KERNEL_TP_CAMERAM_REPO" "$KERNEL_TP_CAMERAM_DIR" &> /dev/null
+            git clone --depth=1 --branch "$KERNEL_WLAN_PRIMA_BRANCH" "$KERNEL_WLAN_PRIMA_REPO" "$KERNEL_WLAN_PRIMA_DIR" &> /dev/null
+            cd ..
 
             echo "-- Exporting variables into GITHUB_PATH..."
             echo "$PWD/$KERNEL_DIR/clang/bin" >> $GITHUB_PATH
@@ -68,11 +118,11 @@ jobs:
         id: generate_configs
         run: |
             echo "-- Exporting kernel configs..."
-            export ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/${DEVICE_NAME}_defconfig"
-            export MAIN_DEFCONFIG="${DEVICE_NAME}_defconfig"
-            export COMMON_DEFCONFIG="vendor/debugfs.config"
-            export DEVICE_DEFCONFIG=""
-            export FEATURE_DEFCONFIG=""
+            export ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/vendor/msm8937-perf_defconfig"
+            export MAIN_DEFCONFIG="vendor/msm8937-perf_defconfig"
+            export COMMON_DEFCONFIG="vendor/msm8937-legacy.config vendor/common.config"
+            export DEVICE_DEFCONFIG="vendor/xiaomi/msm8937/common.config vendor/xiaomi/msm8937/mi8937.config"
+            export FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/compat-vdso.config vendor/feature/erofs.config vendor/feature/exfat.config vendor/feature/kprobes.config vendor/feature/lmkd.config vendor/feature/ntfs.config vendor/feature/wireguard.config"
 
             echo "-- Exporting kernel configs into GITHUB_ENV..."
             echo "ACTUAL_MAIN_DEFCONFIG=$ACTUAL_MAIN_DEFCONFIG" >> $GITHUB_ENV
@@ -101,6 +151,7 @@ jobs:
             { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS silentoldconfig &> /dev/null
 
             echo "-- Copying merged config to defconfig directory..."
+            cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_stock_defconfig
             cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_defconfig
 
             echo "-- Cleaning up..."
@@ -110,19 +161,58 @@ jobs:
             export FINAL_DEFCONFIG="arch/arm64/configs/${{ matrix.devices }}_defconfig"
             echo "FINAL_DEFCONFIG=$FINAL_DEFCONFIG" >> $GITHUB_ENV
             echo "COMPILE_DEFCONFIG=${{ matrix.devices }}_defconfig" >> $GITHUB_ENV
+
+            echo "-- Hard code config.gz into kernel..."
+            sed -i 's|\$(KCONFIG_CONFIG)|arch/arm64/configs/'"${{ matrix.devices }}"'_stock_defconfig|g' kernel/Makefile
             cd ..
 
       - name: Apply device related patches
         id: apply_patches
         run: |
+            echo "-- Exporting device patches..."
+            export KSU_REVERT="https://github.com/Mi-Thorium/kernel_msm-4.19/commit/624875e8edc36ae280b1f8efc1d3c48a28da64ea.patch"
+
             echo "-- Importing patch helper script..."
             source scripts/patch-helper.sh
 
             echo "-- Applying device specific patches..."
             cd "$KERNEL_DIR"
 
+            echo "-- Reverting KSU commit..."
+            revert_commit "$KSU_REVERT"
+
+            echo "-- Fixing HW key for riva..."
+            sed -i 's/#define FTS_POINT_REPORT_CHECK_EN[[:space:]]*0/#define FTS_POINT_REPORT_CHECK_EN               1/g' techpack/xiaomi-msm8937/touchscreen/focaltech_touch/focaltech_common.h
+            sed -i '/input_report_key(input_dev, BTN_TOUCH, 0);/a \
+                if (ts_data->key_state) {\
+                    struct fts_ts_platform_data *pdata = ts_data->pdata;\
+                    int key_idx;\
+                    int num_keys = 0;\
+                    u32 *keycodes = NULL;\
+            \
+                if (pdata->key_is_vkeys && pdata->vkeys_pdata) {\
+                        num_keys = pdata->vkeys_pdata->num_keys;\
+                        keycodes = pdata->vkeys_pdata->keycodes;\
+                } else if (!pdata->key_is_vkeys) {\
+                        num_keys = pdata->key_number;\
+                        keycodes = pdata->keys;\
+                }\
+            \
+                if (keycodes) {\
+                        for (key_idx = 0; key_idx < num_keys; key_idx++) {\
+                                if (ts_data->key_state & (1 << key_idx))\
+                                        input_report_key(input_dev, keycodes[key_idx], 0);\
+                        }\
+                }\
+                ts_data->key_state = 0;\
+            }' techpack/xiaomi-msm8937/touchscreen/focaltech_touch/focaltech_point_report_check.c
+
             echo "-- Disabling modversions..."
             sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
+
+            echo "-- Disabling IKHeaders..."
+            sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $FINAL_DEFCONFIG
+            sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $FINAL_DEFCONFIG
 
             echo "-- Tuning default configs..."
             echo "CONFIG_LTO_CLANG=y" >> $FINAL_DEFCONFIG
@@ -149,7 +239,7 @@ jobs:
             export KERNELSU_SELECTOR="baka-susfs"
             export BBG_SELECTOR="bbg"
             export NOMOUNT_SELECTOR="nomount"
-            export DROIDSPACES_SELECTOR="none"
+            export DROIDSPACES_SELECTOR="droidspaces"
 
             echo "-- Running goodies script..."
             cp goodies.sh "$KERNEL_DIR/"
@@ -194,11 +284,11 @@ jobs:
       - name: Preparing AnyKernel3 sources
         run: |
             echo "-- Exporting AnyKernel3 settings..."
-            export IMAGE="Image.gz"
+            export IMAGE="Image.gz-dtb"
             export DTB=""
-            export DTBO="dtbo.img"
-            export VERSIONS="13-17"
-            export BANNER=" ${{ matrix.devices }} (SM6150)"
+            export DTBO=""
+            export VERSIONS="11-17"
+            export BANNER=" ${{ matrix.devices }} (MSM8937)"
             export DEVICE_LIST="${{ matrix.devices }}"
 
             echo "-- Cloning AnyKernel3 repository..."
@@ -215,12 +305,11 @@ jobs:
             sed -i "s/sweet (sm6150)/$BANNER/g" AnyKernel3/banner
 
             echo "-- Updating AnyKernel3 device name..."
-            if [[ "$DEVICE_LIST" == "sweet" ]]; then
-                sed -i 's/device.name1=sweet/device.name1=sweet/g' AnyKernel3/anykernel.sh
-                sed -i 's/device.name2=sweetin/device.name2=sweetin/g' AnyKernel3/anykernel.sh
-            elif [[ "$DEVICE_LIST" == "toco" ]]; then
-                sed -i 's/device.name1=sweet/device.name1=toco/g' AnyKernel3/anykernel.sh
-                sed -i 's/device.name2=sweetin/device.name2=tocoin/g' AnyKernel3/anykernel.sh
+            if [[ "$DEVICE_LIST" == "mi89x7" ]]; then
+                sed -i 's/device.name1=sweet/device.name1=mi8937/' AnyKernel3/anykernel.sh
+                sed -i 's/device.name2=sweetin/device.name2=mi8917/' AnyKernel3/anykernel.sh
+                sed -i '/device.name2=mi8917/a device.name3=santoni\ndevice.name4=prada\ndevice.name5=rolex\ndevice.name6=ugglite\ndevice.name7=riva\ndevice.name8=ugg' AnyKernel3/anykernel.sh
+                sed -i '/device.name2=mi8917/a device.name3=santoni\ndevice.name4=prada\ndevice.name5=rolex\ndevice.name6=ugglite\ndevice.name7=riva\ndevice.name8=ugg\ndevice.name9=land' AnyKernel3/anykernel.sh
             fi
 
             echo "-- Updating kernel build type..."
@@ -229,7 +318,7 @@ jobs:
       - name: Pack kernel with AnyKernel3
         run: |
             echo "-- Exporting zip settings..."
-            export ZIP_PREFIX="neon-pixelos-${{ matrix.devices }}-sm6150"
+            export ZIP_PREFIX="neon-mithorium-${{ matrix.devices }}-msm8937"
             export ZIPNAME="${ZIP_PREFIX}-${{ inputs.build_date }}.zip"
 
             cd AnyKernel3
@@ -239,7 +328,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: pixelos-${{ matrix.devices }}
+          name: lineage-${{ matrix.devices }}
           path: |
             *.zip
             release_info.txt

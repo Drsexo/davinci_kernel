@@ -1,4 +1,4 @@
-name: Device Build - SM6150 (PixelOS)
+name: Device Build - SM6150 (AwakenOS)
 
 on:
   workflow_call:
@@ -58,14 +58,10 @@ jobs:
 
             echo "-- Downloading toolchain..."
             cd $KERNEL_DIR
-            ls -alhZ
             curl -L -O "$TC_URLS"
             mkdir -p clang
             tar -C clang -xf neutron-clang-*.tar.zst
             rm -rf neutron-clang-*.tar.zst
-            ls -alhZ
-            ls -alhZ clang/
-            ls -alhZ clang/bin/
             cd ..
 
       - name: Generate kernel configs
