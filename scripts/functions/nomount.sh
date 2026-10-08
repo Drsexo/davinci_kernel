@@ -31,8 +31,6 @@ nomount_setup() {
         cp -r $PWD/nomount-$NOMOUNT_SETUP_VER/kernel/src/* $PWD/fs/nomount
         echo "-- NoMount: Enabling nomount config..."
         sed -i '$ a\CONFIG_NOMOUNT=y/' "$FINAL_DEFCONFIG"
-        echo "-- NoMount: Adding ccflags-y to fs/nomount/Makefile..."
-        sed -i '$ a\ccflags-y += -Wno-declaration-after-statement/' fs/nomount/Makefile
     else
         echo "-- NoMount: Can't find unzipped source code!"
         ls -alhZ $PWD/
