@@ -114,7 +114,7 @@ jobs:
             echo "COMPILE_DEFCONFIG=${{ matrix.devices }}_defconfig" >> $GITHUB_ENV
 
             echo "-- Hard code config.gz into kernel..."
-            sed -i 's|\$(KCONFIG_CONFIG)|arch/arm64/configs/'"${DEVICE_IMPORT}"'_stock_defconfig|g' kernel/Makefile
+            sed -i 's|\$(KCONFIG_CONFIG)|arch/arm64/configs/'"${{ matrix.devices }}"'_stock_defconfig|g' kernel/Makefile
             cd ..
 
       - name: Apply device related patches
