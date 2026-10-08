@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        devices: [mi89x7]
+        devices: [mi89x7, mi439]
     
     steps:
       - uses: actions/checkout@v6
@@ -120,9 +120,17 @@ jobs:
             echo "-- Exporting kernel configs..."
             export ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/vendor/msm8937-perf_defconfig"
             export MAIN_DEFCONFIG="vendor/msm8937-perf_defconfig"
-            export COMMON_DEFCONFIG="vendor/msm8937-legacy.config vendor/common.config"
-            export DEVICE_DEFCONFIG="vendor/xiaomi/msm8937/common.config vendor/xiaomi/msm8937/mi8937.config"
             export FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/compat-vdso.config vendor/feature/erofs.config vendor/feature/exfat.config vendor/feature/kprobes.config vendor/feature/lmkd.config vendor/feature/ntfs.config vendor/feature/wireguard.config"
+
+            echo "-- Exporting device-related kernel settings..."
+            export DEVICE_LIST="${{ matrix.devices }}"
+            if [[ "$DEVICE_LIST" == "mi89x7" ]]; then
+              export COMMON_DEFCONFIG="vendor/msm8937-legacy.config vendor/common.config vendor/msm-clk.config"
+              export DEVICE_DEFCONFIG="vendor/xiaomi/msm8937/common.config vendor/xiaomi/msm8937/mi8937.config"
+            elif [[ "$DEVICE_LIST" == "mi439" ]]; then
+              export COMMON_DEFCONFIG="vendor/common.config vendor/msm-clk.config"
+              export DEVICE_DEFCONFIG="vendor/xiaomi/sdm439/mi439.config"
+            fi
 
             echo "-- Exporting kernel configs into GITHUB_ENV..."
             echo "ACTUAL_MAIN_DEFCONFIG=$ACTUAL_MAIN_DEFCONFIG" >> $GITHUB_ENV
@@ -288,8 +296,14 @@ jobs:
             export DTB=""
             export DTBO=""
             export VERSIONS="11-17"
-            export BANNER=" ${{ matrix.devices }} (MSM8937)"
             export DEVICE_LIST="${{ matrix.devices }}"
+
+            echo "-- Exporting Banner settings..."
+            if [[ "$DEVICE_LIST" == "mi89x7" ]]; then
+              export BANNER=" ${{ matrix.devices }} (MSM8937)"
+            elif [[ "$DEVICE_LIST" == "mi439" ]]; then
+              export BANNER=" ${{ matrix.devices }} (SDM439)"
+            fi
 
             echo "-- Cloning AnyKernel3 repository..."
             rm -rf AnyKernel3
@@ -308,8 +322,11 @@ jobs:
             if [[ "$DEVICE_LIST" == "mi89x7" ]]; then
                 sed -i 's/device.name1=sweet/device.name1=mi8937/' AnyKernel3/anykernel.sh
                 sed -i 's/device.name2=sweetin/device.name2=mi8917/' AnyKernel3/anykernel.sh
-                sed -i '/device.name2=mi8917/a device.name3=santoni\ndevice.name4=prada\ndevice.name5=rolex\ndevice.name6=ugglite\ndevice.name7=riva\ndevice.name8=ugg' AnyKernel3/anykernel.sh
                 sed -i '/device.name2=mi8917/a device.name3=santoni\ndevice.name4=prada\ndevice.name5=rolex\ndevice.name6=ugglite\ndevice.name7=riva\ndevice.name8=ugg\ndevice.name9=land' AnyKernel3/anykernel.sh
+            elif [[ "$DEVICE_LIST" == "mi439" ]]; then
+                sed -i 's/device.name1=sweet/device.name1=mi439/' AnyKernel3/anykernel.sh
+                sed -i 's/device.name2=sweetin/device.name2=pine/' AnyKernel3/anykernel.sh
+                sed -i '/device.name2=pine/a device.name3=olive\ndevice.name4=olivelite\ndevice.name5=olivewood' AnyKernel3/anykernel.sh
             fi
 
             echo "-- Updating kernel build type..."
@@ -318,7 +335,12 @@ jobs:
       - name: Pack kernel with AnyKernel3
         run: |
             echo "-- Exporting zip settings..."
-            export ZIP_PREFIX="neon-mithorium-${{ matrix.devices }}-msm8937"
+            export DEVICE_LIST="${{ matrix.devices }}"
+            if [[ "$DEVICE_LIST" == "mi89x7" ]]; then
+              export ZIP_PREFIX="neon-mithorium-${{ matrix.devices }}-msm8937"
+            elif [[ "$DEVICE_LIST" == "mi89x7" ]]; then
+              export ZIP_PREFIX="neon-mithorium-${{ matrix.devices }}-sdm439"
+            fi
             export ZIPNAME="${ZIP_PREFIX}-${{ inputs.build_date }}.zip"
 
             cd AnyKernel3
