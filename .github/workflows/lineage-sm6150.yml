@@ -80,8 +80,7 @@ jobs:
             echo "-- Generating generic kernel config..."
             cd $KERNEL_DIR
             mkdir -p out &> /dev/null
-            ls -alhZ
-            make O=out $MAKE_ARGS "$MAIN_DEFCONFIG"
+            make O=out $MAKE_ARGS "$MAIN_DEFCONFIG" &> /dev/null
 
             echo "-- Appending fragments to .config..."
             for fragment in $COMMON_DEFCONFIG $DEVICE_DEFCONFIG $FEATURE_DEFCONFIG; do
