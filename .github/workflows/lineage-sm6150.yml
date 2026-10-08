@@ -63,14 +63,14 @@ jobs:
       - name: Generate kernel configs
         id: generate_configs
         run: |
-            echo "--Exporting kernel configs..."
+            echo "-- Exporting kernel configs..."
             export ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/vendor/sdmsteppe-perf_defconfig"
             export MAIN_DEFCONFIG="vendor/sdmsteppe-perf_defconfig"
             export COMMON_DEFCONFIG="vendor/debugfs.config"
             export DEVICE_DEFCONFIG="vendor/${DEVICE_NAME}.config"
             export FEATURE_DEFCONFIG=""
 
-            echo "--Exporting kernel configs into GITHUB_ENV..."
+            echo "-- Exporting kernel configs into GITHUB_ENV..."
             echo "ACTUAL_MAIN_DEFCONFIG=$ACTUAL_MAIN_DEFCONFIG" >> $GITHUB_ENV
             echo "MAIN_DEFCONFIG=$MAIN_DEFCONFIG" >> $GITHUB_ENV
             echo "COMMON_DEFCONFIG=$COMMON_DEFCONFIG" >> $GITHUB_ENV
@@ -105,6 +105,7 @@ jobs:
 
             echo "-- Exporting finalized kernel config..."
             export FINAL_DEFCONFIG="arch/arm64/configs/${{ matrix.devices }}_defconfig"
+            echo "FINAL_DEFCONFIG=$FINAL_DEFCONFIG" >> $GITHUB_ENV
 
             echo "-- Hard code config.gz into kernel..."
             sed -i 's|\$(KCONFIG_CONFIG)|arch/arm64/configs/'"${DEVICE_IMPORT}"'_stock_defconfig|g' kernel/Makefile
@@ -190,7 +191,7 @@ jobs:
             mkdir -p out &> /dev/null
 
             echo "-- Parsing final defconfig..."
-            make O=out $MAKE_ARGS $ACTUAL_MAIN_DEFCONFIG &> /dev/null
+            make O=out $MAKE_ARGS $FINAL_DEFCONFIG &> /dev/null
 
             echo "-- Executing olddefconfig and silentoldconfig..."
             { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
