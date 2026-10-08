@@ -1,4 +1,4 @@
-name: Device Build - SM6150 (LineageOS)
+name: Device Build - SM6150 (CrDroid)
 
 on:
   workflow_call:
@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        devices: [sweet, violet, toco]
+        devices: [sweet, davinci]
     
     steps:
       - uses: actions/checkout@v6
@@ -51,7 +51,12 @@ jobs:
             export TC_URLS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/Neutron-Toolchains/clang-build-catalogue/releases/latest | grep "browser_download_url" | head -n 1 | cut -d '"' -f 4) 
             
             echo "-- Cloning kernel repository..."
-            git clone --depth=1 --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR" &> /dev/null
+            git clone --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR" &> /dev/null
+
+            echo "-- Reverting to a specific commit..."
+            cd $KERNEL_DIR
+            git reset --hard 487a0cab725c29cb83076afc21758f6dbf857367 &> /dev/null
+            cd ..
 
             echo "-- Exporting variables into GITHUB_PATH..."
             echo "$PWD/$KERNEL_DIR/clang/bin" >> $GITHUB_PATH
@@ -123,31 +128,11 @@ jobs:
       - name: Apply device related patches
         id: apply_patches
         run: |
-            echo "-- Exporting device patches..."
-            export LTO_PATCH="https://github.com/TheSillyOk/kernel_ls_patches/raw/refs/heads/master/fix_lto.patch"
-            export DTBO_PATCH1="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/e517bc363a19951ead919025a560f843c2c03ad3.patch"
-            export DTBO_PATCH2="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/a62a3b05d0f29aab9c4bf8d15fe786a8c8a32c98.patch"
-            export DTBO_PATCH3="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/4b89948ec7d610f997dd1dab813897f11f403a06.patch"
-            export DTBO_PATCH4="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/fade7df36b01f2b170c78c63eb8fe0d11c613c4a.patch"
-            export DTBO_PATCH5="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/2628183db0d96be8dae38a21f2b09cb10978f423.patch"
-            export DTBO_PATCH6="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/31f4577af3f8255ae503a5b30d8f68906edde85f.patch"
-
             echo "-- Importing patch helper script..."
             source scripts/patch-helper.sh
 
             echo "-- Applying device specific patches..."
             cd "$KERNEL_DIR"
-
-            echo "-- Applying LTO patch..."
-            apply_patches "$LTO_PATCH"
-
-            echo "-- Applying DTB patches..."
-            apply_patches "$DTBO_PATCH1"
-            apply_patches "$DTBO_PATCH2"
-            apply_patches "$DTBO_PATCH3"
-            apply_patches "$DTBO_PATCH4"
-            apply_patches "$DTBO_PATCH5"
-            apply_patches "$DTBO_PATCH6"
 
             echo "-- Enabling EROFS support..."
             echo "CONFIG_EROFS_FS=y" >> $FINAL_DEFCONFIG
@@ -256,12 +241,9 @@ jobs:
             if [[ "$DEVICE_LIST" == "sweet" ]]; then
                 sed -i 's/device.name1=sweet/device.name1=sweet/g' AnyKernel3/anykernel.sh
                 sed -i 's/device.name2=sweetin/device.name2=sweetin/g' AnyKernel3/anykernel.sh
-            elif [[ "$DEVICE_LIST" == "violet" ]]; then
-                sed -i 's/device.name1=sweet/device.name1=violet/g' AnyKernel3/anykernel.sh
-                sed -i 's/device.name2=sweetin/device.name2=violetin/g' AnyKernel3/anykernel.sh
-            elif [[ "$DEVICE_LIST" == "toco" ]]; then
-                sed -i 's/device.name1=sweet/device.name1=toco/g' AnyKernel3/anykernel.sh
-                sed -i 's/device.name2=sweetin/device.name2=tocoin/g' AnyKernel3/anykernel.sh
+            elif [[ "$DEVICE_LIST" == "davinci" ]]; then
+                sed -i 's/device.name1=sweet/device.name1=davinci/g' AnyKernel3/anykernel.sh
+                sed -i 's/device.name2=sweetin/device.name2=davinciin/g' AnyKernel3/anykernel.sh
             fi
 
             echo "-- Updating kernel build type..."
@@ -270,7 +252,7 @@ jobs:
       - name: Pack kernel with AnyKernel3
         run: |
             echo "-- Exporting zip settings..."
-            export ZIP_PREFIX="neon-lineage-${{ matrix.devices }}-sm6150"
+            export ZIP_PREFIX="neon-crdroid-${{ matrix.devices }}-sm6150"
             export ZIPNAME="${ZIP_PREFIX}-${{ inputs.build_date }}.zip"
 
             cd AnyKernel3
