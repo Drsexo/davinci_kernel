@@ -25,12 +25,12 @@ nomount_setup() {
     if [ -d "$PWD/nomount-$NOMOUNT_SETUP_VER" ]; then
         echo "-- NoMount: Setting up Kconfig and Makefile..."
         sed -i '/^endmenu/i source "fs/nomount/Kconfig"' fs/Kconfig
-        sed -i '$ a\obj-$(CONFIG_NOMOUNT) += nomount/' fs/Makefile
+        echo 'obj-$(CONFIG_NOMOUNT) += nomount/' >> fs/Makefile
         echo "-- NoMount: Copying source code to fs/nomount..."
         mkdir -p $PWD/fs/nomount
         cp -r $PWD/nomount-$NOMOUNT_SETUP_VER/kernel/src/* $PWD/fs/nomount
         echo "-- NoMount: Enabling nomount config..."
-        sed -i '$ a\CONFIG_NOMOUNT=y/' "$FINAL_DEFCONFIG"
+        echo "CONFIG_NOMOUNT=y" >> "$FINAL_DEFCONFIG"
     else
         echo "-- NoMount: Can't find unzipped source code!"
         ls -alhZ $PWD/
@@ -42,5 +42,5 @@ nomount_setup() {
 nomount_setup_bleeding_edge() {
     echo "-- NoMount: Bleeding Edge! Running setup script..."
     curl -LSs --fail --retry 3 "$NOMOUNT_SETUP_URI_BLEEDING_EDGE" | bash -s "$NOMOUNT_SETUP_BRANCH_BLEEDING_EDGE" &> /dev/null || { echo "-- Fatal: NoMount setup script failed to download/run!"; exit 1; }
-    sed -i '$ a\CONFIG_NOMOUNT=y/' "$FINAL_DEFCONFIG"
+    echo "CONFIG_NOMOUNT=y" >> "$FINAL_DEFCONFIG"
 }
