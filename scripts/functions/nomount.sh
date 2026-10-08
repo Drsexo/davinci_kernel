@@ -23,11 +23,13 @@ nomount_download() {
 # Setup nomount
 nomount_setup() {
     if [ -d "$PWD/nomount-$NOMOUNT_SETUP_VER" ]; then
-        echo "-- NoMount: Setting up..."
+        echo "-- NoMount: Setting up Kconfig and Makefile..."
         sed -i '/^endmenu/i source "fs/nomount/Kconfig"' fs/Kconfig
         echo 'obj-$(CONFIG_NOMOUNT) += nomount/' >> fs/Makefile
+        echo "-- NoMount: Copying source code to fs/nomount..."
         mkdir -p $PWD/fs/nomount
         cp -r $PWD/nomount-$NOMOUNT_SETUP_VER/kernel/src/* $PWD/fs/nomount
+        echo "-- NoMount: Enabling nomount config..."
         echo "CONFIG_NOMOUNT=y" >> $FINAL_DEFCONFIG
         echo "ccflags-y += -Wno-declaration-after-statement" >> fs/nomount/Makefile
     else
