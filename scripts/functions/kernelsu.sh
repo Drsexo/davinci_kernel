@@ -33,7 +33,7 @@ ksu_common_configs() {
 # Apply SUSFS patches
 ksu_setup_susfs() {
     echo "-- KernelSU: Applying SUSFS patch..."
-    wget -O- $SUSFS_PATCH | patch -p1 --fuzz=5
+    wget -qO- $SUSFS_PATCH | patch -p1 -s --fuzz=5
     echo "-- KernelSU: Enabling SUSFS configs..."
     echo "CONFIG_KSU_SUSFS=y" >> $FINAL_DEFCONFIG
     echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> $FINAL_DEFCONFIG
