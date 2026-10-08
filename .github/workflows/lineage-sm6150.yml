@@ -31,17 +31,18 @@ jobs:
       - name: Setup Kernel source & Variables
         id: vars
         run: |
+            echo "-- Exporting kernel settings..."
+            export KERNEL_REPO="https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git"
+            export KERNEL_BRANCH="lineage-24.0"
+            export KERNEL_DIR="android_kernel_xiaomi_sm6150"
+            
             echo "-- Exporting variables into GITHUB_ENV..."
-            echo "KERNEL_DIR=android_kernel_xiaomi_sm6150" >> $GITHUB_ENV
+            echo "KERNEL_DIR=$KERNEL_DIR" >> $GITHUB_ENV
             echo "MAKE_ARGS=ARCH=arm64 LLVM=1 LLVM_IAS=1 LD=ld.lld CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- CROSS_COMPILE_ARM32=arm-linux-gnueabi-" >> $GITHUB_ENV
             echo "KBUILD_BUILD_USER="riarumoda"" >> $GITHUB_ENV
             echo "KBUILD_BUILD_HOST="flexgroups"" >> $GITHUB_ENV
             echo "DEVICE_NAME="${{ matrix.devices }}"" >> $GITHUB_ENV
 
-            echo "-- Exporting kernel settings..."
-            export KERNEL_REPO="https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git"
-            export KERNEL_BRANCH="lineage-24.0"
-            
             echo "-- Exporting toolchain settings..."
             export TC_URLS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/Neutron-Toolchains/clang-build-catalogue/releases/latest | grep "browser_download_url" | head -n 1 | cut -d '"' -f 4) 
             
@@ -49,7 +50,7 @@ jobs:
             git clone --depth=1 --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR" &> /dev/null
 
             echo "-- Exporting variables into GITHUB_PATH..."
-            echo "$PWD/android_kernel_xiaomi_sm6150/clang/bin" >> $GITHUB_PATH
+            echo "$PWD/$KERNEL_DIR/clang/bin" >> $GITHUB_PATH
 
             echo "-- Downloading toolchain..."
             cd $KERNEL_DIR
@@ -62,12 +63,19 @@ jobs:
       - name: Generate kernel configs
         id: generate_configs
         run: |
+            echo "--Exporting kernel configs..."
+            export ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/vendor/sdmsteppe-perf_defconfig"
+            export MAIN_DEFCONFIG="vendor/sdmsteppe-perf_defconfig"
+            export COMMON_DEFCONFIG="vendor/debugfs.config"
+            export DEVICE_DEFCONFIG="vendor/${DEVICE_NAME}.config"
+            export FEATURE_DEFCONFIG=""
+
             echo "--Exporting kernel configs into GITHUB_ENV..."
-            echo "ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/vendor/sdmsteppe-perf_defconfig"" >> $GITHUB_ENV
-            echo "MAIN_DEFCONFIG="vendor/sdmsteppe-perf_defconfig"" >> $GITHUB_ENV
-            echo "COMMON_DEFCONFIG="vendor/debugfs.config""" >> $GITHUB_ENV
-            echo "DEVICE_DEFCONFIG="vendor/${DEVICE_NAME}.config"" >> $GITHUB_ENV
-            echo "FEATURE_DEFCONFIG=" "" >> $GITHUB_ENV
+            echo "ACTUAL_MAIN_DEFCONFIG=$ACTUAL_MAIN_DEFCONFIG" >> $GITHUB_ENV
+            echo "MAIN_DEFCONFIG=$MAIN_DEFCONFIG" >> $GITHUB_ENV
+            echo "COMMON_DEFCONFIG=$COMMON_DEFCONFIG" >> $GITHUB_ENV
+            echo "DEVICE_DEFCONFIG=$DEVICE_DEFCONFIG" >> $GITHUB_ENV
+            echo "FEATURE_DEFCONFIG=$FEATURE_DEFCONFIG" >> $GITHUB_ENV
 
             echo "-- Generating generic kernel config..."
             cd $KERNEL_DIR
