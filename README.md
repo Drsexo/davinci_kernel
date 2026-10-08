@@ -64,7 +64,7 @@ All kernels are exclusively compiled with **Neutron Clang**.
 | Mi-Thorium (MSM8937) | Redmi 3S (land), Redmi 4 (prada), Redmi 4X (santoni), Redmi Note 5A Prime/Y1 Prime (ugg), Redmi 4A (rolex), Redmi 5A (riva), Redmi Note 5A Lite/Y1 Lite (ugglite) | Android 11 ~ Android 17 |
 | Mi-Thorium (SDM439) | Redmi 7A (pine), Redmi 8 (olive), Redmi 8A (olivelite), Redmi 8A Dual (olivewood) | Android 11 ~ Android 17 |
 
-Notes   
+**Notes**   
 - We recommend installing LineageOS, CrDroid and PixelOS kernels on their respective OS.   
 - AwakenOS is upstreamed PixelOS kernels. THis usually have newer commits before it got merged into the official PixelOS kernel sources.   
 - Mi-Thorium kernels doesn't have any OS constraints.   
@@ -72,7 +72,7 @@ Notes
 - Your device aren't yet supported? Go to the telegram channel to request your device for support.   
 
 # Installation
-On Recovery   
+**On Recovery**   
 - Download both the flashable zip of the custom kernel and the original boot & dtbo image for your device as a backup.   
 - Flash or Sideload the flashable zip with `adb sideload </path/to/flashable.zip>`  
 - Allow to continue if you see Error 21 signature invalid.   
@@ -80,14 +80,14 @@ On Recovery
 - Install lastest KernelSU Manager from [here](https://github.com/Baka-SU/BakaSU/releases). (Optional)
 - Profit.   
 
-On BakaSU Manager   
+**On BakaSU Manager**   
 - On BakaSU Manager, click the "Working" card on the Manager Home Screen.   
 - You'll see both LKM and flash AnyKernel3, choose AnyKernel3, and select the flashable zip.   
 - Click next and the flashable will be installed.   
 - Reboot.   
 - Profit.   
 
-Restore to default kernel   
+**Restore to default kernel**   
 - You'll need to remove everything inside `/data/adb`. You can do this with `su -c rm -rf /data/adb/*`.   
 - Then immediately reboot to bootloader/fastbootd.   
 - Flash the stock boot image with `fastboot flash boot </path/to/original/boot/image.img>`   
@@ -95,20 +95,20 @@ Restore to default kernel
 - Reboot with `fastboot reboot`.   
 - Profit.   
 
-Notes   
+**Notes**   
 You can install different KernelSU Manager with BakaSU kernel drivers. This is currently supported KernelSU Managers:   
 - [Original KernelSU](github.com/tiann/KernelSU) (tiann)    
 - [BakaSU Manager](github.com/Baka-SU/BakaSU) (BakaSU Developers)   
 - [KOW's KernelSU](github.com/KOWX712/KernelSU) (KOWX712)   
    
 # Credits
-Patches & buildscript
+**Patches & buildscript**
 - [TBYOOL](https://github.com/tbyool) for the buildscripts, kernel sources & kernel patches.   
 - [xiaomi-sm6150](https://github.com/xiaomi-sm6150) for the DTB patches.   
 - [JackA1ltMan](https://github.com/JackA1ltman) for BakaSU hook scripts & SUSFS patches.   
 - [TheSillyOk](https://github.com/TheSillyOk) for LTO fixup for 4.14 devices.   
 
-Projects   
+**Projects**   
 - [BakaSU](https://github.com/BakaSU) for BakaSU.   
 - [vc-teahouse](https://github.com/vc-teahouse) for Baseband Guard.   
 - [maxsteeel](https://github.com/maxsteeel) for NoMount.   
