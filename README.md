@@ -66,7 +66,8 @@ All kernels are exclusively compiled with **Neutron Clang**.
 
 **Notes**   
 - We recommend installing LineageOS, CrDroid and PixelOS kernels on their respective OS.   
-- AwakenOS is upstreamed PixelOS kernels. THis usually have newer commits before it got merged into the official PixelOS kernel sources.   
+- AwakenOS is upstreamed PixelOS kernels. This usually have newer commits before it got merged into the official PixelOS kernel sources.   
+- LineageOS (SM6125) kernel might run on PixelOS for the respective device.
 - Mi-Thorium kernels doesn't have any OS constraints.   
 - Don't forget to flash appender after flashing the kernel if you're using bootloader bypass exploit on MSM8937 devices.
 - Your device aren't yet supported? Go to the telegram channel to request your device for support.   
