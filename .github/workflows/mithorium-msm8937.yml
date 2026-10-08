@@ -338,7 +338,7 @@ jobs:
             export DEVICE_LIST="${{ matrix.devices }}"
             if [[ "$DEVICE_LIST" == "mi89x7" ]]; then
               export ZIP_PREFIX="neon-mithorium-${{ matrix.devices }}-msm8937"
-            elif [[ "$DEVICE_LIST" == "mi89x7" ]]; then
+            elif [[ "$DEVICE_LIST" == "mi439" ]]; then
               export ZIP_PREFIX="neon-mithorium-${{ matrix.devices }}-sdm439"
             fi
             export ZIPNAME="${ZIP_PREFIX}-${{ inputs.build_date }}.zip"
