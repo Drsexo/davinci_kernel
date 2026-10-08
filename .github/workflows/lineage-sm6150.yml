@@ -181,7 +181,7 @@ jobs:
             cp -r scripts/* "$KERNEL_DIR/scripts/"
             cd "$KERNEL_DIR"
             chmod +x goodies.sh
-            bash ./goodies.sh
+            bash goodies.sh
             cd ..
 
       - name: Compile the kernel

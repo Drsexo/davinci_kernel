@@ -25,7 +25,7 @@ nomount_setup() {
     if [ -d "$PWD/nomount-$NOMOUNT_SETUP_VER" ]; then
         echo "-- NoMount: Setting up..."
         sed -i '/^endmenu/i source "fs/nomount/Kconfig"' fs/Kconfig
-        sed -i '$ a\obj-$(CONFIG_NOMOUNT) += nomount/' fs/Makefile
+        echo 'obj-$(CONFIG_NOMOUNT) += nomount/' >> fs/Makefile
         mkdir -p $PWD/fs/nomount
         cp -r $PWD/nomount-$NOMOUNT_SETUP_VER/kernel/src/* $PWD/fs/nomount
         echo "CONFIG_NOMOUNT=y" >> $FINAL_DEFCONFIG
