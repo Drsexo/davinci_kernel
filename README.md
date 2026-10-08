@@ -13,7 +13,7 @@
 
 [![Downloads](https://img.shields.io/github/downloads/riarumoda/perf_neon-builder/total?label=Downloads&logo=icloud&logoColor=white)](https://github.com/riarumoda/perf_neon-builder/releases)
 [![Telegram](https://img.shields.io/badge/Follow-Telegram-blue?logo=telegram)](https://t.me/trrflexgroup)
-[![CI Status](https://img.shields.io/github/actions/workflow/status/riarumoda/perf_neon-builder/normal.yml?label=Status&logo=github-actions&logoColor=white)](https://github.com/riarumoda/perf_neon-builder/actions/workflows/normal.yml)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/riarumoda/perf_neon-builder/release.yml?label=Status&logo=github-actions&logoColor=white)](https://github.com/riarumoda/perf_neon-builder/actions/workflows/normal.yml)
 
 </div>
 
@@ -31,73 +31,44 @@ This kernel solely focuses on adding goodies on top of the stock kernel, which f
 This kernel follows weekly builds of LineageOS, you will get a new kernel build every sunday. You might need to check out the GitHub repo for new releases. Emergency rebuilt might happen if services that this builder rely on being broken or kernel source code have massive changes.   
 
 # Features
-Standard features:   
-- KernelSU support (BakaSU, formerly named ReSukiSU) & SUSFS support   
-- Baseband Guard support   
-- NoMount Meta Module support   
-- ReKernel tombstones support  
+All kernels are exclusively compiled with **Neutron Clang**.   
 
-Select features:   
-- NetHunter w/ Droidspaces container support
-- Compiled with either Neutron Clang, AOSP Clang + Eva GCC, Playground TC, or AOSP Clang + Android GCC 4.9
-
-File namings:   
-`<OS/KernelName>-neon-<DeviceName>-<BuildTypes>-<KsuTypes>-<BuildDate>.zip`   
-- OS/KernelName: Operating System or Kernel names.
-- neon: Label indicator telling the user this kernel is built on Perf Neon Builder.
-- DeviceName: Codename of the device.
-- BuildTypes: Build types of the kernel. Either Weekly or Playground.
-- KsuTypes: Configuration of KernelSU inside the kernel. Either `zako`, `zako-susfs`, or `none`. The term `zako` is referenced to BakaSU and this [YouTube video](https://www.youtube.com/watch?v=kqj7b59D85Y).
-- BuildDate: When was the kernel compiled on.
-
-Current status:
-- ```lineage-neon```: Standard + Neutron Clang   
-- ```crdroid-neon```: Standard + Neutron Clang   
-- ```pixelos-neon```: Standard + Playground TC   
-- ```mithorium```: Standard + Neutron Clang   
-- ```miui-neon```: Standard + Neutron Clang   
-- ```spiteful```: Standard + AOSP Clang + Eva GCC   
-- ```titan```: KSU & SUSFS + Android GCC 4.9   
-
-Derivatives:
-- ```nethunter```: `lineage-neon` features + NetHunter w/ Droidspaces
+**Features list**   
+| Kernel Name | KernelSU | Baseband Guard | NoMount | Droidspaces |
+| :--- | :---: | :---: | :---: | :---: |
+| LineageOS (SM6150) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
+| CrDroid (SM6150) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
+| PixelOS (SM6150) | ✅ w/ SUSFS | ✅ | ✅ | ❌ |
+| AwakenOS (SM6150) | ✅ w/ SUSFS | ✅ | ✅ | ❌ |
+| LineageOS (SM6125) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
+| Mi-Thorium (MSM8937) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
+| Mi-Thorium (SDM439) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
+   
+**File Namings**   
+`neon-<OS/KernelName>-<DeviceName>-<Platform>-<BuildDate>.zip`   
+- **neon:** Label indicator telling the user this kernel is built on Perf Neon Builder.
+- **OS/KernelName:** Operating System or Kernel names.
+- **DeviceName:** Codename of the device.
+- **Platform:** Chipset or platform identifier.
+- **BuildDate:** When the kernel was compiled.
 
 # Compatibility
-Currently supported Operating System (Weekly release only)   
-- LineageOS   
-- /e/ OS   
-- LibreMobileOS   
-- CrDroid
-- PixelOS
-
-Currently weekly supported device
-- Redmi K20/Mi 9T (davinci)   
-- Redmi Note 10 Pro/Pro Max (sweet)   
-- Xiaomi Mi Note 10 Lite (toco)
-- Xiaomi Mi Note 10/Note 10 Pro/CC9 Pro (tucana)     
-- Redmi Note 7 Pro (violet)     
-- Redmi Note 8/8T (ginkgo/willow)   
-- Xiaomi Mi A3 (laurel_sprout)    
-- Samsung Tab A7 10.4 2020 (gta4l)   
-
-Externally compiled kernels   
-- Redmi 4A/5A/Note 5A Lite/Y1 Lite ([mi8917](https://download.lineageos.org/devices/Mi8917/builds)) from Mi-Thorium   
-- Redmi 3/3S/4/4X/Note 5A Prime/Y1 Prime ([mi8937](https://download.lineageos.org/devices/Mi8937/builds)) from Mi-Thorium    
-- Redmi Note 10 Pro/Pro Max ([sweet](https://github.com/tbyool/android_kernel_xiaomi_sm6150)) from Spiteful Kernel   
-- Redmi Note 10 Pro/Pro Max ([sweet](https://github.com/riarumoda/android_kernel_xiaomi_sm6150)) from Riaru Kernel   
-- Samsung Galaxy A9 (2018) ([a9y18qlte](https://github.com/schr-0dinger/android_kernel_samsung_a9y18qlte)) from Titan Kernel
-
-Android Version Constraints
-- ```lineage-neon```: Android 13 to Android 17.   
-- ```crdroid-neon```: Android 13 to Android 17.   
-- ```pixelos-neon```: Android 13 to Android 17.   
-- ```mithorium```: Android 11 to Android 17.   
-- ```miui-neon```: Android 11 to Android 16.   
-- ```spiteful```: Android 11 to Android 15.   
-- ```titan```: Android 10 to Android 11.
+**Supported device list**   
+| Kernel Name | Supported Devices | Supported Android version |
+| :--- | :---: | :---: |
+| LineageOS (SM6150) | Redmi Note 10 Pro/Pro Max (sweet), Redmi Note 7 Pro (violet), Xiaomi Mi Note 10 Lite (toco) | Android 13 ~ Android 17 |
+| CrDroid (SM6150) | Redmi Note 10 Pro/Pro Max (sweet), Redmi K20/Mi 9T (davinci) | Android 13 ~ Android 17 |
+| PixelOS (SM6150) | Redmi Note 10 Pro/Pro Max (sweet), Xiaomi Mi Note 10 Lite (toco) | Android 13 ~ Android 17 |
+| AwakenOS (SM6150) | Redmi Note 10 Pro/Pro Max (sweet), Xiaomi Mi Note 10 Lite (toco) | Android 13 ~ Android 17 |
+| LineageOS (SM6125) | Redmi Note 8/8T (ginkgo/willow), Xiaomi Mi A3 (laurel_sprout) | Android 13 ~ Android 17 |
+| Mi-Thorium (MSM8937) | Redmi 3S (land), Redmi 4 (prada), Redmi 4X (santoni), Redmi Note 5A Prime/Y1 Prime (ugg), Redmi 4A (rolex), Redmi 5A (riva), Redmi Note 5A Lite/Y1 Lite (ugglite) | Android 11 ~ Android 17 |
+| Mi-Thorium (SDM439) | Redmi 7A (pine), Redmi 8 (olive), Redmi 8A (olivelite), Redmi 8A Dual (olivewood) | Android 11 ~ Android 17 |
 
 Notes   
-- Kernels that released on playground is not restricted with these OS constraints.   
+- We recommend installing LineageOS, CrDroid and PixelOS kernels on their respective OS.   
+- AwakenOS is upstreamed PixelOS kernels. THis usually have newer commits before it got merged into the official PixelOS kernel sources.   
+- Mi-Thorium kernels doesn't have any OS constraints.   
+- Don't forget to flash appender after flashing the kernel if you're using bootloader bypass exploit on MSM8937 devices.
 - Your device aren't yet supported? Go to the telegram channel to request your device for support.   
 
 # Installation
@@ -106,13 +77,13 @@ On Recovery
 - Flash or Sideload the flashable zip with `adb sideload </path/to/flashable.zip>`  
 - Allow to continue if you see Error 21 signature invalid.   
 - Reboot to system.   
-- Install lastest KernelSU Manager from [here](https://github.com/ReSukiSU/ReSukiSU/releases). (Optional)
+- Install lastest KernelSU Manager from [here](https://github.com/Baka-SU/BakaSU/releases). (Optional)
 - Profit.   
 
 On BakaSU Manager   
 - On BakaSU Manager, click the "Working" card on the Manager Home Screen.   
-- You'll see flash AnyKernel3, click it, and select the flashable zip.   
-- Click next and the flashable will be installed. If you see KPM option, just choose follow kernel.   
+- You'll see both LKM and flash AnyKernel3, choose AnyKernel3, and select the flashable zip.   
+- Click next and the flashable will be installed.   
 - Reboot.   
 - Profit.   
 
@@ -126,28 +97,23 @@ Restore to default kernel
 
 Notes   
 You can install different KernelSU Manager with BakaSU kernel drivers. This is currently supported KernelSU Managers:   
-- [Original KernelSU](github.com/tiann/KernelSU) (tiann)   
-- [Rissu's KernelSU](github.com/rsuntk/KernelSU) (rsuntk)   
-- [SukiSU-Ultra Manager](github.com/SukiSU-Ultra/SukiSU-Ultra) (shirkneko)   
-- [ReSukiSU Manager](github.com/ReSukiSU/ReSukiSU) (ReSukiSU Developers)   
+- [Original KernelSU](github.com/tiann/KernelSU) (tiann)    
+- [BakaSU Manager](github.com/Baka-SU/BakaSU) (BakaSU Developers)   
 - [KOW's KernelSU](github.com/KOWX712/KernelSU) (KOWX712)   
    
 # Credits
 Patches & buildscript
 - [TBYOOL](https://github.com/tbyool) for the buildscripts, kernel sources & kernel patches.   
 - [xiaomi-sm6150](https://github.com/xiaomi-sm6150) for the DTB patches.   
-- [awaken-sweet](https://github.com/awaken-sweet) for LN8K patches.
-- [JackA1ltMan](https://github.com/JackA1ltman) for ReSukiSU hook scripts, ReKernel scripts & SUSFS patches.   
-- [TheSillyOk](https://github.com/TheSillyOk) for LTO & kpatch fixup for 4.14 devices.   
+- [JackA1ltMan](https://github.com/JackA1ltman) for BakaSU hook scripts & SUSFS patches.   
+- [TheSillyOk](https://github.com/TheSillyOk) for LTO fixup for 4.14 devices.   
 
 Projects   
-- [ReSukiSU](https://github.com/ReSukiSU) for ReSukiSU.   
+- [BakaSU](https://github.com/BakaSU) for BakaSU.   
 - [vc-teahouse](https://github.com/vc-teahouse) for Baseband Guard.   
 - [maxsteeel](https://github.com/maxsteeel) for NoMount.   
 - [ravindu644](https://github.com/ravindu644) for Droidspaces.   
-- [Sakion-Team](https://github.com/Sakion-Team/Re-Kernel) for ReKernel.   
 - [LineageOS](https://github.com/LineageOS) for kernel sources.   
 - [PixelOS-Devices](https://github.com/PixelOS-Devices) for kernel sources.   
 - [Mi-Thorium](https://github.com/Mi-Thorium) for kernel sources.   
 - [crdroidandroid](https://github.com/crdroidandroid) for kernel sources.   
-- [schr-0dinger](https://github.com/schr-0dinger) for kernel sources.   
