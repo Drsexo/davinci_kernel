@@ -69,7 +69,7 @@ jobs:
             echo "-- Generating generic kernel config..."
             cd $KERNEL_DIR
             mkdir -p out &> /dev/null
-            MAKE_CMD=(make O=out "${MAKE_ARGS[@]}")
+            MAKE_CMD=(make O=out "$MAKE_ARGS")
             "${MAKE_CMD[@]}" "$MAIN_DEFCONFIG" &> /dev/null
 
             echo "-- Appending fragments to .config..."
@@ -177,7 +177,7 @@ jobs:
           echo "-- Prepping build environment..."
           cd "$KERNEL_DIR"
           mkdir -p out &> /dev/null
-          export MAKE_CMD=(make O=out "${MAKE_ARGS[@]}")
+          export MAKE_CMD=(make O=out "$MAKE_ARGS")
 
           echo "-- Parsing final defconfig..."
           "${MAKE_CMD[@]}" $ACTUAL_MAIN_DEFCONFIG &> /dev/null
@@ -187,7 +187,7 @@ jobs:
           { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" syncconfig &> /dev/null
 
           echo "-- Compiling the kernel..."
-          make -j$(nproc --all) O=out "${MAKE_ARGS[@]}" 2>&1 | tee build.log
+          make -j$(nproc --all) O=out "$MAKE_ARGS" 2>&1 | tee build.log
 
           echo "-- Exporting build versions..."
           export KSU_NAME=$(grep -m 1 -e "-- BakaSU version name:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
