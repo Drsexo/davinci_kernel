@@ -31,3 +31,11 @@ jobs:
       build_date: ${{ needs.setup.outputs.build_date }}
       build_type: ${{ needs.setup.outputs.build_type }}
     secrets: inherit
+  
+  build-crdroid-sm6150:
+    needs: setup
+    uses: ./.github/workflows/crdroid-sm6150.yml
+    with:
+      build_date: ${{ needs.setup.outputs.build_date }}
+      build_type: ${{ needs.setup.outputs.build_type }}
+    secrets: inherit
