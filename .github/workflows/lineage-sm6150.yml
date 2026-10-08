@@ -59,6 +59,8 @@ jobs:
             mkdir -p clang
             tar -C clang -xf neutron-clang-*.tar.zst
             rm -rf clang neutron-clang-*.tar.zst
+            ls -alhZ clang/
+            ls -alhZ clang/bin/
             cd ..
 
       - name: Generate kernel configs
