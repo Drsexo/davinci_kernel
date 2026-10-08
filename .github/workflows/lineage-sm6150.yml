@@ -6,12 +6,6 @@ on:
       build_date:
         required: true
         type: string
-  workflow_dispatch:
-    inputs:
-      build_date:
-        required: false
-        type: string
-        default: 'manual'
 
 jobs:
   build:
