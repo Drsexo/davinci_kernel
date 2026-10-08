@@ -42,7 +42,7 @@ jobs:
             echo "KBUILD_BUILD_USER="riarumoda"" >> $GITHUB_ENV
             echo "KBUILD_BUILD_HOST="flexgroups"" >> $GITHUB_ENV
             echo "DEVICE_NAME="${{ matrix.devices }}"" >> $GITHUB_ENV
-            echo "KERNEL_VERSION="4.14" >> $GITHUB_ENV
+            echo "KERNEL_VERSION="4.14"" >> $GITHUB_ENV
 
             echo "-- Exporting toolchain settings..."
             export TC_URLS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/Neutron-Toolchains/clang-build-catalogue/releases/latest | grep "browser_download_url" | head -n 1 | cut -d '"' -f 4) 
