@@ -69,8 +69,7 @@ jobs:
             echo "-- Generating generic kernel config..."
             cd $KERNEL_DIR
             mkdir -p out &> /dev/null
-            MAKE_CMD=(make O=out "$MAKE_ARGS")
-            "${MAKE_CMD[@]}" "$MAIN_DEFCONFIG" &> /dev/null
+            make O=out "$MAKE_ARGS" "$MAIN_DEFCONFIG" &> /dev/null
 
             echo "-- Appending fragments to .config..."
             for fragment in $COMMON_DEFCONFIG $DEVICE_DEFCONFIG $FEATURE_DEFCONFIG; do
@@ -83,8 +82,8 @@ jobs:
             done
 
             echo "-- Executing olddefconfig and syncconfig..."
-            { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" olddefconfig &> /dev/null
-            { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" syncconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out "$MAKE_ARGS" olddefconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out "$MAKE_ARGS" syncconfig &> /dev/null
             echo "-- Copying merged config to defconfig directory..."
             cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_stock_defconfig
             cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_defconfig
@@ -177,14 +176,13 @@ jobs:
           echo "-- Prepping build environment..."
           cd "$KERNEL_DIR"
           mkdir -p out &> /dev/null
-          export MAKE_CMD=(make O=out "$MAKE_ARGS")
 
           echo "-- Parsing final defconfig..."
-          "${MAKE_CMD[@]}" $ACTUAL_MAIN_DEFCONFIG &> /dev/null
+          make O=out "$MAKE_ARGS" $ACTUAL_MAIN_DEFCONFIG &> /dev/null
 
           echo "-- Executing olddefconfig and syncconfig..."
-          { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" olddefconfig &> /dev/null
-          { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" syncconfig &> /dev/null
+          { yes "" 2>/dev/null || true; } | make O=out "$MAKE_ARGS" olddefconfig &> /dev/null
+          { yes "" 2>/dev/null || true; } | make O=out "$MAKE_ARGS" syncconfig &> /dev/null
 
           echo "-- Compiling the kernel..."
           make -j$(nproc --all) O=out "$MAKE_ARGS" 2>&1 | tee build.log
