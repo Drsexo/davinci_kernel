@@ -229,7 +229,7 @@ jobs:
       - name: Preparing AnyKernel3 sources
         run: |
             echo "-- Exporting AnyKernel3 settings..."
-            export IMAGE="Image.gz-dtb"
+            export IMAGE="Image.gz"
             export DTB=""
             export DTBO="dtbo.img"
             export VERSIONS="13-17"
