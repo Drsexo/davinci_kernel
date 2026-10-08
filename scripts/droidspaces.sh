@@ -6,9 +6,6 @@ source scripts/functions/droidspaces.sh
 
 case "$DROIDSPACES_SELECTOR" in
     droidspaces)
-        # Start of droidspaces integration
-        echo "-- Setting up Droidspaces..."
-
         # Patch the kernel
         echo "-- Droidspaces: Applying patches..."
         droidspaces_patches
