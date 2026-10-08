@@ -15,10 +15,18 @@ jobs:
           echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "KERNEL_BUILD_TYPE=Testing" >> $GITHUB_OUTPUT
 
-
+  # device workflow imports goes in here
   build-lineage-sm6150:
     needs: setup
     uses: ./.github/workflows/lineage-sm6150.yml
+    with:
+      build_date: ${{ needs.setup.outputs.build_date }}
+      build_type: ${{ needs.setup.outputs.build_type }}
+    secrets: inherit
+  
+  build-lineage-sm6125:
+    needs: setup
+    uses: ./.github/workflows/lineage-sm6125.yml
     with:
       build_date: ${{ needs.setup.outputs.build_date }}
       build_type: ${{ needs.setup.outputs.build_type }}
