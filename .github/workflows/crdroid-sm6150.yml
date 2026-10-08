@@ -35,8 +35,8 @@ jobs:
         id: vars
         run: |
             echo "-- Exporting kernel settings..."
-            export KERNEL_REPO="https://github.com/LineageOS/android_kernel_xiaomi_sm6150.git"
-            export KERNEL_BRANCH="lineage-24.0"
+            export KERNEL_REPO="https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150.git"
+            export KERNEL_BRANCH="17.0"
             export KERNEL_DIR="android_kernel_xiaomi_sm6150"
             
             echo "-- Exporting variables into GITHUB_ENV..."
