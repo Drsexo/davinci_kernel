@@ -13,7 +13,7 @@ jobs:
       - id: ts
         run: |
           echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
-          echo "KERNEL_BUILD_TYPE=Release" >> $GITHUB_OUTPUT
+          echo "KERNEL_BUILD_TYPE=Testing" >> $GITHUB_OUTPUT
 
 
   build-lineage-sm6150:
