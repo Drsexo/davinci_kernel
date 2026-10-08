@@ -54,7 +54,7 @@ jobs:
 
             echo "-- Downloading toolchain..."
             cd $KERNEL_DIR
-            curl -L -s -O "$TC_URLS"
+            curl -L -O "$TC_URLS"
             mkdir -p clang
             tar -C clang -xf neutron-clang-*.tar.zst
             rm -rf clang neutron-clang-*.tar.zst
