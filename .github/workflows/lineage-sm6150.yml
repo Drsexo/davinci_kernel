@@ -46,7 +46,7 @@ jobs:
             export MAKE_ARGS="ARCH=arm64 LLVM=1 LLVM_IAS=1 LD=ld.lld CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- CROSS_COMPILE_ARM32=arm-linux-gnueabi-"   
             
             echo "-- Cloning kernel repository..."
-            git clone --depth=1 --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR"  
+            git clone --depth=1 --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR" &> /dev/null
 
             echo "-- Downloading toolchain..."
             cd $KERNEL_DIR
