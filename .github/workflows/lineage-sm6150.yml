@@ -81,7 +81,7 @@ jobs:
             cd $KERNEL_DIR
             mkdir -p out &> /dev/null
             ls -alhZ
-            make O=out "$MAKE_ARGS" "$MAIN_DEFCONFIG"
+            make O=out $MAKE_ARGS "$MAIN_DEFCONFIG"
 
             echo "-- Appending fragments to .config..."
             for fragment in $COMMON_DEFCONFIG $DEVICE_DEFCONFIG $FEATURE_DEFCONFIG; do
@@ -94,8 +94,8 @@ jobs:
             done
 
             echo "-- Executing olddefconfig and syncconfig..."
-            { yes "" 2>/dev/null || true; } | make O=out "$MAKE_ARGS" olddefconfig &> /dev/null
-            { yes "" 2>/dev/null || true; } | make O=out "$MAKE_ARGS" syncconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
             echo "-- Copying merged config to defconfig directory..."
             cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_stock_defconfig
             cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_defconfig
@@ -169,13 +169,13 @@ jobs:
       - name: Apply goodies
         id: goodies
         run: |
-            echo "-- Exporting goodies settings...
+            echo "-- Exporting goodies settings..."
             export KERNELSU_SELECTOR="baka-susfs"
             export BBG_SELECTOR="bbg"
             export NOMOUNT_SELECTOR="nomount"
             export DROIDSPACES_SELECTOR="droidspaces"
 
-            echo "-- Runninng goodies script..."
+            echo "-- Running goodies script..."
             cp goodies.sh "$KERNEL_DIR/"
             cp -r scripts/* "$KERNEL_DIR/scripts/"
             cd "$KERNEL_DIR"
@@ -190,14 +190,14 @@ jobs:
           mkdir -p out &> /dev/null
 
           echo "-- Parsing final defconfig..."
-          make O=out "$MAKE_ARGS" $ACTUAL_MAIN_DEFCONFIG &> /dev/null
+          make O=out $MAKE_ARGS $ACTUAL_MAIN_DEFCONFIG &> /dev/null
 
           echo "-- Executing olddefconfig and syncconfig..."
-          { yes "" 2>/dev/null || true; } | make O=out "$MAKE_ARGS" olddefconfig &> /dev/null
-          { yes "" 2>/dev/null || true; } | make O=out "$MAKE_ARGS" syncconfig &> /dev/null
+          { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
+          { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
 
           echo "-- Compiling the kernel..."
-          make -j$(nproc --all) O=out "$MAKE_ARGS" 2>&1 | tee build.log
+          make -j$(nproc --all) O=out $MAKE_ARGS 2>&1 | tee build.log
 
           echo "-- Exporting build versions..."
           export KSU_NAME=$(grep -m 1 -e "-- BakaSU version name:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')
