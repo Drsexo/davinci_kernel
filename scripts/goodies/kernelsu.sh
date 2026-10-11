@@ -6,7 +6,7 @@ export SUSFS_PATCH="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/r
 echo "-- Setting up KernelSU integration: BakaSU SusFS"
 
 KSU_SETUP_URI="https://raw.githubusercontent.com/Baka-SU/BakaSU/main/kernel/setup.sh"
-KSU_SETUP_BRANCH="main"
+KSU_SETUP_BRANCH="5b76b884c75f729a220bb317aa4a4fc78f0e0e9c"
 KSU_HOOK="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/susfs_inline_hook_patches.sh"
 
 # Resolve BakaSU's version same moment setup.sh below fetches it.
