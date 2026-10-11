@@ -124,3 +124,4 @@ You can install different KernelSU Manager with BakaSU kernel drivers. This is c
 - [PixelOS-Devices](https://github.com/PixelOS-Devices) for kernel sources.   
 - [Mi-Thorium](https://github.com/Mi-Thorium) for kernel sources.   
 - [crdroidandroid](https://github.com/crdroidandroid) for kernel sources.   
+- [imren0x](https://github.com/imren0x) for kernel sources.   
