@@ -104,9 +104,9 @@ All kernels are exclusively compiled with **Neutron Clang**.
 
 **Notes**   
 You can install different KernelSU Manager with BakaSU kernel drivers. This is currently supported KernelSU Managers:   
-- [Original KernelSU](github.com/tiann/KernelSU) (tiann)    
-- [BakaSU Manager](github.com/Baka-SU/BakaSU) (BakaSU Developers)   
-- [KOW's KernelSU](github.com/KOWX712/KernelSU) (KOWX712)   
+- [Original KernelSU](https://github.com/tiann/KernelSU) (tiann)    
+- [BakaSU Manager](https://github.com/Baka-SU/BakaSU) (BakaSU Developers)   
+- [KOW's KernelSU](https://github.com/KOWX712/KernelSU) (KOWX712)   
    
 # Credits
 **Patches & buildscript**
