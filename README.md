@@ -116,7 +116,7 @@ You can install different KernelSU Manager with BakaSU kernel drivers. This is c
 - [TheSillyOk](https://github.com/TheSillyOk) for LTO fixup for 4.14 devices.   
 
 **Projects**   
-- [BakaSU](https://github.com/BakaSU) for BakaSU.   
+- [Baka-SU](https://github.com/Baka-SU) for BakaSU.   
 - [vc-teahouse](https://github.com/vc-teahouse) for Baseband Guard.   
 - [maxsteeel](https://github.com/maxsteeel) for NoMount.   
 - [ravindu644](https://github.com/ravindu644) for Droidspaces.   
