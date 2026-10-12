@@ -18,6 +18,8 @@ droidspaces_patches() {
     fi
     echo "-- Droidspaces: Applying cgroup patch..."
     wget -qO- $DROIDSPACES_CGROUP | patch -s -p1 --fuzz=5 || { echo "-- Fatal: Failed to apply Droidspaces cgroup patch!"; exit 1; }
+    echo "-- Droidspaces: Nuking cgroup pressure cmdline..."
+    sed -i 's/\(CONFIG_CMDLINE="[^"]*\)\<cgroup_disable=pressure\>[[:space:]]*/\1/g; s/[[:space:]]\+\<cgroup_disable=pressure\>"\([[:space:]]*\)$/"\1/' $FINAL_DEFCONFIG
 }
 
 # Ducttape for droidspaces
