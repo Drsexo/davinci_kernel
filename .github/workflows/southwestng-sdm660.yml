@@ -133,6 +133,23 @@ jobs:
             echo "-- Applying device specific patches..."
             cd "$KERNEL_DIR"
 
+            echo "-- Fixing fingerprint..."
+            sed -i '1s/^/#ifndef CONFIG_MACH_XIAOMI_SDM660\n#define CONFIG_MACH_XIAOMI_SDM660 1\n#endif\n\n/' drivers/input/fingerprint/fpc/fpc1020_platform_tee.c
+            sed -i '/#ifdef CONFIG_MACH_XIAOMI_SDM660/{
+              N
+              /int irqf;/{
+                N
+                c\	int irqf;
+              }
+            }' drivers/input/fingerprint/fpc/fpc1020_platform_tee.c
+            sed -i '/#ifdef CONFIG_MACH_XIAOMI_SDM660/{
+              N
+              /size_t i;/{
+                N
+                c\	size_t i;
+              }
+            }' drivers/input/fingerprint/fpc/fpc1020_platform_tee.c
+
             echo "-- Disabling modversions..."
             sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
 
