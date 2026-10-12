@@ -275,7 +275,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: mititanium--${{ matrix.types }}-${{ matrix.devices }}
+          name: southwestng-${{ matrix.types }}-${{ matrix.devices }}
           path: |
             *.zip
             release_info.txt
