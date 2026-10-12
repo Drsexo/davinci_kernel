@@ -79,7 +79,7 @@ jobs:
             export ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/vendor/xiaomi/sdm660_defconfig"
             export MAIN_DEFCONFIG="vendor/xiaomi/sdm660_defconfig"
             export COMMON_DEFCONFIG="vendor/debugfs.config"
-            export DEVICE_DEFCONFIG="vendor/${DEVICE_NAME}.config"
+            export DEVICE_DEFCONFIG="vendor/xiaomi/${DEVICE_NAME}.config"
             export FEATURE_DEFCONFIG=""
 
             echo "-- Exporting kernel configs into GITHUB_ENV..."
