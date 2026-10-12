@@ -43,7 +43,7 @@ jobs:
             export BRANCH_TYPE="${{ matrix.types }}"
             if [[ "$BRANCH_TYPE" == "main" ]]; then
               export KERNEL_BRANCH="main"
-            elif [[ "$DEVICE_LIST" == "legacy" ]]; then
+            elif [[ "$BRANCH_TYPE" == "legacy" ]]; then
               export KERNEL_BRANCH="main-legacy"
             fi
 
