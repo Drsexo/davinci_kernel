@@ -153,6 +153,9 @@ jobs:
             sed -i 's/goto rst_gpio_exit;/{ devm_gpio_free(dev, fpc1020->rst_gpio); devm_gpio_free(dev, fpc1020->irq_gpio); goto exit; }/g' drivers/input/fingerprint/fpc/fpc1020_platform_tee.c
             sed -i -e '/rst_gpio_exit:/d' -e '/irq_gpio_exit:/d' drivers/input/fingerprint/fpc/fpc1020_platform_tee.c
 
+            echo "-- Fixing legacy camera used on whyred..."
+            sed -i 's/#include "msm.h"/#include "..\//msm.h"/g; s/#include "msm_vb2.h"/#include "..\/msm_vb2\/msm_vb2.h"/g' drivers/media/platform/msm/camera_v2-legacy/camera/camera.c
+
             echo "-- Disabling modversions..."
             sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
 
