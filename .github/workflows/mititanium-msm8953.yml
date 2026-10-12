@@ -34,6 +34,9 @@ jobs:
       - name: Setup Kernel source & Variables
         id: vars
         run: |
+            echo "- Setting up github token so it doesn't fail again..."
+            git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
             echo "-- Exporting kernel settings..."
             export KERNEL_REPO="https://github.com/imren0x/msm-4.19.git"
             export KERNEL_BRANCH="mi8953/latest"

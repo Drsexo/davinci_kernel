@@ -34,6 +34,9 @@ jobs:
       - name: Setup Kernel source & Variables
         id: vars
         run: |
+            echo "- Setting up github token so it doesn't fail again..."
+            git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
             echo "-- Exporting kernel settings..."
             export KERNEL_REPO="https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150.git"
             export KERNEL_BRANCH="seventeen"
