@@ -149,6 +149,8 @@ jobs:
                 c\	size_t i;
               }
             }' drivers/input/fingerprint/fpc/fpc1020_platform_tee.c
+            sed -i 's/goto irq_gpio_exit;/{ devm_gpio_free(dev, fpc1020->irq_gpio); goto exit; }/g' drivers/input/fingerprint/fpc/fpc1020_platform_tee.c
+            sed -i 's/goto rst_gpio_exit;/{ devm_gpio_free(dev, fpc1020->rst_gpio); devm_gpio_free(dev, fpc1020->irq_gpio); goto exit; }/g' drivers/input/fingerprint/fpc/fpc1020_platform_tee.c
 
             echo "-- Disabling modversions..."
             sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
