@@ -157,6 +157,7 @@ jobs:
             sed -i 's|#include "msm.h"|#include "../msm.h"|g; s|#include "msm_vb2.h"|#include "../msm_vb2/msm_vb2.h"|g' drivers/media/platform/msm/camera_v2-legacy/camera/camera.c
             sed -i 's|#include "msm.h"|#include "../msm.h"|g' drivers/media/platform/msm/camera_v2-legacy/msm_vb2/msm_vb2.h
             sed -i 's|#include "msm_sd.h"|#include "../msm_sd.h"|g' drivers/media/platform/msm/camera_v2-legacy/msm_vb2/*.[ch]
+            sed -i 's|#include "qseecom_kernel.h"|#include "../../../../../drivers/misc/qseecom_kernel.h"|g' drivers/media/platform/msm/camera_v2-legacy/common/msm_camera_tz_util.c
 
             echo "-- Disabling modversions..."
             sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
