@@ -44,7 +44,7 @@ All kernels are exclusively compiled with **Neutron Clang**.
 | Mi-Thorium (MSM8937) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
 | Mi-Thorium (SDM439) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
 | Mi-Titanium (MSM8953) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
-| SouthWest-nG (SDM660) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
+| SouthWest-NG (SDM660) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
    
 **File Namings**   
 `neon-<OS/KernelName>-<DeviceName>-<Platform>-<BuildDate>.zip`   
