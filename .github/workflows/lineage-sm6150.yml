@@ -124,6 +124,7 @@ jobs:
         run: |
             echo "-- Exporting device patches..."
             export LTO_PATCH="https://github.com/TheSillyOk/kernel_ls_patches/raw/refs/heads/master/fix_lto.patch"
+            export DTC_PATCH="https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150/commit/35478a37e6b4d74b8c541eff79f11b75e5862bed.patch"
             export DTBO_PATCH1="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/e517bc363a19951ead919025a560f843c2c03ad3.patch"
             export DTBO_PATCH2="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/a62a3b05d0f29aab9c4bf8d15fe786a8c8a32c98.patch"
             export DTBO_PATCH3="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/4b89948ec7d610f997dd1dab813897f11f403a06.patch"
@@ -139,6 +140,9 @@ jobs:
 
             echo "-- Applying LTO patch..."
             apply_patches "$LTO_PATCH"
+
+            echo "-- Applying DTC patches..."
+            apply_patches "$DTC_PATCH"
 
             echo "-- Applying DTB patches..."
             apply_patches "$DTBO_PATCH1"

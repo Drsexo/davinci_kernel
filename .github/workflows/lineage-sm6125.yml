@@ -125,6 +125,7 @@ jobs:
             echo "-- Exporting device patches..."
             export DTC_PATCH1="https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/e207247aa4553fff7190dde5dabb50aec400b513.patch"
             export DTC_PATCH2="https://github.com/LineageOS/android_kernel_xiaomi_sm6150/commit/ae58bbd8f7af4c3c290e63ddcd4112559c5fc240.patch"
+            export DTC_PATCH3="https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150/commit/35478a37e6b4d74b8c541eff79f11b75e5862bed.patch"
             export DTBO_PATCH1="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/e517bc363a19951ead919025a560f843c2c03ad3.patch"
             export DTBO_PATCH2="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/a62a3b05d0f29aab9c4bf8d15fe786a8c8a32c98.patch"
             export DTBO_PATCH3="https://github.com/xiaomi-sm6150/android_kernel_xiaomi_sm6150/commit/4b89948ec7d610f997dd1dab813897f11f403a06.patch"
@@ -141,6 +142,7 @@ jobs:
             echo "-- Applying DTC patches..."
             apply_patches "$DTC_PATCH1"
             apply_patches "$DTC_PATCH2"
+            apply_patches "$DTC_PATCH3"
 
             echo "-- Applying DTB patches..."
             apply_patches "$DTBO_PATCH1"
