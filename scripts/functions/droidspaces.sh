@@ -40,7 +40,6 @@ droidspaces_configs() {
     echo "CONFIG_PID_NS=y" >> $FINAL_DEFCONFIG
     echo "CONFIG_UTS_NS=y" >> $FINAL_DEFCONFIG
     echo "CONFIG_IPC_NS=y" >> $FINAL_DEFCONFIG
-    echo "CONFIG_USER_NS=y" >> $FINAL_DEFCONFIG
     # Seccomp support
     echo "CONFIG_SECCOMP=y" >> $FINAL_DEFCONFIG
     echo "CONFIG_SECCOMP_FILTER=y" >> $FINAL_DEFCONFIG
@@ -102,6 +101,8 @@ droidspaces_configs() {
     # legacy compat
     echo "CONFIG_NF_CONNTRACK_IPV6=y" >> $FINAL_DEFCONFIG
     echo "CONFIG_NF_NAT_IPV6=y" >> $FINAL_DEFCONFIG
+    # Macvlan mode
+    echo "CONFIG_MACVLAN=y" >> $FINAL_DEFCONFIG
     # Disable this on older kernels to make internet work
     echo "CONFIG_ANDROID_PARANOID_NETWORK=n" >> $FINAL_DEFCONFIG
     # Fix for docker unsafe procfs error
