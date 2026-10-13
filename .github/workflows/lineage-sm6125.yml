@@ -157,6 +157,9 @@ jobs:
             echo "CONFIG_EROFS_FS_SECURITY=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_EROFS_FS_ZIP=y" >> $FINAL_DEFCONFIG
 
+            echo "-- Getting rid of the dirty flag..."
+            sed -i "s/printf '%s' -dirty/:/g" scripts/setlocalversion
+
             echo "-- Disabling modversions..."
             sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
 
