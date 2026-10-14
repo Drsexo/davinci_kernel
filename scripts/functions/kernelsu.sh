@@ -109,6 +109,6 @@ ksu_export_selinux_symbols() {
 
 # Fix exposed SELinux on LineageOS and their forks
 ksu_fix_exposed_selinux_linag() {
-    echo "-- KernelSU: Fixing exposed adbd selinux..."
-    curl -LSs --fail --retry 3 "$KSU_SELINUX_HIDE_LINEAGE" | bash -s KernelSU/ || { echo "-- Fatal: KSU setup script failed to download/run!"; exit 1; }
+    echo "-- KernelSU: Fixing exposed adbd SELinux..."
+    curl -LSs --fail --retry 3 "$KSU_SELINUX_HIDE_LINEAGE" | bash -s KernelSU/ &> /dev/null || { echo "-- Fatal: KSU setup script failed to download/run!"; exit 1; }
 }
