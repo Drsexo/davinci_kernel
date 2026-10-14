@@ -18,14 +18,27 @@ droidspaces_patches() {
     fi
     echo "-- Droidspaces: Applying cgroup patch..."
     wget -qO- $DROIDSPACES_CGROUP | patch -s -p1 --fuzz=5 || { echo "-- Fatal: Failed to apply Droidspaces cgroup patch!"; exit 1; }
-    # echo "-- Droidspaces: Nuking cgroup pressure cmdline..."
-    # sed -i 's/\(CONFIG_CMDLINE="[^"]*\)\<cgroup_disable=pressure\>[[:space:]]*/\1/g; s/[[:space:]]\+\<cgroup_disable=pressure\>"\([[:space:]]*\)$/"\1/' $FINAL_DEFCONFIG
 }
 
 # Ducttape for droidspaces
 droidspaces_quirks() {
     if [[ "$KERNEL_VERSION" == "4.14" ]]; then
-        echo "-- Droidspaces: No quirks for 4.14 kernels yet."
+        if grep -q "^CONFIG_SCHED_WALT=y" "$FINAL_DEFCONFIG"; then
+            echo "-- Droidspaces: WALT is enabled in defconfig. Disabling..."
+            sed -i 's/^CONFIG_SCHED_WALT=y/# CONFIG_SCHED_WALT is not set/' "$FINAL_DEFCONFIG"
+            echo "-- Droidspaces: WALT has been set to 'not set'."
+        else
+            echo "-- Droidspaces: WALT is either already disabled or not present in defconfig"
+        fi
+    fi
+    if [[ "$KERNEL_VERSION" == "4.19" ]]; then
+        if grep -q "^CONFIG_SCHED_WALT=y" "$FINAL_DEFCONFIG"; then
+            echo "-- Droidspaces: WALT is enabled in defconfig. Disabling..."
+            sed -i 's/^CONFIG_SCHED_WALT=y/# CONFIG_SCHED_WALT is not set/' "$FINAL_DEFCONFIG"
+            echo "-- Droidspaces: WALT has been set to 'not set'."
+        else
+            echo "-- Droidspaces: WALT is either already disabled or not present in defconfig"
+        fi
     fi
 }
 
