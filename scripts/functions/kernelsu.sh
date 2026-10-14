@@ -110,5 +110,5 @@ ksu_export_selinux_symbols() {
 # Fix exposed SELinux on LineageOS and their forks
 ksu_fix_exposed_selinux_linag() {
     echo "-- KernelSU: Fixing exposed adbd SELinux..."
-    curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$KSU_SELINUX_HIDE_LINEAGE" | bash -s KernelSU/ &> /dev/null || { echo "-- Fatal: SELinux Hide fixup script failed to download/run!"; exit 1; }
+    curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$KSU_SELINUX_HIDE_LINEAGE" | bash -s KernelSU/ || { echo "-- Fatal: SELinux Hide fixup script failed to download/run!"; exit 1; }
 }
