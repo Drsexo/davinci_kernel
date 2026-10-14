@@ -24,6 +24,9 @@ case "$KERNELSU_SELECTOR" in
 
         # Export SELinux Symbols
         ksu_export_selinux_symbols
+
+        # Fix exposed SELinux
+        ksu_fix_exposed_selinux_linag
         ;;
     baka-susfs)
         # Import hook script
@@ -51,6 +54,9 @@ case "$KERNELSU_SELECTOR" in
 
         # Export SELinux Symbols
         ksu_export_selinux_symbols
+
+        # Fix exposed SELinux
+        ksu_fix_exposed_selinux_linag
         ;;
     none|"")
         echo "-- KernelSU is not selected."
