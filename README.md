@@ -117,6 +117,7 @@ You can install different KernelSU Manager with BakaSU kernel drivers. This is c
 - [xiaomi-sm6150](https://github.com/xiaomi-sm6150) for the DTB patches.   
 - [JackA1ltMan](https://github.com/JackA1ltman) for BakaSU hook scripts & SUSFS patches.   
 - [TheSillyOk](https://github.com/TheSillyOk) for LTO fixup for 4.14 devices.   
+- [null07089](https://github.com/null07089) for SELinux Hide fixup script.
 
 **Projects**   
 - [Baka-SU](https://github.com/Baka-SU) for BakaSU.   
