@@ -58,7 +58,7 @@ jobs:
 
             echo "-- Reverting to a specific commit..."
             cd $KERNEL_DIR
-            git reset --hard 487a0cab725c29cb83076afc21758f6dbf857367 &> /dev/null
+            git reset --hard 46eac988a5df8cccec5c5af04128c2b487ed1f67 &> /dev/null
             cd ..
 
             echo "-- Exporting variables into GITHUB_PATH..."
