@@ -3,6 +3,7 @@
 # Export KernelSU variables
 export SUSFS_PATCH="https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/Patch/susfs_patch_to_${KERNEL_VERSION}.patch"
 export KSU_SETUP_URI="https://raw.githubusercontent.com/Baka-SU/BakaSU/refs/heads/main/kernel/setup.sh"
+export KSU_SELINUX_HIDE_LINEAGE="https://raw.githubusercontent.com/null07089/Lineage_Hide/refs/heads/main/scripts/selinux_hide_patch.sh"
 
 # Temporary measurements before they add stuff again
 # export KSU_SETUP_BRANCH="main"
@@ -104,4 +105,10 @@ ksu_export_selinux_symbols() {
     unstatic "security/selinux/hooks.c" "struct security_operations selinux_ops"
     unstatic "security/selinux/ss/services.c" "void security_dump_masked_av"
     unstatic "security/selinux/ss/services.c" "void context_struct_compute_av"
+}
+
+# Fix exposed SELinux on LineageOS and their forks
+ksu_fix_exposed_selinux_linag() {
+    echo "-- KernelSU: Fixing exposed adbd selinux..."
+    curl -LSs --fail --retry 3 "$KSU_SELINUX_HIDE_LINEAGE" | bash -s KernelSU/ || { echo "-- Fatal: KSU setup script failed to download/run!"; exit 1; }
 }
