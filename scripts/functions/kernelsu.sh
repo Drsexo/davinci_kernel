@@ -7,8 +7,8 @@ export KSU_SELINUX_HIDE_LINEAGE="https://raw.githubusercontent.com/null07089/Lin
 
 # Temporary measurements before they add stuff again
 # export KSU_SETUP_BRANCH="main"
-# export KSU_SETUP_BRANCH="5b76b884c75f729a220bb317aa4a4fc78f0e0e9c"
-export KSU_SETUP_BRANCH="sync-susfs"
+export KSU_SETUP_BRANCH="5b76b884c75f729a220bb317aa4a4fc78f0e0e9c"
+# export KSU_SETUP_BRANCH="sync-susfs"
 
 # Import hook script
 ksu_import_hook_script() {
