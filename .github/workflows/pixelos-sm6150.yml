@@ -154,6 +154,8 @@ jobs:
 
       - name: Apply goodies
         id: goodies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
             echo "-- Exporting goodies settings..."
             export KERNELSU_SELECTOR="baka-susfs"
