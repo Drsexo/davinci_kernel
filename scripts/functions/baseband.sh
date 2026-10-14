@@ -5,7 +5,7 @@ export BBG_SETUP_URI="https://raw.githubusercontent.com/vc-teahouse/Baseband-gua
 
 # Baseband Guard Setup
 bbg_setup() {
-    curl -LSs --fail --retry 3 "$BBG_SETUP_URI" | bash &> /dev/null || { echo "Fatal: BBG setup failed!"; exit 1; }
+    curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$BBG_SETUP_URI" | bash &> /dev/null || { echo "Fatal: BBG setup failed!"; exit 1; }
     echo "CONFIG_BBG=y" >> "$FINAL_DEFCONFIG"
 }
 

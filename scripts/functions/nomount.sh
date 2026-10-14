@@ -42,13 +42,13 @@ nomount_setup() {
 # Setup nomount bleeding edge
 nomount_setup_bleeding_edge() {
     echo "-- NoMount: Bleeding Edge! Running setup script..."
-    curl -LSs --fail --retry 3 "$NOMOUNT_SETUP_URI" | bash -s "$NOMOUNT_SETUP_BRANCH_BLEEDING_EDGE" &> /dev/null || { echo "-- Fatal: NoMount setup script failed to download/run!"; exit 1; }
+    curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$NOMOUNT_SETUP_URI" | bash -s "$NOMOUNT_SETUP_BRANCH_BLEEDING_EDGE" &> /dev/null || { echo "-- Fatal: NoMount setup script failed to download/run!"; exit 1; }
     echo "CONFIG_NOMOUNT=y" >> "$FINAL_DEFCONFIG"
 }
 
 # Setup nomount stable
 nomount_setup_stable() {
     echo "-- NoMount: Running setup script..."
-    curl -LSs --fail --retry 3 "$NOMOUNT_SETUP_URI" | bash -s "$NOMOUNT_SETUP_BRANCH_STABLE" &> /dev/null || { echo "-- Fatal: NoMount setup script failed to download/run!"; exit 1; }
+    curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$NOMOUNT_SETUP_URI" | bash -s "$NOMOUNT_SETUP_BRANCH_STABLE" &> /dev/null || { echo "-- Fatal: NoMount setup script failed to download/run!"; exit 1; }
     echo "CONFIG_NOMOUNT=y" >> "$FINAL_DEFCONFIG"
 }

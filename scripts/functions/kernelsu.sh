@@ -22,7 +22,7 @@ ksu_import_hook_script() {
 # Run setup script
 ksu_run_setup() {
     echo "-- KernelSU: Running setup script..."
-    curl -LSs --fail --retry 3 "$KSU_SETUP_URI" | bash -s "$KSU_SETUP_BRANCH" &> /dev/null || { echo "-- Fatal: KSU setup script failed to download/run!"; exit 1; }
+    curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$KSU_SETUP_URI" | bash -s "$KSU_SETUP_BRANCH" &> /dev/null || { echo "-- Fatal: KSU setup script failed to download/run!"; exit 1; }
 }
 
 # Configure basic KernelSu configs
@@ -110,5 +110,5 @@ ksu_export_selinux_symbols() {
 # Fix exposed SELinux on LineageOS and their forks
 ksu_fix_exposed_selinux_linag() {
     echo "-- KernelSU: Fixing exposed adbd SELinux..."
-    curl -LSs --fail --retry 3 "$KSU_SELINUX_HIDE_LINEAGE" | bash -s KernelSU/ &> /dev/null || { echo "-- Fatal: KSU setup script failed to download/run!"; exit 1; }
+    curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$KSU_SELINUX_HIDE_LINEAGE" | bash -s KernelSU/ &> /dev/null || { echo "-- Fatal: SELinux Hide fixup script failed to download/run!"; exit 1; }
 }
