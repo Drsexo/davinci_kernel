@@ -146,6 +146,7 @@ jobs:
             echo "-- Fixing fair scheduler where WALT is disabled..."
             sed -i '/FULL_THROTTLE_BOOST/d' kernel/sched/fair.c
             sed -i 's/sched_boost() == FULL_THROTTLE_BOOST ?/0 ?/' kernel/sched/rt.c
+            sed -i 's/#include "walt.h"/#include "walt.h"\n\n\/* LLD Fix: Stub missing cherry-picked symbols *\/\n#define trace_sched_load_balance_skip_tasks(...) do { } while (0)\n#define mark_reserved(cpu) do { } while (0)/' kernel/sched/fair.c
 
             echo "-- Disabling Werror enforcement..."
             echo "CONFIG_CC_WERROR=n" >> $FINAL_DEFCONFIG

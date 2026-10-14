@@ -162,6 +162,7 @@ jobs:
             sed -i 's/sched_boost() == FULL_THROTTLE_BOOST ?/0 ?/' kernel/sched/rt.c
             sed -i 's/^[[:space:]]*for_each_sched_cluster(cluster) {/#ifdef CONFIG_SCHED_WALT\n&/' kernel/sched/core_ctl.c
             sed -i 's/^[[:space:]]*initialized = true;/#endif\n&/' kernel/sched/core_ctl.c
+            sed -i 's/#include "walt.h"/#include "walt.h"\n\n\/* LLD Fix: Stub missing cherry-picked symbols *\/\n#define trace_sched_load_balance_skip_tasks(...) do { } while (0)\n#define mark_reserved(cpu) do { } while (0)/' kernel/sched/fair.c
 
             echo "-- Getting rid of the dirty flag..."
             sed -i "s/printf '%s' -dirty/:/g" scripts/setlocalversion
