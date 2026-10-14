@@ -143,6 +143,10 @@ jobs:
             echo "-- Disabling modversions..."
             sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
 
+            echo "-- Fixing fair scheduler where WALT is disabled..."
+            sed -i 's/struct cfs_rq \*cfs_rq = cfs_rq_of(se);/cfs_rq = cfs_rq_of(se);/' kernel/sched/fair.c
+            sed -i '/FULL_THROTTLE_BOOST/d' kernel/sched/fair.c
+
             echo "-- Getting rid of the dirty flag..."
             sed -i "s/printf '%s' -dirty/:/g" scripts/setlocalversion
 
