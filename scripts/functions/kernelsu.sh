@@ -7,8 +7,8 @@ export KSU_SELINUX_HIDE_LINEAGE="https://raw.githubusercontent.com/null07089/Lin
 
 # Temporary measurements before they add stuff again
 # export KSU_SETUP_BRANCH="main"
-export KSU_SETUP_BRANCH="5b76b884c75f729a220bb317aa4a4fc78f0e0e9c"
-# export KSU_SETUP_BRANCH="sync-susfs"
+# export KSU_SETUP_BRANCH="5b76b884c75f729a220bb317aa4a4fc78f0e0e9c"
+export KSU_SETUP_BRANCH="sync-susfs"
 
 # Import hook script
 ksu_import_hook_script() {
@@ -110,5 +110,5 @@ ksu_export_selinux_symbols() {
 # Fix exposed SELinux on LineageOS and their forks
 ksu_fix_exposed_selinux_linag() {
     echo "-- KernelSU: Fixing exposed adbd SELinux..."
-    curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$KSU_SELINUX_HIDE_LINEAGE" | bash -s KernelSU/ || { echo "-- Fatal: SELinux Hide fixup script failed to download/run!"; exit 1; }
+    curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$KSU_SELINUX_HIDE_LINEAGE" | bash -s KernelSU/ &> /dev/null || { echo "-- Fatal: SELinux Hide fixup script failed to download/run!"; exit 1; }
 }
