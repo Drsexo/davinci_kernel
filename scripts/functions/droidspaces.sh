@@ -23,22 +23,10 @@ droidspaces_patches() {
 # Ducttape for droidspaces
 droidspaces_quirks() {
     if [[ "$KERNEL_VERSION" == "4.14" ]]; then
-        if grep -q "^CONFIG_SCHED_WALT=y" "$FINAL_DEFCONFIG"; then
-            echo "-- Droidspaces: WALT is enabled in defconfig. Disabling..."
-            sed -i 's/^CONFIG_SCHED_WALT=y/# CONFIG_SCHED_WALT is not set/' "$FINAL_DEFCONFIG"
-            echo "-- Droidspaces: WALT has been set to 'not set'."
-        else
-            echo "-- Droidspaces: WALT is either already disabled or not present in defconfig"
-        fi
+        echo "-- Droidspaces: No quirks yet for 4.14 kernels."
     fi
     if [[ "$KERNEL_VERSION" == "4.19" ]]; then
-        if grep -q "^CONFIG_SCHED_WALT=y" "$FINAL_DEFCONFIG"; then
-            echo "-- Droidspaces: WALT is enabled in defconfig. Disabling..."
-            sed -i 's/^CONFIG_SCHED_WALT=y/# CONFIG_SCHED_WALT is not set/' "$FINAL_DEFCONFIG"
-            echo "-- Droidspaces: WALT has been set to 'not set'."
-        else
-            echo "-- Droidspaces: WALT is either already disabled or not present in defconfig"
-        fi
+        echo "-- Droidspaces: No quirks yet for 4.19 kernels."
     fi
 }
 
