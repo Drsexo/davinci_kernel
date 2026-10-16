@@ -112,3 +112,9 @@ ksu_fix_exposed_selinux_linag() {
     echo "-- KernelSU: Fixing exposed adbd SELinux..."
     curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$KSU_SELINUX_HIDE_LINEAGE" | bash -s KernelSU/ &> /dev/null || { echo "-- Fatal: SELinux Hide fixup script failed to download/run!"; exit 1; }
 }
+
+# Nuke dirty flag
+ksu_nuke_dirtyflag() {
+    echo "-- KernelSU: Removing dirty flag label..."
+    sed -i 's/\$(KSU_COMMIT_SHA)-dirty/$(KSU_COMMIT_SHA)/' KernelSU/kernel/Kbuild
+}

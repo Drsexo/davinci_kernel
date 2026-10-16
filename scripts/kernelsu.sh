@@ -27,6 +27,9 @@ case "$KERNELSU_SELECTOR" in
 
         # Fix exposed SELinux
         ksu_fix_exposed_selinux_linag
+
+        # Nuke dirtyflag
+        ksu_nuke_dirtyflag
         ;;
     baka-susfs)
         # Import hook script
@@ -57,6 +60,9 @@ case "$KERNELSU_SELECTOR" in
 
         # Fix exposed SELinux
         ksu_fix_exposed_selinux_linag
+
+        # Nuke dirtyflag
+        ksu_nuke_dirtyflag
         ;;
     none|"")
         echo "-- KernelSU is not selected."
