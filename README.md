@@ -37,10 +37,10 @@ All kernels are exclusively compiled with **Neutron Clang**.
 | Kernel Name | KernelSU | Baseband Guard | NoMount | Droidspaces |
 | :--- | :---: | :---: | :---: | :---: |
 | LineageOS (SM6150) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
-| CrDroid (SM6150) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
+| CrDroid (SM6150) | ✅ w/ SUSFS | ✅ | ✅ | 🟡 |
 | PixelOS (SM6150) | ✅ w/ SUSFS | ✅ | ✅ | ❌ |
 | AwakenOS (SM6150) | ✅ w/ SUSFS | ✅ | ✅ | ❌ |
-| LineageOS (SM6125) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
+| LineageOS (SM6125) | ✅ w/ SUSFS | ✅ | ✅ | 🟡 |
 | Mi-Thorium (MSM8937) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
 | Mi-Thorium (SDM439) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
 | Mi-Titanium (MSM8953) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
@@ -55,7 +55,8 @@ All kernels are exclusively compiled with **Neutron Clang**.
 - **BuildDate:** When the kernel was compiled.
 
 **Notes**
-- During the usage of Droidspaces with systemd-based distros, mask the `NetworkManager` and `wpa_supplicant` systemd services to avoid overriding whos owning the wifi device, a.k.a NetworkManager will take control of the wifi device and android will not be able to connect to wifi until you masked the systemd services. 
+- During the usage of Droidspaces with systemd-based distros, mask the `NetworkManager` and `wpa_supplicant` systemd services to avoid overriding whos owning the wifi device, a.k.a NetworkManager will take control of the wifi device and android will not be able to connect to wifi until you masked the systemd services.   
+- CrDroid (SM6150) & LineageOS (SM6125) Droidspaces support have been marked "Yellow" because of the new Resources Limiter features of Droidspaces 7.0.0, and this feature is incompatible with said kernels because said kernels have Qualcomm WALT feature enabled by default, and CFS_BANDWIDTH is NOT compatible with Qualcomm WALT enabled.   
 
 # Compatibility
 **Supported device list**   
