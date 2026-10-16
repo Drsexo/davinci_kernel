@@ -57,6 +57,7 @@ All kernels are exclusively compiled with **Neutron Clang**.
 **Notes**
 - During the usage of Droidspaces with systemd-based distros, mask the `NetworkManager` and `wpa_supplicant` systemd services to avoid overriding whos owning the wifi device, a.k.a NetworkManager will take control of the wifi device and android will not be able to connect to wifi until you masked the systemd services.   
 - CrDroid (SM6150) & LineageOS (SM6125) Droidspaces support have been marked "Yellow" because of the new Resources Limiter features of Droidspaces 7.0.0, and this feature is incompatible with said kernels because said kernels have Qualcomm WALT feature enabled by default, and CFS_BANDWIDTH is NOT compatible with Qualcomm WALT enabled.   
+- Any kind of CLI activities, for example Termux or Droidspaces, will crash if you enable SELinux Hide on KernelSU. Please disable them first before continuing.
 
 # Compatibility
 **Supported device list**   
@@ -88,7 +89,7 @@ All kernels are exclusively compiled with **Neutron Clang**.
 - Flash or Sideload the flashable zip with `adb sideload </path/to/flashable.zip>`  
 - Allow to continue if you see Error 21 signature invalid.   
 - Reboot to system.   
-- Install lastest KernelSU Manager from [here](https://github.com/Baka-SU/BakaSU/releases). (Optional)
+- Install lastest BakaSU Manager. [[Original](https://nightly.link/Baka-SU/BakaSU/workflows/build-manager/main/Manager-release.zip) / [Spoofed](https://nightly.link/Baka-SU/BakaSU/workflows/build-manager/main/Spoofed-Manager-release.zip)] (Optional)
 - Profit.   
 
 **On BakaSU Manager**   
@@ -107,9 +108,8 @@ All kernels are exclusively compiled with **Neutron Clang**.
 - Profit.   
 
 **Notes**   
-You can install different KernelSU Manager with BakaSU kernel drivers. This is currently supported KernelSU Managers:   
+You can install different KernelSU Manager with BakaSU kernel drivers. This is currently supported other KernelSU Managers:   
 - [Original KernelSU](https://github.com/tiann/KernelSU) (tiann)    
-- [BakaSU Manager](https://github.com/Baka-SU/BakaSU) (BakaSU Developers)   
 - [KOW's KernelSU](https://github.com/KOWX712/KernelSU) (KOWX712)   
    
 # Credits
