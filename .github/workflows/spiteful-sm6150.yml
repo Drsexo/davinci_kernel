@@ -44,7 +44,7 @@ jobs:
             
             echo "-- Exporting variables into GITHUB_ENV..."
             echo "KERNEL_DIR=$KERNEL_DIR" >> $GITHUB_ENV
-            echo "MAKE_ARGS=ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-elf- CROSS_COMPILE_COMPAT=arm-eabi-" >> $GITHUB_ENV
+            echo "MAKE_ARGS=ARCH=arm64 LLVM=1 LLVM_IAS=1 CC=clang LD=ld.lld AR=llvm-ar AS=llvm-as NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-androideabi- CROSS_COMPILE_ARM32=arm-linux-androideabi- CLANG_TRIPLE=aarch64-linux-gnu-" >> $GITHUB_ENV
             echo "KBUILD_BUILD_USER="riarumoda"" >> $GITHUB_ENV
             echo "KBUILD_BUILD_HOST="flexgroups"" >> $GITHUB_ENV
             echo "DEVICE_NAME="${{ matrix.devices }}"" >> $GITHUB_ENV
