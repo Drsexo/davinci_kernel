@@ -31,8 +31,6 @@ This kernel solely focuses on adding goodies on top of the stock kernel, which f
 This kernel follows weekly builds of LineageOS, you will get a new kernel build every sunday. You might need to check out the GitHub repo for new releases. Emergency rebuilt might happen if services that this builder rely on being broken or kernel source code have massive changes.   
 
 # Features
-All kernels are exclusively compiled with **Neutron Clang**.   
-
 **Features list**   
 | Kernel Name | KernelSU | Baseband Guard | NoMount | Droidspaces |
 | :--- | :---: | :---: | :---: | :---: |
