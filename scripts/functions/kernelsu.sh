@@ -58,8 +58,10 @@ ksu_fix_susfs_fouronefour() {
     if [[ "$KERNEL_VERSION" == "4.14" ]]; then
         if ! grep -q "susfs_is_uname_spoof_buffer_set" kernel/sys.c; then
             echo "-- KernelSU: Patching kernel/sys.c for susfs_spoof_uname..."
-            sed -i 's/^SYSCALL_DEFINE1(newuname/#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\nextern struct static_key_false susfs_is_uname_spoof_buffer_set;\nextern void susfs_spoof_uname(struct new_utsname* tmp);\n#endif\nSYSCALL_DEFINE1(newuname/' kernel/sys.c
-            sed -i 's/memcpy(&tmp, utsname(), sizeof(tmp));/&\n#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\n\tif (static_branch_likely(\&susfs_is_uname_spoof_buffer_set))\n\t\tsusfs_spoof_uname(\&tmp);\n#endif/' kernel/sys.c
+            git checkout kernel/sys.c
+            rm -f kernel/sys.c.rej
+            sed -i 's/^SYSCALL_DEFINE1(newuname/#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\nextern struct static_key_false susfs_is_uname_spoof_buffer_set;\nextern void susfs_spoof_uname(struct new_utsname* tmp);\n#endif\n&/' kernel/sys.c
+            sed -i '/^SYSCALL_DEFINE1(newuname/,/^}/ s/memcpy(&tmp, utsname(), sizeof(tmp));/memcpy(\&tmp, utsname(), sizeof(tmp));\n#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\n\tif (static_branch_likely(\&susfs_is_uname_spoof_buffer_set))\n\t\tsusfs_spoof_uname(\&tmp);\n#endif/' kernel/sys.c
         fi
     fi
 }
