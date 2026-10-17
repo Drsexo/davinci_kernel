@@ -71,8 +71,8 @@ jobs:
             echo "-- Downloading toolchain..."
             cd $KERNEL_DIR
             git clone --depth=1 "$TC_URL_CLANG" "clang" &> /dev/null
-            git clone --depth=1 "$TC_URL_GCC64" "clang" &> /dev/null
-            git clone --depth=1 "$TC_URL_GCC32" "clang" &> /dev/null
+            git clone --depth=1 "$TC_URL_GCC64" "gcc64" &> /dev/null
+            git clone --depth=1 "$TC_URL_GCC32" "gcc32" &> /dev/null
             cd ..
 
       - name: Generate kernel configs
@@ -118,7 +118,7 @@ jobs:
                 -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
                 -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
                 $MAIN_DEFCONFIG
-                
+
             echo "-- Removing regalloc advisor..."
             sed -i '/-regalloc-enable-advisor=release/d' Makefile
 
