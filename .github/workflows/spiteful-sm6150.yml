@@ -109,7 +109,7 @@ jobs:
 
             echo "-- Executing olddefconfig and silentoldconfig..."
             { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS silentoldconfig &> /dev/null
 
             echo "-- Copying merged config to defconfig directory..."
             cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_defconfig
@@ -189,7 +189,7 @@ jobs:
 
             echo "-- Executing olddefconfig and syncconfig..."
             { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS silentoldconfig &> /dev/null
 
             echo "-- Compiling the kernel..."
             make -j$(nproc --all) O=out $MAKE_ARGS 2>&1 | tee build.log
