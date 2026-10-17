@@ -52,7 +52,7 @@ jobs:
 
             echo "-- Exporting toolchain settings..."
             export TC_URL_CLANG="https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r547379.git"
-            export TC_URLS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/mvaisakh/gcc-build/releases/latest | grep "browser_download_url" | head -n 1 | cut -d '"' -f 4 | grep -E "eva-gcc-arm.*\.xz") 
+            TC_URLS=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/mvaisakh/gcc-build/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | grep -E "eva-gcc-arm.*\.xz")
             
             echo "-- Cloning kernel repository..."
             git clone --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR" &> /dev/null
@@ -76,10 +76,10 @@ jobs:
             for file in eva-gcc-arm*.xz; do
               if [[ "$file" == *arm64* ]]; then
                 tar -xf "$file" 2>/dev/null
-                mv gcc-arm64 gcc64
+                mv gcc-arm64* gcc64
               else
                 tar -xf "$file" 2>/dev/null
-                mv gcc-arm gcc32
+                mv gcc-arm-* gcc32 2>/dev/null || mv gcc-arm gcc32
               fi
               rm -rf "$file"
             done
