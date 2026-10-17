@@ -52,7 +52,7 @@ jobs:
 
             echo "-- Exporting toolchain settings..."
             export TC_URL_CLANG="https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r547379.git"
-            TC_URLS=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/mvaisakh/gcc-build/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | grep -E "eva-gcc-arm.*\.xz")
+            export TC_URLS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/mvaisakh/gcc-build/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | grep -E "eva-gcc-arm.*\.xz")
             
             echo "-- Cloning kernel repository..."
             git clone --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR" &> /dev/null
