@@ -161,10 +161,6 @@ jobs:
             echo "-- Parsing final defconfig..."
             make O=out $MAKE_ARGS $COMPILE_DEFCONFIG &> /dev/null
 
-            echo "-- Executing olddefconfig and silentoldconfig..."
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS silentoldconfig &> /dev/null
-
             echo "-- Compiling the kernel..."
             make -j$(nproc --all) O=out $MAKE_ARGS 2>&1 | tee build.log
 
