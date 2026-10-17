@@ -103,23 +103,6 @@ jobs:
             echo "-- Applying device specific patches..."
             cd "$KERNEL_DIR"
 
-            echo "-- Enabling EROFS support..."
-            echo "CONFIG_EROFS_FS=y" >> $FINAL_DEFCONFIG
-            echo "CONFIG_EROFS_FS_XATTR=y" >> $FINAL_DEFCONFIG
-            echo "CONFIG_EROFS_FS_POSIX_ACL=y" >> $FINAL_DEFCONFIG
-            echo "CONFIG_EROFS_FS_SECURITY=y" >> $FINAL_DEFCONFIG
-            echo "CONFIG_EROFS_FS_ZIP=y" >> $FINAL_DEFCONFIG
-
-            echo "-- Getting rid of the dirty flag..."
-            sed -i "s/printf '%s' -dirty/:/g" scripts/setlocalversion
-
-            echo "-- Disabling modversions..."
-            sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
-
-            echo "-- Disabling IKHeaders..."
-            sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $FINAL_DEFCONFIG
-            sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $FINAL_DEFCONFIG
-
             echo "-- Tuning default configs..."
             echo "CONFIG_LTO_CLANG=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_THINLTO=y" >> $FINAL_DEFCONFIG
@@ -145,8 +128,8 @@ jobs:
         run: |
             echo "-- Exporting goodies settings..."
             export KERNELSU_SELECTOR="baka-susfs"
-            export BBG_SELECTOR="bbg"
-            export NOMOUNT_SELECTOR="nomount"
+            export BBG_SELECTOR="none"
+            export NOMOUNT_SELECTOR="none"
             export DROIDSPACES_SELECTOR="none"
 
             echo "-- Running goodies script..."
@@ -192,7 +175,7 @@ jobs:
       - name: Preparing AnyKernel3 sources
         run: |
             echo "-- Exporting AnyKernel3 settings..."
-            export IMAGE="Image.gz-dtb"
+            export IMAGE="Image.gz"
             export DTB=""
             export DTBO="dtbo.img"
             export VERSIONS="11-15"
