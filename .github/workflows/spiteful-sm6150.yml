@@ -81,7 +81,7 @@ jobs:
             echo "-- Exporting kernel configs..."
             export ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/sweet_defconfig"
             export MAIN_DEFCONFIG="sweet_defconfig"
-            export COMMON_DEFCONFIG=""
+            export COMMON_DEFCONFIG="vendor/debugfs.config"
             export DEVICE_DEFCONFIG=""
             export FEATURE_DEFCONFIG=""
 
@@ -92,10 +92,36 @@ jobs:
             echo "DEVICE_DEFCONFIG=$DEVICE_DEFCONFIG" >> $GITHUB_ENV
             echo "FEATURE_DEFCONFIG=$FEATURE_DEFCONFIG" >> $GITHUB_ENV
 
+            echo "-- Generating generic kernel config..."
+            cd $KERNEL_DIR
+            mkdir -p out &> /dev/null
+            make O=out $MAKE_ARGS "$MAIN_DEFCONFIG" &> /dev/null
+
+            echo "-- Appending fragments to .config..."
+            for fragment in $COMMON_DEFCONFIG $DEVICE_DEFCONFIG $FEATURE_DEFCONFIG; do
+                if [ -f "arch/arm64/configs/$fragment" ]; then
+                    echo "   -> Merging $fragment..."
+                    cat "arch/arm64/configs/$fragment" >> out/.config
+                else
+                    echo "   -> Warning: Fragment arch/arm64/configs/$fragment not found!"
+                fi
+            done
+
+            echo "-- Executing olddefconfig and silentoldconfig..."
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
+
+            echo "-- Copying merged config to defconfig directory..."
+            cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_defconfig
+
+            echo "-- Cleaning up..."
+            rm -rf out &> /dev/null
+
             echo "-- Exporting finalized kernel config..."
-            export FINAL_DEFCONFIG="$ACTUAL_MAIN_DEFCONFIG"
+            export FINAL_DEFCONFIG="arch/arm64/configs/${{ matrix.devices }}_defconfig"
             echo "FINAL_DEFCONFIG=$FINAL_DEFCONFIG" >> $GITHUB_ENV
-            echo "COMPILE_DEFCONFIG=$MAIN_DEFCONFIG" >> $GITHUB_ENV
+            echo "COMPILE_DEFCONFIG=${{ matrix.devices }}_defconfig" >> $GITHUB_ENV
+            cd ..
 
       - name: Apply device related patches
         id: apply_patches
@@ -160,6 +186,10 @@ jobs:
 
             echo "-- Parsing final defconfig..."
             make O=out $MAKE_ARGS $COMPILE_DEFCONFIG &> /dev/null
+
+            echo "-- Executing olddefconfig and syncconfig..."
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
 
             echo "-- Compiling the kernel..."
             make -j$(nproc --all) O=out $MAKE_ARGS 2>&1 | tee build.log
