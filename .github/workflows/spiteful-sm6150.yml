@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -51,9 +51,10 @@ jobs:
             echo "KERNEL_VERSION="4.14"" >> $GITHUB_ENV
 
             echo "-- Exporting toolchain settings..."
-            export TC_URL_CLANG="https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r547379.git"
-            export TC_URLS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/mvaisakh/gcc-build/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | grep -E "eva-gcc-arm.*\.xz")
-            
+            export TC_URL_CLANG="https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
+            export TC_URL_GCC64="https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git"
+            export TC_URL_GCC32="https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git"
+
             echo "-- Cloning kernel repository..."
             git clone --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR" &> /dev/null
 
@@ -70,38 +71,9 @@ jobs:
             echo "-- Downloading toolchain..."
             cd $KERNEL_DIR
             git clone --depth=1 "$TC_URL_CLANG" "clang" &> /dev/null
-            for url in $TC_URLS; do
-              wget --content-disposition -qL "$url"
-            done
-            for file in eva-gcc-arm*.xz; do
-              if [[ "$file" == *arm64* ]]; then
-                tar -xf "$file" 2>/dev/null
-                mv gcc-arm64* gcc64
-              else
-                tar -xf "$file" 2>/dev/null
-                mv gcc-arm-* gcc32 2>/dev/null || mv gcc-arm gcc32
-              fi
-              rm -rf "$file"
-            done
+            git clone --depth=1 "$TC_URL_GCC64" "clang" &> /dev/null
+            git clone --depth=1 "$TC_URL_GCC32" "clang" &> /dev/null
             cd ..
-            echo "-- Listing root dir"
-            ls -alhZ ./
-            echo "================================"
-            echo "-- Listing Kernel dir"
-            ls -alhZ ./$KERNEL_DIR
-            echo "================================"
-            echo "-- Listing clang dir"
-            ls -alhZ ./$KERNEL_DIR/clang
-            ls -alhZ ./$KERNEL_DIR/clang/bin
-            echo "================================"
-            echo "-- Listing gcc64 dir"
-            ls -alhZ ./$KERNEL_DIR/gcc64
-            ls -alhZ ./$KERNEL_DIR/gcc64/bin
-            echo "================================"
-            echo "-- Listing gcc32 dir"
-            ls -alhZ ./$KERNEL_DIR/gcc32
-            ls -alhZ ./$KERNEL_DIR/gcc32/bin
-            echo "================================"
 
       - name: Generate kernel configs
         id: generate_configs
@@ -137,10 +109,20 @@ jobs:
             echo "-- Patching Goodix touchscreen driver to prevent firmware downgrade..."
             find drivers/input/touchscreen/ -type f -name "*update*.c" -exec sed -i 's/else if (ret > 0) {/else if (ret > 0) { ts_info("FW on IC is newer, skip update"); return 0; } else if (0) {/g' {} +
 
+            echo "-- Completely disabling LTO..."
+            sed -i \
+                -e 's/^CONFIG_LTO=y/# CONFIG_LTO is not set/' \
+                -e 's/^CONFIG_THINLTO=y/# CONFIG_THINLTO is not set/' \
+                -e 's/^CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/' \
+                -e 's/^# CONFIG_CC_STACKPROTECTOR_NONE is not set/CONFIG_CC_STACKPROTECTOR_NONE=y/' \
+                -e 's/^CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/' \
+                -e 's/^# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/' \
+                $MAIN_DEFCONFIG
+                
+            echo "-- Removing regalloc advisor..."
+            sed -i '/-regalloc-enable-advisor=release/d' Makefile
+
             echo "-- Tuning default configs..."
-            echo "CONFIG_LTO_CLANG=y" >> $FINAL_DEFCONFIG
-            echo "CONFIG_THINLTO=y" >> $FINAL_DEFCONFIG
-            echo "CONFIG_MODULE_REL_CRCS=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_DM_CRYPT=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_DM_DEFAULT_KEY=y" >> $FINAL_DEFCONFIG
