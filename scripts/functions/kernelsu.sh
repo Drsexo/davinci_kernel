@@ -4,6 +4,7 @@
 export SUSFS_PATCH="https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/Patch/susfs_patch_to_${KERNEL_VERSION}.patch"
 export KSU_SETUP_URI="https://raw.githubusercontent.com/Baka-SU/BakaSU/refs/heads/main/kernel/setup.sh"
 export KSU_SELINUX_HIDE_LINEAGE="https://raw.githubusercontent.com/null07089/Lineage_Hide/refs/heads/main/scripts/selinux_hide_patch.sh"
+export KSU_CUSTOMROM_HIDE_LINEAGE="https://raw.githubusercontent.com/null07089/Lineage_Hide/refs/heads/main/scripts/patch-kernel.sh"
 
 # Temporary measurements before they add stuff again
 # export KSU_SETUP_BRANCH="main"
@@ -117,4 +118,10 @@ ksu_fix_exposed_selinux_linag() {
 ksu_nuke_dirtyflag() {
     echo "-- KernelSU: Removing dirty flag label..."
     sed -i 's/\$(KSU_COMMIT_SHA)-dirty/$(KSU_COMMIT_SHA)/' KernelSU/kernel/Kbuild
+}
+
+# Hide custom rom details
+ksu_hide_customrom() {
+    echo "-- KernelSU: Hiding Custom ROM details..."
+    curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$KSU_CUSTOMROM_HIDE_LINEAGE" | bash -s ./ &> /dev/null || { echo "-- Fatal: Hide Custom ROM script failed to download/run!"; exit 1; }
 }

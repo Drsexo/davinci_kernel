@@ -25,6 +25,9 @@ case "$KERNELSU_SELECTOR" in
         # Export SELinux Symbols
         ksu_export_selinux_symbols
 
+        # Hide custom rom
+        ksu_hide_customrom
+
         # Fix exposed SELinux
         ksu_fix_exposed_selinux_linag
 
@@ -54,6 +57,9 @@ case "$KERNELSU_SELECTOR" in
         # Duct tape fixes for Hooks
         ksu_fix_hooks_fouronefour
         ksu_fix_hooks_fouronenine
+
+        # Hide custom rom
+        ksu_hide_customrom
 
         # Export SELinux Symbols
         ksu_export_selinux_symbols
