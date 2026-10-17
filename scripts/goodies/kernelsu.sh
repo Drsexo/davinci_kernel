@@ -6,7 +6,7 @@ export SUSFS_PATCH="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/r
 echo "-- Setting up KernelSU integration: BakaSU SusFS"
 
 KSU_SETUP_URI="https://raw.githubusercontent.com/Baka-SU/BakaSU/main/kernel/setup.sh"
-KSU_SETUP_BRANCH="5b76b884c75f729a220bb317aa4a4fc78f0e0e9c"
+KSU_SETUP_BRANCH="sync-susfs"
 KSU_HOOK="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/susfs_inline_hook_patches.sh"
 
 # Resolve BakaSU's version same moment setup.sh below fetches it.
@@ -65,11 +65,18 @@ if ! grep -A 20 "static struct file \*path_openat(" fs/namei.c | grep -q "old_df
 #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT\n\tint old_dfd __maybe_unused = nd->dfd;\n\tstruct filename *fake_filename __maybe_unused = NULL;\n#endif
 }' fs/namei.c
 fi
-# Check if the susfs_spoof_uname hook is already present in kernel/sys.c
-if ! grep -q "susfs_is_uname_spoof_buffer_set" kernel/sys.c; then
+# Check if the susfs_spoof_uname hook is fully present in kernel/sys.c
+if ! grep -q "susfs_is_uname_spoof_buffer_set" kernel/sys.c || ! grep -q "susfs_spoof_uname(&tmp);" kernel/sys.c; then
     echo "-- Patching kernel/sys.c for susfs_spoof_uname..."
-    sed -i 's/^SYSCALL_DEFINE1(newuname/#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\nextern struct static_key_false susfs_is_uname_spoof_buffer_set;\nextern void susfs_spoof_uname(struct new_utsname* tmp);\n#endif\nSYSCALL_DEFINE1(newuname/' kernel/sys.c
-    sed -i 's/memcpy(&tmp, utsname(), sizeof(tmp));/&\n#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\n\tif (static_branch_likely(\&susfs_is_uname_spoof_buffer_set))\n\t\tsusfs_spoof_uname(\&tmp);\n#endif/' kernel/sys.c
+    git checkout kernel/sys.c
+    rm -f kernel/sys.c.rej
+    sed -i 's/^SYSCALL_DEFINE1(newuname/#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\nextern struct static_key_false susfs_is_uname_spoof_buffer_set;\nextern void susfs_spoof_uname(struct new_utsname* tmp);\n#endif\n&/' kernel/sys.c
+    sed -i '/^SYSCALL_DEFINE1(newuname/,/^}/ s/memcpy(&tmp, utsname(), sizeof(tmp));/memcpy(\&tmp, utsname(), sizeof(tmp));\n#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME\n\tif (static_branch_likely(\&susfs_is_uname_spoof_buffer_set))\n\t\tsusfs_spoof_uname(\&tmp);\n#endif/' kernel/sys.c
+    if grep -q "susfs_spoof_uname(&tmp);" kernel/sys.c; then
+        echo "-- sys.c susfs_spoof_uname hook injected."
+    else
+        echo "-- Warning: sys.c spoof hook not found after patching, uname spoofing stays inactive this build!"
+    fi
 fi
 
 # Check for a SusFS block misplaced by patch fuzz in fs/namespace.c
