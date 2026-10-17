@@ -103,9 +103,12 @@ jobs:
             echo "-- Applying device specific patches..."
             cd "$KERNEL_DIR"
 
+            echo "-- Patching Goodix touchscreen driver to prevent firmware downgrade..."
+            find drivers/input/touchscreen/ -type f -name "*update*.c" -exec sed -i 's/else if (ret > 0) {/else if (ret > 0) { ts_info("FW on IC is newer, skip update"); return 0; } else if (0) {/g' {} +
+
             echo "-- Tuning default configs..."
-            echo "CONFIG_LTO_CLANG=y" >> $FINAL_DEFCONFIG
-            echo "CONFIG_THINLTO=y" >> $FINAL_DEFCONFIG
+            echo "CONFIG_LTO_CLANG=n" >> $FINAL_DEFCONFIG
+            echo "CONFIG_THINLTO=n" >> $FINAL_DEFCONFIG
             echo "CONFIG_MODULE_REL_CRCS=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_DM_CRYPT=y" >> $FINAL_DEFCONFIG
