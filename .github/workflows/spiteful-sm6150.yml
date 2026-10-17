@@ -88,19 +88,19 @@ jobs:
             ls -alhZ ./
             echo "================================"
             echo "-- Listing Kernel dir"
-            ls -alhZ ./$KENREL_DIR
+            ls -alhZ ./$KERNEL_DIR
             echo "================================"
             echo "-- Listing clang dir"
-            ls -alhZ ./$KENREL_DIR/clang
-            ls -alhZ ./$KENREL_DIR/clang/bin
+            ls -alhZ ./$KERNEL_DIR/clang
+            ls -alhZ ./$KERNEL_DIR/clang/bin
             echo "================================"
             echo "-- Listing gcc64 dir"
-            ls -alhZ ./$KENREL_DIR/gcc64
-            ls -alhZ ./$KENREL_DIR/gcc64/bin
+            ls -alhZ ./$KERNEL_DIR/gcc64
+            ls -alhZ ./$KERNEL_DIR/gcc64/bin
             echo "================================"
             echo "-- Listing gcc32 dir"
-            ls -alhZ ./$KENREL_DIR/gcc32
-            ls -alhZ ./$KENREL_DIR/gcc32/bin
+            ls -alhZ ./$KERNEL_DIR/gcc32
+            ls -alhZ ./$KERNEL_DIR/gcc32/bin
             echo "================================"
 
       - name: Generate kernel configs
