@@ -171,9 +171,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
             echo "-- Exporting goodies settings..."
-            export KERNELSU_SELECTOR="baka-susfs"
-            export BBG_SELECTOR="bbg"
-            export NOMOUNT_SELECTOR="nomount"
+            export KERNELSU_SELECTOR="none"
+            export BBG_SELECTOR="none"
+            export NOMOUNT_SELECTOR="none"
             export DROIDSPACES_SELECTOR="none"
 
             echo "-- Running goodies script..."
