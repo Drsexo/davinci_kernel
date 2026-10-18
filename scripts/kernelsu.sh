@@ -26,10 +26,10 @@ case "$KERNELSU_SELECTOR" in
         ksu_export_selinux_symbols
 
         # Hide custom rom
-        # ksu_hide_customrom
+        ksu_hide_customrom
 
         # Fix exposed SELinux
-        # ksu_fix_exposed_selinux_linag
+        ksu_fix_exposed_selinux_linag
 
         # Nuke dirtyflag
         ksu_nuke_dirtyflag
@@ -58,14 +58,14 @@ case "$KERNELSU_SELECTOR" in
         ksu_fix_hooks_fouronefour
         ksu_fix_hooks_fouronenine
 
-        # Hide custom rom
-        # ksu_hide_customrom
-
         # Export SELinux Symbols
         ksu_export_selinux_symbols
 
+        # Hide custom rom
+        ksu_hide_customrom
+
         # Fix exposed SELinux
-        # ksu_fix_exposed_selinux_linag
+        ksu_fix_exposed_selinux_linag
 
         # Nuke dirtyflag
         ksu_nuke_dirtyflag
