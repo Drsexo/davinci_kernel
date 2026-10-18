@@ -55,7 +55,9 @@ This kernel follows weekly builds of LineageOS, you will get a new kernel build 
 **Notes**
 - During the usage of Droidspaces with systemd-based distros, mask the `NetworkManager` and `wpa_supplicant` systemd services to avoid overriding whos owning the wifi device, a.k.a NetworkManager will take control of the wifi device and android will not be able to connect to wifi until you masked the systemd services.   
 - CrDroid (SM6150) & LineageOS (SM6125) Droidspaces support have been marked "Yellow" because of the new Resources Limiter features of Droidspaces 7.0.0, and this feature is incompatible with said kernels because said kernels have Qualcomm WALT feature enabled by default, and CFS_BANDWIDTH is NOT compatible with Qualcomm WALT enabled.   
-- Any kind of CLI activities, for example Termux or Droidspaces, will crash if you enable SELinux Hide on KernelSU. Please disable them first before continuing.
+
+**Warning! ⚠️**
+- Any kind of CLI activities, for example Termux, Droidspaces or even upgrading your kernel via BakaSU Manager, will crash & break if you enable SELinux Hide on KernelSU. Please disable them first before continuing. We recommend installing updates via recovery only for now.   
 
 # Compatibility
 **Supported device list**   
@@ -88,13 +90,6 @@ This kernel follows weekly builds of LineageOS, you will get a new kernel build 
 - Allow to continue if you see Error 21 signature invalid.   
 - Reboot to system.   
 - Install lastest BakaSU Manager. [[Original](https://nightly.link/Baka-SU/BakaSU/workflows/build-manager/main/Manager-release.zip) / [Spoofed](https://nightly.link/Baka-SU/BakaSU/workflows/build-manager/main/Spoofed-Manager-release.zip)] (Optional)
-- Profit.   
-
-**On BakaSU Manager**   
-- On BakaSU Manager, click the "Working" card on the Manager Home Screen.   
-- You'll see both LKM and flash AnyKernel3, choose AnyKernel3, and select the flashable zip.   
-- Click next and the flashable will be installed.   
-- Reboot.   
 - Profit.   
 
 **Restore to default kernel**   
