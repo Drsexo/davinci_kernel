@@ -54,7 +54,7 @@ jobs:
             export TC_URLS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/Neutron-Toolchains/clang-build-catalogue/releases/latest | grep "browser_download_url" | head -n 1 | cut -d '"' -f 4) 
             
             echo "-- Cloning kernel repository..."
-            git clone --dpeth=1 --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR" &> /dev/null
+            git clone --depth=1 --branch "$KERNEL_BRANCH" "$KERNEL_REPO" "$KERNEL_DIR" &> /dev/null
 
             echo "-- Exporting variables into GITHUB_PATH..."
             echo "$PWD/$KERNEL_DIR/clang/bin" >> $GITHUB_PATH
