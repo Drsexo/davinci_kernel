@@ -77,6 +77,7 @@ jobs:
       build_date: ${{ needs.setup.outputs.build_date }}
       build_type: ${{ needs.setup.outputs.build_type }}
     secrets: inherit
+    
   build-southwestng-sdm660:
     needs: setup
     uses: ./.github/workflows/southwestng-sdm660.yml
