@@ -172,7 +172,7 @@ jobs:
         run: |
             echo "-- Exporting goodies settings..."
             export KERNELSU_SELECTOR="baka-susfs"
-            export BBG_SELECTOR="none"
+            export BBG_SELECTOR="bbg"
             export NOMOUNT_SELECTOR="none"
             export DROIDSPACES_SELECTOR="none"
 
