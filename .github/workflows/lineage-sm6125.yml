@@ -240,7 +240,7 @@ jobs:
         run: |
             echo "-- Exporting AnyKernel3 settings..."
             export IMAGE="Image.gz"
-            export DTB=""
+            export DTB="dtb.img"
             export DTBO="dtbo.img"
             export VERSIONS="13-17"
             export BANNER=" ${{ matrix.devices }} (SM6125)"
