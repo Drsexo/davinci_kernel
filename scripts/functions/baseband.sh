@@ -7,6 +7,7 @@ export BBG_SETUP_URI="https://raw.githubusercontent.com/vc-teahouse/Baseband-gua
 bbg_setup() {
     curl -LSs --fail --retry 3 -H "Authorization: Bearer $GITHUB_TOKEN" "$BBG_SETUP_URI" | bash &> /dev/null || { echo "Fatal: BBG setup failed!"; exit 1; }
     echo "CONFIG_BBG=y" >> "$FINAL_DEFCONFIG"
+    sed -i 's|^REPO_LINK :=.*|REPO_LINK := https://github.com/vc-teahouse/Baseband-guard|' Baseband-guard/Makefile
 }
 
 # Configure LSM Hooks for Baseband Guard
