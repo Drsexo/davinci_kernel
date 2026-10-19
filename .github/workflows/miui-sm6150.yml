@@ -136,7 +136,7 @@ jobs:
             echo "CONFIG_EROFS_FS_ZIP=y" >> $FINAL_DEFCONFIG
 
             echo "-- Disabling modversions..."
-            sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
+            # sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
 
             echo "-- Disabling Werror enforcement..."
             echo "CONFIG_CC_WERROR=n" >> $FINAL_DEFCONFIG
@@ -145,13 +145,13 @@ jobs:
             sed -i "s/printf '%s' -dirty/:/g" scripts/setlocalversion
 
             echo "-- Disabling IKHeaders..."
-            sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $FINAL_DEFCONFIG
+            # sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $FINAL_DEFCONFIG
             sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $FINAL_DEFCONFIG
 
             echo "-- Tuning default configs..."
             echo "CONFIG_LTO_CLANG=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_THINLTO=y" >> $FINAL_DEFCONFIG
-            echo "CONFIG_MODULE_REL_CRCS=y" >> $FINAL_DEFCONFIG
+            # echo "CONFIG_MODULE_REL_CRCS=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_DM_CRYPT=y" >> $FINAL_DEFCONFIG
             echo "CONFIG_DM_DEFAULT_KEY=y" >> $FINAL_DEFCONFIG
