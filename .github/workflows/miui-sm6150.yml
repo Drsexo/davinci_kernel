@@ -18,6 +18,7 @@ jobs:
       max-parallel: 4
       matrix:
         devices: [sweet]
+        selinux: [enforcing, permissive]
     
     steps:
       - uses: actions/checkout@v7
@@ -128,6 +129,13 @@ jobs:
             echo "-- Applying device specific patches..."
             cd "$KERNEL_DIR"
 
+            if [[ "${{ matrix.selinux }}" == "permissive" ]]; then
+              echo "-- Making SELinux Permissive..."
+              sed -i '/static inline bool enforcing_enabled/,/}/ s/return.*/return false;/' security/selinux/include/security.h
+            elif [[ "${{ matrix.selinux }}" == "enforcing" ]]; then
+              echo "-- SELinux will be kept enforcing."
+            fi
+
             echo "-- Disabling IKHeaders..."
             sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $FINAL_DEFCONFIG
 
@@ -225,7 +233,7 @@ jobs:
       - name: Pack kernel with AnyKernel3
         run: |
             echo "-- Exporting zip settings..."
-            export ZIP_PREFIX="neon-miui-${{ matrix.devices }}-sm6150"
+            export ZIP_PREFIX="neon-miui-${{ matrix.selinux }}-${{ matrix.devices }}-sm6150"
             export ZIPNAME="${ZIP_PREFIX}-${{ inputs.build_date }}.zip"
 
             cd AnyKernel3
@@ -235,7 +243,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: miui-${{ matrix.devices }}
+          name: miui-${{ matrix.selinux }}-${{ matrix.devices }}
           path: |
             *.zip
             release_info.txt
