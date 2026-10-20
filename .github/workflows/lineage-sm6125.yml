@@ -73,7 +73,7 @@ jobs:
             echo "-- Exporting kernel configs..."
             export ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/vendor/trinket-perf_defconfig"
             export MAIN_DEFCONFIG="vendor/trinket-perf_defconfig"
-            export COMMON_DEFCONFIG="vendor/debugfs.config vendor/xiaomi-trinket.config"
+            export COMMON_DEFCONFIG="vendor/xiaomi-trinket.config"
             export DEVICE_DEFCONFIG="vendor/${DEVICE_NAME}.config"
             export FEATURE_DEFCONFIG=""
 

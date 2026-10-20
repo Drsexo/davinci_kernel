@@ -73,7 +73,7 @@ jobs:
             echo "-- Exporting kernel configs..."
             export ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/${DEVICE_NAME}_defconfig"
             export MAIN_DEFCONFIG="${DEVICE_NAME}_defconfig"
-            export COMMON_DEFCONFIG="vendor/debugfs.config"
+            export COMMON_DEFCONFIG=""
             export DEVICE_DEFCONFIG=""
             export FEATURE_DEFCONFIG=""
 

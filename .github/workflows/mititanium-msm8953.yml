@@ -73,7 +73,7 @@ jobs:
             echo "-- Exporting kernel configs..."
             export ACTUAL_MAIN_DEFCONFIG="arch/arm64/configs/vendor/msm8953-perf_defconfig"
             export MAIN_DEFCONFIG="vendor/msm8953-perf_defconfig"
-            export COMMON_DEFCONFIG="vendor/debugfs.config"
+            export COMMON_DEFCONFIG=""
             export FEATURE_DEFCONFIG=""
 
             echo "-- Exporting device-related kernel settings..."
