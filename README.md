@@ -43,6 +43,7 @@ This kernel follows weekly builds of LineageOS, you will get a new kernel build 
 | Mi-Thorium (SDM439) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
 | Mi-Titanium (MSM8953) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
 | SouthWest-NG (SDM660) | ✅ w/ SUSFS | ✅ | ✅ | ✅ |
+| MIUI (SM6150) | ✅ w/ SUSFS | ✅ | ✅ | ❌ |
    
 **File Namings**   
 `neon-<OS/KernelName>-<DeviceName>-<Platform>-<BuildDate>.zip`   
@@ -72,6 +73,7 @@ This kernel follows weekly builds of LineageOS, you will get a new kernel build 
 | Mi-Thorium (SDM439) | Redmi 7A (pine), Redmi 8 (olive), Redmi 8A (olivelite), Redmi 8A Dual (olivewood) | Android 11 ~ Android 17 |
 | Mi-Titanium (MSM8953) | Redmi S2/Y2 (ysl), Redmi Note 4/4X Snapdragon (mido), Redmi 5 (rosy), Redmi 5 Plus (vince), Redmi 4 Prime/Pro (markw) | Android 11 ~ Android 17 |
 | SouthWest-NG (SDM660) | Xiaomi Mi Pad 4/4+ (clover), Redmi Note 7/7S (lavender) | Android 11 ~ Android 17 |
+| MIUI (SM6150) | Redmi Note 10 Pro/Pro Max (sweet) | Android 11 ~ Android 17 |
 
 **Notes**   
 - We recommend installing LineageOS, CrDroid and PixelOS kernels on their respective OS.   
@@ -82,6 +84,9 @@ This kernel follows weekly builds of LineageOS, you will get a new kernel build 
 - Legacy label on SouthWest-NG is used to boot A16 and older OS with kernel 4.19 inside of it, without dynamic partition. Main is used to boot Android 17 and newer whether it's partition being dynamic or not.
 - Don't forget to flash appender after flashing the kernel if you're using bootloader bypass exploit on MSM8937 devices.
 - Your device aren't yet supported? Go to the telegram channel to request your device for support.   
+
+**Warning! ⚠️**
+- Currently MIUI kernel for Redmi Note 10 Pro is in BETA stage. Currently it only targets and tested on Android 13 MIUI 14 / Android 13 HyperOS 1. If you want to, become a tester by joining the group support and send log captured by this KernelSU module called [Log Catcher](https://github.com/Howard20181/Log-Catcher).    
 
 # Installation
 **On Recovery**   
