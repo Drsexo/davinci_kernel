@@ -150,14 +150,10 @@ jobs:
             sed -i '/static inline int clock_debug_register/,/}/c\int clock_debug_register(struct clk *clk);' drivers/clk/msm/clock.h
             sed -i '/static inline void clock_debug_print_enabled.*/c\void clock_debug_print_enabled(bool print_parent);' drivers/clk/msm/clock.h
 
-            echo "-- Disabling modversions..."
-            sed -i 's/^CONFIG_MODVERSIONS=y/# CONFIG_MODVERSIONS is not set/' $FINAL_DEFCONFIG
-
             echo "-- Getting rid of the dirty flag..."
             sed -i "s/printf '%s' -dirty/:/g" scripts/setlocalversion
 
             echo "-- Disabling IKHeaders..."
-            sed -i 's/CONFIG_KALLSYMS_ALL=y/# CONFIG_KALLSYMS_ALL is not set/g' $FINAL_DEFCONFIG
             sed -i 's/CONFIG_IKHEADERS=y/# CONFIG_IKHEADERS is not set/g' $FINAL_DEFCONFIG
 
             echo "-- Tuning default configs..."
