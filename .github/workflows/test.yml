@@ -15,6 +15,10 @@ on:
         description: 'Build Derpfest'
         type: boolean
         default: true
+      build_crdroid:
+        description: 'Build crDroid'
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -31,16 +35,19 @@ jobs:
             BUILD_LINEAGEOS="${{ inputs.build_lineageos }}"
             BUILD_PIXELOS="${{ inputs.build_pixelos }}"
             BUILD_DERPFEST="${{ inputs.build_derpfest }}"
+            BUILD_CRDROID="${{ inputs.build_crdroid }}"
           else
             BUILD_LINEAGEOS="true"
             BUILD_PIXELOS="true"
             BUILD_DERPFEST="true"
+            BUILD_CRDROID="true"
           fi
 
           ROMS="[]"
           [ "$BUILD_LINEAGEOS" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"lineageos","repo":"LineageOS/android_kernel_xiaomi_sm6150","display":"LineageOS"}]')
           [ "$BUILD_PIXELOS" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"pixelos","repo":"PixelOS-Devices/android_kernel_xiaomi_sm6150","display":"PixelOS"}]')
           [ "$BUILD_DERPFEST" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"derpfest","repo":"DerpFest-Devices/kernel_xiaomi_sm6150","display":"Derpfest"}]')
+          [ "$BUILD_CRDROID" = "true" ] && ROMS=$(echo "$ROMS" | jq -c '. + [{"rom":"crdroid","repo":"crdroidandroid/android_kernel_xiaomi_sm6150","display":"crDroid"}]')
 
           if [ "$ROMS" = "[]" ]; then
             echo "Fatal: no ROM selected"
@@ -274,11 +281,18 @@ jobs:
           key: nebula-build-derpfest-${{ github.run_id }}
           fail-on-cache-miss: false
 
+      - name: Restore crDroid build
+        uses: actions/cache/restore@v6
+        with:
+          path: /tmp/release_stage_crdroid
+          key: nebula-build-crdroid-${{ github.run_id }}
+          fail-on-cache-miss: false
+
       - name: Assemble build info
         id: assemble
         run: |
           FOUND=0
-          for rom in lineageos pixelos derpfest; do
+          for rom in lineageos pixelos derpfest crdroid; do
             [ -d "/tmp/release_stage_${rom}" ] && FOUND=1
           done
           if [ "$FOUND" -eq 0 ]; then
@@ -286,7 +300,7 @@ jobs:
             exit 1
           fi
 
-          for rom in lineageos pixelos derpfest; do
+          for rom in lineageos pixelos derpfest crdroid; do
             if [ -f "/tmp/release_stage_${rom}/kernel_version.txt" ]; then
               KERNEL_VERSION=$(cat "/tmp/release_stage_${rom}/kernel_version.txt")
               KSU_NAME=$(cat "/tmp/release_stage_${rom}/ksu_name.txt")
@@ -299,7 +313,7 @@ jobs:
           done
 
           > /tmp/rom_lines.txt
-          for rom in lineageos pixelos derpfest; do
+          for rom in lineageos pixelos derpfest crdroid; do
             if [ -f "/tmp/release_stage_${rom}/rom_version.txt" ]; then
               display=$(cat "/tmp/release_stage_${rom}/display.txt")
               rom_version=$(cat "/tmp/release_stage_${rom}/rom_version.txt")
@@ -358,5 +372,13 @@ jobs:
         with:
           name: Nebula-Derpfest-davinci-BakaSU
           path: /tmp/release_stage_derpfest/Nebula-Derpfest-davinci-BakaSU-*.zip
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Upload crDroid artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: Nebula-crDroid-davinci-BakaSU
+          path: /tmp/release_stage_crdroid/Nebula-crDroid-davinci-BakaSU-*.zip
           retention-days: 7
           if-no-files-found: warn

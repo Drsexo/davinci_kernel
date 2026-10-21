@@ -19,11 +19,11 @@
 
 # Nebula
 
-Nebula is a weekly-built custom kernel for the Xiaomi Mi 9T (davinci), built for LineageOS, PixelOS, and Derpfest on the 4.14 kernel source.  
+Nebula is a weekly-built custom kernel for the Xiaomi Mi 9T (davinci), built for LineageOS, PixelOS, Derpfest, and crDroid on the 4.14 kernel source.  
 It ships with BakaSU (previously ReSukiSU) with SUSFS, Baseband Guard, NoMount, Droidspaces, and ReKernel integrated, compiled with the Neutron Clang toolchain using LTO and -O3.
 
 # Requirements
-- Xiaomi Mi 9T / Redmi K20 (davinci), running latest LineageOS, PixelOS, or Derpfest
+- Xiaomi Mi 9T / Redmi K20 (davinci), running latest LineageOS, PixelOS, Derpfest, or crDroid
 - Custom recovery or ADB access for sideloading
 - [BakaSU Manager](https://resukisu.github.io/guide/install.html#Get-manager) installed, to actually use root/SUSFS after flashing
 
@@ -80,3 +80,4 @@ Kernel source:
 - [LineageOS](https://github.com/LineageOS/android_kernel_xiaomi_sm6150)  
 - [PixelOS](https://github.com/PixelOS-Devices/android_kernel_xiaomi_sm6150)  
 - [DerpFest](https://github.com/DerpFest-Devices/kernel_xiaomi_sm6150)
+- [crDroid](https://github.com/crdroidandroid/android_kernel_xiaomi_sm6150)

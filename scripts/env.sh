@@ -10,6 +10,7 @@ case "$ROM_IMPORT" in
     lineageos)  ROM_DISPLAY="LineageOS" ;;
     pixelos)    ROM_DISPLAY="PixelOS" ;;
     derpfest)   ROM_DISPLAY="DerpFest" ;;
+    crdroid)    ROM_DISPLAY="crDroid" ;;
     *)          ROM_DISPLAY="$ROM_IMPORT" ;;
 esac
 export KERNEL_NAME="-Nebula_${ROM_DISPLAY}"
