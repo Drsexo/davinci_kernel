@@ -50,16 +50,13 @@ On Recovery:
 - Allow to continue if you see Error 21 signature invalid.
 - Reboot.
 
-If already rooted:
-- Use [Kernel Flasher](https://github.com/fatalcoder524/KernelFlasher)  
-
 Restore to default kernel:
 - You'll need to remove everything inside `/data/adb`. You can do this with `su -c rm -rf /data/adb/*`.
 - Then immediately reboot to fastboot.
 - Flash the stock boot image with `fastboot flash boot path/to/img`
 
 > [!IMPORTANT]
-> PixelOS enforces signature verification on sideloaded zips. The kernel zip will fail to flash in the stock recovery. Use [OrangeFox recovery](https://sourceforge.net/projects/randomprojectfiles/files/ofox/latest) to flash this kernel.
+> PixelOS enforces signature verification on sideloaded zips. The kernel zip will fail to flash in the stock recovery. Use [OrangeFox recovery](https://mega.nz/file/LjgkXJya#m4hg6w2ETuujIKUg23rXoUWpBSjcOvYk6Kz5tymrYQA) to flash this kernel.
 
 # Credits
 Patches & buildscript:
