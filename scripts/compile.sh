@@ -37,6 +37,9 @@ echo "CONFIG_PSTORE_CONSOLE=y" >> out/.config
 echo "CONFIG_PSTORE_PMSG=y" >> out/.config
 echo "CONFIG_PSTORE_RAM=y" >> out/.config
 
+# Disable IKHeaders
+echo "CONFIG_IKHEADERS=n" >> out/.config
+
 # Config generation
 echo "-- Executing olddefconfig and syncconfig..."
 { yes "" 2>/dev/null || true; } | "${MAKE_CMD[@]}" olddefconfig &> /dev/null
