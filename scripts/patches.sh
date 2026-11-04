@@ -44,6 +44,10 @@ else
 fi
 apply_patches "$BBR2_PATCH"
 
+# Blind cross-app uid liveness oracle (aerath-stuff/fgetpriority port)
+echo "-- Applying fgetpriority patch..."
+apply_patches "scripts/goodies/patches/fgetpriority/find_user-blind.patch"
+
 # Common configs for 4.14
 echo "-- Tuning default configs..."
 echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG

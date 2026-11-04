@@ -1,0 +1,57 @@
+--- a/kernel/user.c	2026-11-04 13:24:57.440511501 +0000
++++ b/kernel/user.c	2026-11-04 13:24:57.440511501 +0000
+@@ -19,6 +19,8 @@
+ #include <linux/user_namespace.h>
+ #include <linux/proc_fs.h>
+ #include <linux/proc_ns.h>
++#include <linux/cred.h>
++#include <linux/thread_info.h>
+ 
+ /*
+  * userns count is 1 for root user, 1 for init_uts_ns,
+@@ -140,6 +142,35 @@
+ }
+ 
+ /*
++ * Port of fgetpriority (github.com/backslashxx/fgetpriority)
++ * Copyright (C) 2026 \xx <backslashxx>, GPL-2.0.
++ * Blinds cross-app uid liveness probes: seccomp'd app probing another
++ * app uid via getpriority/setpriority(PRIO_USER) or ioprio_get/set
++ * (IOPRIO_WHO_USER) gets -ESRCH. Self and non-app callers untouched.
++ */
++#define FGP_MIN_APP_UID		10000
++#define FGP_AID_USER_OFFSET	100000
++#define FGP_HIDDEN_UID		(-1)
++
++static __always_inline bool fgp_should_swap(int who)
++{
++	int cuid;
++
++	if (unlikely(!test_thread_flag(TIF_SECCOMP)))
++		return false;
++
++	cuid = current_uid().val;
++	if (unlikely(cuid < FGP_MIN_APP_UID || who < FGP_MIN_APP_UID))
++		return false;
++
++	/* compare app ids across profiles */
++	cuid %= FGP_AID_USER_OFFSET;
++	who %= FGP_AID_USER_OFFSET;
++
++	return cuid != who;
++}
++
++/*
+  * Locate the user_struct for the passed UID.  If found, take a ref on it.  The
+  * caller must undo that ref with free_uid().
+  *
+@@ -150,6 +181,9 @@
+ 	struct user_struct *ret;
+ 	unsigned long flags;
+ 
++	if (unlikely(fgp_should_swap(uid.val)))
++		uid = KUIDT_INIT(FGP_HIDDEN_UID);
++
+ 	spin_lock_irqsave(&uidhash_lock, flags);
+ 	ret = uid_hash_find(uid, uidhashentry(uid));
+ 	spin_unlock_irqrestore(&uidhash_lock, flags);
