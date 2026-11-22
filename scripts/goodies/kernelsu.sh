@@ -130,6 +130,20 @@ curl -LSs --fail --retry 3 "$KSU_HOOK" | bash &> /dev/null || { echo "Fatal: KSU
 
 sed -i 's/ksu_handle_stat(&dfd, &fname, &flag);/ksu_handle_stat(\&dfd, \&fname, \&flags);/g' fs/stat.c
 
+if grep -q 'ksu_handle_faccessat(&dfd, &fname, &mode, NULL);' fs/open.c && \
+   ! grep -q 'extern int ksu_handle_faccessat' fs/open.c; then
+    echo "-- KernelSU: Restoring fs/open.c declarations for faccessat2..."
+    sed -i '/^SYSCALL_DEFINE3(faccessat,/i\
+#ifdef CONFIG_KSU_SUSFS\
+extern struct static_key_true ksu_su_compat_enabled;\
+extern bool __ksu_is_allow_uid_for_current(uid_t uid);\
+extern int ksu_handle_faccessat(int *dfd, struct filename **filename, int *mode, int *flags);\
+extern int filename_lookup(int dfd, struct filename *name, unsigned flags, struct path *path, struct path *root);\
+#endif' fs/open.c
+    grep -q 'extern int ksu_handle_faccessat' fs/open.c \
+        || { echo "Fatal: could not restore fs/open.c faccessat2 declarations!"; exit 1; }
+fi
+
 # Export SELinux Symbols
 echo "-- Checking and exporting static SELinux symbols..."
 unstatic() {
