@@ -9,28 +9,29 @@ KSU_SETUP_URI="https://raw.githubusercontent.com/Baka-SU/BakaSU/main/kernel/setu
 KSU_SETUP_BRANCH="sync-up"
 KSU_HOOK="https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd/raw/refs/heads/mainline/Patches/susfs_inline_hook_patches.sh"
 
-# Resolve BakaSU's version same moment setup.sh below fetches it.
-AUTH_HEADER=()
-[ -n "$GH_TOKEN" ] && AUTH_HEADER=(-H "Authorization: token $GH_TOKEN")
-KSU_SHA=$(curl -fsSL "${AUTH_HEADER[@]}" "https://api.github.com/repos/Baka-SU/BakaSU/commits/${KSU_SETUP_BRANCH}" | jq -r '.sha // empty' | cut -c1-8)
-KSU_TAG=$(curl -fsSL "${AUTH_HEADER[@]}" "https://api.github.com/repos/Baka-SU/BakaSU/tags?per_page=1" | jq -r '.[0].name // "unknown"')
-rm -rf /tmp/ksu_src
-KSU_CODE="unknown"
-if git clone --filter=blob:none --depth=1 "https://github.com/Baka-SU/BakaSU.git" /tmp/ksu_src 2>/dev/null; then
-    git -C /tmp/ksu_src fetch --unshallow --filter=blob:none 2>/dev/null \
-      || git -C /tmp/ksu_src fetch --filter=blob:none 2>/dev/null || true
-    COUNT=$(git -C /tmp/ksu_src rev-list --count HEAD 2>/dev/null)
-    [ -n "$COUNT" ] && KSU_CODE=$((30000 + COUNT + 700))
-fi
-cat > /tmp/ksu_resolved.env << RESOLVEDEOF
-KSU_RESOLVED_SHA=${KSU_SHA:-unknown}
-KSU_RESOLVED_TAG=${KSU_TAG:-unknown}
-KSU_RESOLVED_CODE=${KSU_CODE}
-RESOLVEDEOF
-
 # Setup KernelSU
 echo "-- Running KernelSU setup script..."
 curl -LSs --fail --retry 3 "$KSU_SETUP_URI" | bash -s "$KSU_SETUP_BRANCH" &> /dev/null || { echo "Fatal: KSU setup script failed to download/run!"; exit 1; }
+
+# Resolve BakaSU's version
+echo "-- Resolving BakaSU version from the setup clone..."
+KSU_TAG="unknown"
+KSU_SHA="unknown"
+KSU_CODE="unknown"
+if [ -d "KernelSU/.git" ]; then
+    KSU_TAG=$(git -C KernelSU describe --abbrev=0 --tags 2>/dev/null || echo "unknown")
+    KSU_SHA=$(git -C KernelSU rev-parse --short=8 HEAD 2>/dev/null || echo "unknown")
+    COUNT=$(git -C KernelSU rev-list --count HEAD 2>/dev/null)
+    [ -n "$COUNT" ] && KSU_CODE=$((30000 + COUNT + 700))
+else
+    echo "-- Warning: KernelSU clone not found, unknown BakaSU version!"
+fi
+echo "-- BakaSU resolved: ${KSU_TAG}-${KSU_SHA} (code ${KSU_CODE})"
+cat > /tmp/ksu_resolved.env << RESOLVEDEOF
+KSU_RESOLVED_SHA=${KSU_SHA}
+KSU_RESOLVED_TAG=${KSU_TAG}
+KSU_RESOLVED_CODE=${KSU_CODE}
+RESOLVEDEOF
 
 # Enable the necessary KernelSU configs
 echo "-- Enabling KernelSU configs..."
